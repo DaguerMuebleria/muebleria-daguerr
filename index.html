@@ -317,8 +317,8 @@
     .imagen-mueble {
       width: 100%;
       height: 220px;
-      object-fit: cover;
-      background-color: #eee;
+      object-fit: contain;
+      background-color: #f7f7f7;
       transition: transform 0.5s ease;
     }
 
@@ -347,6 +347,7 @@
       color: #666;
       margin-bottom: 12px;
       flex-grow: 1;
+      white-space: pre-line;
     }
 
     .contenedor-badges {
@@ -451,7 +452,7 @@
       position: relative;
       width: 100%;
       height: 380px;
-      background: #111;
+      background: #f7f7f7;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -466,9 +467,11 @@
     }
 
     .carrusel-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover; /* <- CAMBIADO DE contain A cover PARA EVITAR BORDES NEGROS */
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
       cursor: zoom-in;
       transition: opacity 0.3s ease;
     }
@@ -566,6 +569,7 @@
       font-size: 0.95rem;
       margin-bottom: 20px;
       line-height: 1.5;
+      white-space: pre-line;
     }
 
     .lista-metodos-pago {
@@ -962,7 +966,9 @@
         const imgSrc = (item.imagenes && item.imagenes.length > 0) ? item.imagenes[0] : '';
 
         tarjeta.innerHTML = `
-          <img src="${imgSrc}" alt="${item.titulo || 'Mueble'}" class="imagen-mueble">
+          <div style="width: 100%; height: 220px; background-color: #f7f7f7; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+            <img src="${imgSrc}" alt="${item.titulo || 'Mueble'}" class="imagen-mueble" style="width: 100%; height: 100%; object-fit: contain;">
+          </div>
           <div class="info-mueble">
             <div class="contenedor-badges">
               ${obtenerBadgesHTML(item.estado)}
@@ -1098,11 +1104,11 @@
       const contenedorFiltros = document.getElementById('contenedor-filtros');
       if (contenedorFiltros) {
         contenedorFiltros.addEventListener('wheel', (e) => {
-          if (e.deltaY !== 0) {
+          if (e.deltaY !== 0 && e.target.closest('.filtros')) {
             e.preventDefault();
             contenedorFiltros.scrollLeft += e.deltaY;
           }
-        });
+        }, { passive: false });
       }
     });
   </script>
