@@ -6,7 +6,7 @@ const productosCloset = [
     categoria: "Closet",
     subcategoria: "",
     estado: "disponible",
-    descripcion: `hola`,
+    descripcion: ``,
     oculto: false, 
     imagenes: [
       "Imagenes/Closet/CarpetaProducto/1.jpg",
