@@ -1,15 +1,20 @@
 @echo off
 title Sincronizar Muebleria Daguerr con GitHub
 echo ==========================================
-echo   Cambiando a la carpeta del proyecto...
+echo    Cambiando a la carpeta del proyecto...
 echo ==========================================
 
-:: REEMPLAZA ESTA RUTA si tu carpeta está en otro directorio exacto
 cd /d C:\Users\Luis Garza\muebleria-daguerr
 
 echo.
 echo ==========================================
-echo   Subiendo cambios a GitHub automaticamente...
+echo    Descargando cambios recientes...
+echo ==========================================
+git pull origin main --rebase
+
+echo.
+echo ==========================================
+echo    Subiendo cambios a GitHub automaticamente...
 echo ==========================================
 
 git add .
@@ -21,6 +26,6 @@ git push
 
 echo.
 echo ==========================================
-echo   ¡Proceso finalizado con exito!
+echo    ¡Proceso finalizado con exito!
 echo ==========================================
 pause
