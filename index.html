@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="google-site-verification" content="QpEtGqhVy4j8vrfr504r205jVhasmnNbbDrQMiHrvis" />
+  <title>Muebleria Daguerr - Catalogo</title>
+  
+  <!-- PRECARGAR LA FUENTE DEL LOGO PARA EVITAR PARPADEOS -->
+  <link rel="preload" href="ITCEDSCR.TTF" as="font" type="font/ttf" crossorigin>
+
+  <!-- TIPOGRAFIAS DE GOOGLE -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* 0. CARGA DE FUENTE LOCAL */
+    @font-face {
+      font-family: 'Edwardian Script Local';
+      src: url('ITCEDSCR.TTF') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    /* VARIABLES DE COLOR Y FUENTES */
+    :root {
+      --naranja-daguerr: #c2290a;
+      --fondo: #fcfaf8;
+      --texto: #2c2c2c;
+      --blanco: #ffffff;
+      
+      --fuente-logo-script: 'Edwardian Script Local', 'Edwardian Script ITC', cursive;
+      --fuente-logo-sub: 'Montserrat', sans-serif;
+      --fuente-cuerpo: 'Poppins', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--fuente-cuerpo);
+      background-color: var(--fondo);
+      color: var(--texto);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* 1. ANIMACION DE BIENVENIDA */
+    #welcome-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--naranja-daguerr);
+      color: var(--blanco);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      animation: fadeOut 0.8s ease 2.2s forwards;
+      padding: 20px;
+    }
+
+    .logo-bienvenida {
+      display: flex;
+      flex-direction: column;
+      width: 90%;
+      max-width: 380px;
+      animation: zoomIn 1.2s ease;
+      margin-right: 35px;
+    }
+
+    .logo-bienvenida .brand-script {
+      display: block;
+      font-family: var(--fuente-logo-script);
+      font-size: clamp(4.5rem, 18vw, 7.5rem);
+      line-height: 0.85;
+      color: #fff;
+      text-align: center;
+      text-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+    }
+
+    .logo-bienvenida .brand-sub {
+      display: block;
+      font-family: var(--fuente-logo-sub);
+      font-size: clamp(0.9rem, 3.8vw, 1.4rem);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: #ffe6e0;
+      text-align: right;
+      margin-top: 2px;
+      padding-right: 15px;
+    }
+
+    @keyframes zoomIn {
+      from { opacity: 0; transform: scale(0.85); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes fadeOut {
+      to { opacity: 0; visibility: hidden; }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(25px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes modalScaleIn {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    /* 2. ENCABEZADO Y LOGO PRINCIPAL */
+    .header-contenedor {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background-color: var(--blanco);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+      border-bottom: 4px solid var(--naranja-daguerr);
+      animation: fadeInUp 0.5s ease;
+    }
+
+    header {
+      padding: 15px 15px 5px 15px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .logo-header {
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
+      width: 100%;
+      max-width: 280px;
+      margin-right: 25px;
+    }
+
+    .logo-header .brand-script {
+      display: block;
+      font-family: var(--fuente-logo-script);
+      font-size: clamp(3.2rem, 12vw, 4.2rem);
+      color: var(--naranja-daguerr);
+      line-height: 0.85;
+      text-align: center;
+    }
+
+    .logo-header .brand-sub {
+      display: block;
+      font-family: var(--fuente-logo-sub);
+      font-size: clamp(0.72rem, 3.2vw, 0.92rem);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: var(--naranja-daguerr);
+      text-align: right;
+      margin-top: 2px;
+      padding-right: 12px;
+    }
+
+    /* 3. FILTROS DE CATEGORIA */
+    .filtros {
+      display: flex;
+      justify-content: flex-start;
+      gap: 12px;
+      padding: 12px 20px;
+      overflow-x: auto;
+      white-space: nowrap;
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+      max-width: 100%;
+    }
+
+    .filtros::-webkit-scrollbar {
+      height: 6px;
+    }
+    .filtros::-webkit-scrollbar-thumb {
+      background: rgba(194, 41, 10, 0.2);
+      border-radius: 10px;
+    }
+
+    .btn-filtro {
+      background-color: #f7f7f7;
+      border: 1px solid #e2e2e2;
+      padding: 10px 24px;
+      border-radius: 25px;
+      font-size: 0.95rem;
+      font-family: var(--fuente-cuerpo);
+      color: #333;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      flex-shrink: 0;
+    }
+
+    .btn-filtro:hover {
+      transform: translateY(-2px);
+      border-color: var(--naranja-daguerr);
+    }
+
+    .btn-filtro.activo {
+      background-color: var(--naranja-daguerr);
+      color: var(--blanco);
+      border-color: var(--naranja-daguerr);
+      box-shadow: 0 4px 10px rgba(194, 41, 10, 0.25);
+    }
+
+    /* SUBMENÚ EXCLUSIVO DE LÍNEA BLANCA */
+    .submenu-linea-blanca {
+      display: none;
+      justify-content: flex-start;
+      gap: 10px;
+      padding: 10px 20px 18px 20px;
+      overflow-x: auto;
+      white-space: nowrap;
+      background-color: #faf5f3;
+      border-top: 1px solid #f0e6e2;
+    }
+
+    .submenu-linea-blanca.activo {
+      display: flex;
+      animation: fadeInUp 0.3s ease;
+    }
+
+    .btn-subfiltro {
+      background-color: #ffffff;
+      border: 1px solid #d4c5c0;
+      padding: 7px 18px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-family: var(--fuente-cuerpo);
+      color: var(--naranja-daguerr);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      flex-shrink: 0;
+      font-weight: 600;
+    }
+
+    .btn-subfiltro:hover, .btn-subfiltro.activo {
+      background-color: var(--naranja-daguerr);
+      color: var(--blanco);
+      border-color: var(--naranja-daguerr);
+    }
+
+    @media (min-width: 768px) {
+      .filtros, .submenu-linea-blanca {
+        padding-left: 30px;
+        padding-right: 30px;
+      }
+    }
+
+    /* 4. REJILLA DE PRODUCTOS */
+    .contenedor-catalogo {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+      flex-grow: 1;
+      position: relative;
+      z-index: 1;
+    }
+
+    .mensaje-vacio {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 50px 20px;
+      color: #777;
+      font-size: 1.1rem;
+    }
+
+    .tarjeta-mueble {
+      background: var(--blanco);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid #f0f0f0;
+      cursor: pointer;
+      animation: fadeInUp 0.6s ease both;
+    }
+
+    .tarjeta-mueble:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 30px rgba(194, 41, 10, 0.18);
+    }
+
+    .imagen-mueble {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      background-color: #eee;
+      transition: transform 0.5s ease;
+    }
+
+    .tarjeta-mueble:hover .imagen-mueble {
+      transform: scale(1.05);
+    }
+
+    .info-mueble {
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      background: var(--blanco);
+      position: relative;
+      z-index: 2;
+    }
+
+    .info-mueble h3 {
+      font-size: 1.15rem;
+      margin-bottom: 6px;
+      color: #111;
+    }
+
+    .info-mueble p {
+      font-size: 0.88rem;
+      color: #666;
+      margin-bottom: 12px;
+      flex-grow: 1;
+    }
+
+    .contenedor-badges {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .badge-estado {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      width: fit-content;
+    }
+
+    .disponible { background-color: #e6f4ea; color: #137333; }
+    .agotado { background-color: #fce8e6; color: #c5221f; }
+    .pedido { background-color: #fef7e0; color: #b06000; }
+
+    .btn-whatsapp {
+      display: block;
+      text-align: center;
+      background-color: #25D366;
+      color: white;
+      text-decoration: none;
+      padding: 12px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: background 0.3s, transform 0.2s;
+      box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+    }
+
+    .btn-whatsapp:hover {
+      background-color: #1eb956;
+      transform: scale(1.02);
+    }
+
+    /* 5. VENTANA MODAL AMPLIADA Y ADAPTADA */
+    .modal-detalle {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      z-index: 10000;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 10px;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-detalle.activo {
+      display: flex;
+    }
+
+    .modal-contenido {
+      background: var(--blanco);
+      width: 100%;
+      max-width: 650px;
+      max-height: 94vh;
+      border-radius: 20px;
+      overflow-y: auto;
+      position: relative;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+      display: flex;
+      flex-direction: column;
+      animation: modalScaleIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .btn-cerrar {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: rgba(0,0,0,0.6);
+      color: white;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      font-size: 1.4rem;
+      cursor: pointer;
+      z-index: 20;
+      transition: background 0.3s, transform 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .btn-cerrar:hover {
+      background: var(--naranja-daguerr);
+      transform: scale(1.1);
+    }
+
+    /* CARRUSEL DE IMAGENES AMPLIADO PARA CELULAR */
+    .carrusel-contenedor {
+      position: relative;
+      width: 100%;
+      height: 380px;
+      background: #111;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    @media (min-width: 768px) {
+      .carrusel-contenedor {
+        height: 420px;
+      }
+    }
+
+    .carrusel-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* <- CAMBIADO DE contain A cover PARA EVITAR BORDES NEGROS */
+      cursor: zoom-in;
+      transition: opacity 0.3s ease;
+    }
+
+    .btn-carrusel {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0, 0, 0, 0.65);
+      color: #ffffff;
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      width: 45px;
+      height: 45px;
+      cursor: pointer;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(4px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    .btn-carrusel:hover {
+      background: var(--naranja-daguerr);
+      border-color: var(--naranja-daguerr);
+      transform: translateY(-50%) scale(1.1);
+    }
+
+    .btn-carrusel.prev { left: 15px; }
+    .btn-carrusel.next { right: 15px; }
+
+    /* 6. MODAL PARA AMPLIAR IMAGEN (LIGHTBOX) */
+    .modal-imagen-grande {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 11000;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+    }
+
+    .modal-imagen-grande.activo {
+      display: flex;
+      animation: modalScaleIn 0.3s ease;
+    }
+
+    .modal-imagen-grande img {
+      max-width: 100%;
+      max-height: 95vh;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+
+    .btn-cerrar-imagen {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.25);
+      color: white;
+      border: none;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      font-size: 1.8rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s;
+      z-index: 12000;
+    }
+
+    .cuerpo-modal {
+      padding: 24px;
+      background: var(--blanco);
+    }
+
+    .cuerpo-modal h2 {
+      font-size: 1.4rem;
+      margin-bottom: 10px;
+      color: #111;
+      line-height: 1.3;
+    }
+
+    .cuerpo-modal .descripcion {
+      color: #555;
+      font-size: 0.95rem;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .lista-metodos-pago {
+      background: var(--fondo);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 24px;
+      border: 1px solid #eee;
+    }
+
+    .lista-metodos-pago h4 {
+      font-size: 0.95rem;
+      margin-bottom: 10px;
+      color: var(--naranja-daguerr);
+    }
+
+    .lista-metodos-pago ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .lista-metodos-pago li {
+      padding: 6px 0;
+      font-size: 0.9rem;
+      border-bottom: 1px dashed #e2e2e2;
+      color: #444;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .lista-metodos-pago li:last-child {
+      border-bottom: none;
+    }
+
+    .lista-metodos-pago li::before {
+      content: "•";
+      color: var(--naranja-daguerr);
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    /* 7. SECCION DE INFORMACION Y CONTACTO */
+    .seccion-info-contacto {
+      background-color: #f4f0ec;
+      padding: 50px 20px;
+      border-top: 1px solid #e7e0db;
+      margin-top: 40px;
+    }
+
+    .info-contacto-contenedor {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+    }
+
+    .info-tarjeta {
+      background: var(--blanco);
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+      border: 1px solid #eae5e0;
+    }
+
+    .info-tarjeta h3 {
+      font-size: 1.2rem;
+      color: var(--naranja-daguerr);
+      margin-bottom: 15px;
+      font-weight: 700;
+    }
+
+    .info-tarjeta p, .info-tarjeta li {
+      font-size: 0.92rem;
+      color: #444;
+      line-height: 1.6;
+    }
+
+    .info-tarjeta ul {
+      list-style: none;
+    }
+
+    .info-tarjeta ul li {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 0;
+      border-bottom: 1px dashed #eee;
+    }
+
+    .enlace-contacto {
+      display: inline-block;
+      color: var(--naranja-daguerr);
+      text-decoration: none;
+      font-weight: 600;
+      margin-top: 10px;
+    }
+
+    .mapa-responsive {
+      position: relative;
+      width: 100%;
+      height: 200px;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-top: 12px;
+      border: 1px solid #ddd;
+    }
+
+    .mapa-responsive iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    /* BURBUJA FLOTANTE ANIMADA */
+    .burbuja-contacto-flotante {
+      position: fixed;
+      bottom: 25px;
+      left: 25px;
+      background-color: var(--naranja-daguerr);
+      color: var(--blanco);
+      box-shadow: 0 4px 20px rgba(194, 41, 10, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      z-index: 998;
+      cursor: pointer;
+      overflow: hidden;
+      white-space: nowrap;
+      
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(20px);
+      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                  height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                  padding 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                  border-radius 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                  transform 0.4s ease,
+                  opacity 0.4s ease,
+                  visibility 0.4s ease;
+    }
+
+    .burbuja-contacto-flotante.visible-completa {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+      width: 215px;
+      height: 50px;
+      padding: 12px 20px;
+      border-radius: 30px;
+    }
+
+    .burbuja-contacto-flotante.visible-redonda {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+      width: 50px;
+      height: 50px;
+      padding: 0;
+      border-radius: 50%;
+      justify-content: center;
+    }
+
+    .burbuja-contacto-flotante .texto-burbuja {
+      display: inline-block;
+      margin-left: 10px;
+      opacity: 1;
+      transition: opacity 0.2s ease;
+    }
+
+    .burbuja-contacto-flotante.visible-redonda .texto-burbuja {
+      opacity: 0;
+      width: 0;
+      overflow: hidden;
+      margin-left: 0;
+    }
+
+    .burbuja-icono {
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    footer {
+      text-align: center;
+      padding: 25px;
+      background-color: var(--naranja-daguerr);
+      color: var(--blanco);
+      margin-top: auto;
+      font-size: 0.85rem;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ANIMACION DE BIENVENIDA -->
+  <div id="welcome-screen">
+    <div class="logo-bienvenida">
+      <span class="brand-script">Daguerr</span>
+      <span class="brand-sub">MUEBLERIA</span>
+    </div>
+  </div>
+
+  <!-- BURBUJA FLOTANTE -->
+  <a href="#seccion-contacto" class="burbuja-contacto-flotante visible-completa" id="burbujaFlotante">
+    <span class="burbuja-icono">&#128205;</span>
+    <span class="texto-burbuja">Ubicacion y Horarios</span>
+  </a>
+
+  <!-- CONTENEDOR SUPERIOR UNIFICADO -->
+  <div class="header-contenedor">
+    <header>
+      <div class="logo-header">
+        <span class="brand-script">Daguerr</span>
+        <span class="brand-sub">MUEBLERIA</span>
+      </div>
+    </header>
+
+    <!-- FILTROS DE CATEGORIA PRINCIPALES -->
+    <div class="filtros" id="contenedor-filtros">
+      <button class="btn-filtro activo" onclick="filtrarCategoria('Todos', this)">Todos</button>
+      <button class="btn-filtro" onclick="filtrarCategoria('Cocinas', this)">Cocinas</button>
+      <button class="btn-filtro" onclick="filtrarCategoria('Linea Blanca', this)">Linea Blanca</button>
+      <button class="btn-filtro" onclick="filtrarCategoria('Comedores', this)">Comedores</button>
+      <button class="btn-filtro" onclick="filtrarCategoria('Tubulares', this)">Tubulares</button>
+      <button class="btn-filtro" onclick="filtrarCategoria('Salas', this)">Salas</button>
+      <button class="btn-filtro" onclick="filtrarCategoria('Recamaras', this)">Recamaras</button>
+      <button class="btn-filtro" onclick="filtrarCategoria('Closet', this)">Closet</button>
+      <button class="btn-filtro" onclick="filtrarCategoria('Colchoneria', this)">Colchoneria</button>
+      <button class="btn-filtro" onclick="filtrarCategoria('Deportivos', this)">Deportivos</button>
+      <button class="btn-filtro" onclick="filtrarCategoria('Descanso', this)">Descanso</button>
+      <button class="btn-filtro" onclick="filtrarCategoria('Hogar', this)">Hogar</button>
+      <button class="btn-filtro" onclick="filtrarCategoria('Ropa y Calzado', this)">Ropa y Calzado</button>
+    </div>
+
+    <!-- SUBMENÚ EXCLUSIVO DE LÍNEA BLANCA -->
+    <div class="submenu-linea-blanca" id="submenuLineaBlanca">
+      <button class="btn-subfiltro" onclick="filtrarSubcategoria('Refrigeradores', this)">Refrigeradores</button>
+      <button class="btn-subfiltro" onclick="filtrarSubcategoria('Estufas', this)">Estufas</button>
+      <button class="btn-subfiltro" onclick="filtrarSubcategoria('Lavadoras', this)">Lavadoras</button>
+      <button class="btn-subfiltro" onclick="filtrarSubcategoria('Boilers', this)">Boilers</button>
+      <button class="btn-subfiltro" onclick="filtrarSubcategoria('Abanicos/AC', this)">Abanicos/AC</button>
+    </div>
+  </div>
+
+  <!-- CATALOGO CONTENEDOR -->
+  <main class="contenedor-catalogo" id="catalogo"></main>
+
+  <!-- SECCION DE INFORMACION, UBICACION Y HORARIOS -->
+  <section class="seccion-info-contacto" id="seccion-contacto">
+    <div class="info-contacto-contenedor">
+      
+      <div class="info-tarjeta">
+        <h3>Ubicacion</h3>
+        <p>Carr. A Abasolo y av. 2 #100, San Buenaventura, Coahuila, Mexico.</p>
+        <div class="mapa-responsive">
+          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3593.00390625!2d-101.5358799!3d27.0765304!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x868bb806475543c5%3A0x658df1bd87011891!2sMuebleria%20%22DAGUERR%22!5e0!3m2!1ses!2smx!4v1700000000000!5m2!1ses!2smx" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+        <a href="https://www.google.com/maps/place/Muebleria+%22DAGUERR%22/@27.0767433,-101.5347434,17.25z/data=!4m6!3m5!1s0x868bb806475543c5:0x658df1bd87011891!8m2!3d27.0767433!4d-101.5347434!16s%2Fg%2F11cn2mklmd?entry=ttu" target="_blank" class="enlace-contacto">Ver en Google Maps &rarr;</a>
+      </div>
+
+      <div class="info-tarjeta">
+        <h3>Contacto y Redes</h3>
+        <p><strong>WhatsApp:</strong> <a href="https://wa.me/528666504200" target="_blank" class="enlace-contacto">+52 866 650 4200</a></p>
+        <p style="margin-top: 10px;"><strong>Telefono Fijo:</strong> +52 869 694 2677</p>
+        <p style="margin-top: 10px;"><strong>Facebook:</strong> <a href="https://www.facebook.com/muebleriadaguerr" target="_blank" class="enlace-contacto">facebook.com/muebleriadaguerr</a></p>
+      </div>
+
+      <div class="info-tarjeta">
+        <h3>Horarios de Atencion</h3>
+        <ul>
+          <li><span>Lunes:</span> <span>9:00 a.m. – 1:00 p.m. y 3:00 p.m. – 7:00 p.m.</span></li>
+          <li><span>Martes:</span> <span>9:00 a.m. – 1:00 p.m. y 3:00 p.m. – 7:00 p.m.</span></li>
+          <li><span>Miercoles:</span> <span>9:00 a.m. – 1:00 p.m. y 3:00 p.m. – 7:00 p.m.</span></li>
+          <li><span>Jueves:</span> <span>9:00 a.m. – 1:00 p.m. y 3:00 p.m. – 7:00 p.m.</span></li>
+          <li><span>Viernes:</span> <span>9:00 a.m. – 1:00 p.m. y 3:00 p.m. – 7:00 p.m.</span></li>
+          <li><span>Sabado:</span> <span>9:00 a.m. – 1:00 p.m. y 3:00 p.m. – 7:00 p.m.</span></li>
+          <li><span>Domingo:</span> <span>Cerrado</span></li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- MODAL DE DETALLE DE PRODUCTO -->
+  <div class="modal-detalle" id="modal-producto">
+    <div class="modal-contenido">
+      <button class="btn-cerrar" onclick="cerrarModal()">&times;</button>
+      
+      <div class="carrusel-contenedor">
+        <button class="btn-carrusel prev" onclick="cambiarImagen(-1)">&#10094;</button>
+        <img id="modal-img" class="carrusel-img" src="" alt="Producto" onclick="abrirImagenGrande()">
+        <button class="btn-carrusel next" onclick="cambiarImagen(1)">&#10095;</button>
+      </div>
+
+      <div class="cuerpo-modal">
+        <div class="contenedor-badges" id="modal-estado-contenedor"></div>
+        <h2 id="modal-titulo"></h2>
+        <p class="descripcion" id="modal-descripcion"></p>
+
+        <div class="lista-metodos-pago">
+          <h4>Opciones y Métodos de Pago Disponibles:</h4>
+          <ul>
+            <li>Pago de contado</li>
+            <li>Crédito 3 y 6 meses en tienda</li>
+            <li>12 meses sin intereses con tarjeta de crédito</li>
+          </ul>
+        </div>
+
+        <a id="modal-btn-wa" href="" target="_blank" class="btn-whatsapp">Cotizar o comprar por WhatsApp</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL PARA VER IMAGEN GRANDE -->
+  <div class="modal-imagen-grande" id="modal-img-grande" onclick="cerrarImagenGrande()">
+    <button class="btn-cerrar-imagen" onclick="cerrarImagenGrande()">&times;</button>
+    <img id="img-ampliada" src="" alt="Imagen Ampliada">
+  </div>
+
+  <footer>
+    <p>&copy; Muebleria Daguerr - Calidad y tradicion para tu hogar.</p>
+  </footer>
+
+  <!-- LLAMADO A TUS ARCHIVOS JS DE CADA CATEGORIA -->
+  <script src="js/Closet.js"></script>
+  <script src="js/Cocinas.js"></script>
+  <script src="js/Colchoneria.js"></script>
+  <script src="js/Comedores.js"></script>
+  <script src="js/Deportivos.js"></script>
+  <script src="js/Descanso.js"></script>
+  <script src="js/Hogar.js"></script>
+  <script src="js/LineaBlanca.js"></script>
+  <script src="js/Recamaras.js"></script>
+  <script src="js/RopayCalzado.js"></script>
+  <script src="js/Salas.js"></script>
+  <script src="js/Tubulares.js"></script>
+
+  <!-- UNION AUTOMATICA DE TODOS LOS PRODUCTOS -->
+  <script>
+    let productos = [];
+    let productoActual = null;
+    let indiceImagenActual = 0;
+
+    function inicializarProductos() {
+      productos = [
+        ...(typeof productosCloset !== 'undefined' ? productosCloset : []),
+        ...(typeof productosCocinas !== 'undefined' ? productosCocinas : []),
+        ...(typeof productosColchoneria !== 'undefined' ? productosColchoneria : []),
+        ...(typeof productosComedores !== 'undefined' ? productosComedores : []),
+        ...(typeof productosDeportivos !== 'undefined' ? productosDeportivos : []),
+        ...(typeof productosDescanso !== 'undefined' ? productosDescanso : []),
+        ...(typeof productosHogar !== 'undefined' ? productosHogar : []),
+        ...(typeof productosLineaBlanca !== 'undefined' ? productosLineaBlanca : []),
+        ...(typeof productosRecamaras !== 'undefined' ? productosRecamaras : []),
+        ...(typeof productosRopayCalzado !== 'undefined' ? productosRopayCalzado : []),
+        ...(typeof productosSalas !== 'undefined' ? productosSalas : []),
+        ...(typeof productosTubulares !== 'undefined' ? productosTubulares : [])
+      ].filter(p => !p.oculto);
+    }
+
+    function obtenerBadgesHTML(estado) {
+      if (estado === 'disponible') {
+        return `<span class="badge-estado disponible">Disponible</span>`;
+      } else if (estado === 'pedido') {
+        return `
+          <span class="badge-estado agotado">No disponible</span>
+          <span class="badge-estado pedido">Por Pedido</span>
+        `;
+      } else {
+        return `<span class="badge-estado agotado">No disponible</span>`;
+      }
+    }
+
+    function cargarCatalogo(lista = productos) {
+      const catalogo = document.getElementById('catalogo');
+      if (!catalogo) return;
+      catalogo.innerHTML = '';
+
+      if (!lista || lista.length === 0) {
+        catalogo.innerHTML = `<div class="mensaje-vacio">Proximamente tendremos productos disponibles en esta categoria. ¡Contactanos por WhatsApp para mas informacion!</div>`;
+        return;
+      }
+
+      lista.forEach((item, index) => {
+        const tarjeta = document.createElement('div');
+        tarjeta.className = 'tarjeta-mueble';
+        tarjeta.style.animationDelay = `${index * 0.05}s`;
+        tarjeta.onclick = () => abrirModal(item.id);
+
+        const imgSrc = (item.imagenes && item.imagenes.length > 0) ? item.imagenes[0] : '';
+
+        tarjeta.innerHTML = `
+          <img src="${imgSrc}" alt="${item.titulo || 'Mueble'}" class="imagen-mueble">
+          <div class="info-mueble">
+            <div class="contenedor-badges">
+              ${obtenerBadgesHTML(item.estado)}
+            </div>
+            <h3>${item.titulo || ''}</h3>
+            <p>${item.descripcion || ''}</p>
+            <a href="https://wa.me/528666504200?text=Hola,%20Me%20Interesa%20Cotizar%20el%20Producto:%20${encodeURIComponent(item.titulo || '')}" target="_blank" class="btn-whatsapp" onclick="event.stopPropagation()">Cotizar por WhatsApp</a>
+          </div>
+        `;
+        catalogo.appendChild(tarjeta);
+      });
+    }
+
+    const normalizar = (texto) => (texto || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+
+    function filtrarCategoria(cat, btn) {
+      document.querySelectorAll('.btn-filtro').forEach(b => b.classList.remove('activo'));
+      if (btn) btn.classList.add('activo');
+
+      const submenuLB = document.getElementById('submenuLineaBlanca');
+      
+      if (cat === 'Linea Blanca') {
+        submenuLB.classList.add('activo');
+        const primerSubBtn = submenuLB.querySelector('.btn-subfiltro');
+        if (primerSubBtn) {
+          const nombreSub = primerSubBtn.innerText;
+          filtrarSubcategoria(nombreSub, primerSubBtn);
+        } else {
+          const lb = productos.filter(p => normalizar(p.categoria) === 'linea blanca');
+          cargarCatalogo(lb);
+        }
+      } else {
+        submenuLB.classList.remove('activo');
+        if (cat === 'Todos') {
+          cargarCatalogo(productos);
+        } else {
+          const filtrados = productos.filter(p => normalizar(p.categoria) === normalizar(cat));
+          cargarCatalogo(filtrados); 
+        }
+      }
+    }
+
+    function filtrarSubcategoria(subcat, btn) {
+      document.querySelectorAll('.btn-subfiltro').forEach(b => b.classList.remove('activo'));
+      if (btn) btn.classList.add('activo');
+
+      const lineaBlancaProductos = productos.filter(p => normalizar(p.categoria) === 'linea blanca');
+      const filtrados = lineaBlancaProductos.filter(p => normalizar(p.subcategoria) === normalizar(subcat));
+      cargarCatalogo(filtrados);
+    }
+
+    function abrirModal(id) {
+      productoActual = productos.find(p => p.id === id);
+      if (!productoActual) return;
+
+      indiceImagenActual = 0;
+      actualizarImagenModal();
+
+      document.getElementById('modal-titulo').innerText = productoActual.titulo || '';
+      document.getElementById('modal-descripcion').innerText = productoActual.descripcion || '';
+      
+      document.getElementById('modal-estado-contenedor').innerHTML = obtenerBadgesHTML(productoActual.estado);
+      document.getElementById('modal-btn-wa').href = `https://wa.me/528666504200?text=Hola,%20Me%20Interesa%20Cotizar%20el%20Producto:%20${encodeURIComponent(productoActual.titulo)}`;
+
+      document.getElementById('modal-producto').classList.add('activo');
+    }
+
+    function cerrarModal() {
+      document.getElementById('modal-producto').classList.remove('activo');
+    }
+
+    function cambiarImagen(direccion) {
+      if (!productoActual || !productoActual.imagenes || productoActual.imagenes.length <= 1) return;
+      
+      indiceImagenActual += direccion;
+      if (indiceImagenActual < 0) {
+        indiceImagenActual = productoActual.imagenes.length - 1;
+      } else if (indiceImagenActual >= productoActual.imagenes.length) {
+        indiceImagenActual = 0;
+      }
+      actualizarImagenModal();
+    }
+
+    function actualizarImagenModal() {
+      if (productoActual && productoActual.imagenes && productoActual.imagenes.length > 0) {
+        document.getElementById('modal-img').src = productoActual.imagenes[indiceImagenActual];
+      }
+    }
+
+    function abrirImagenGrande() {
+      if (!productoActual || !productoActual.imagenes) return;
+      document.getElementById('img-ampliada').src = productoActual.imagenes[indiceImagenActual];
+      document.getElementById('modal-img-grande').classList.add('activo');
+    }
+
+    function cerrarImagenGrande() {
+      document.getElementById('modal-img-grande').classList.remove('activo');
+    }
+
+    let ultimoScrollY = window.pageYOffset;
+
+    window.addEventListener('scroll', () => {
+      const burbuja = document.getElementById('burbujaFlotante');
+      const seccionContacto = document.getElementById('seccion-contacto');
+      
+      if (!burbuja || !seccionContacto) return;
+
+      const rectSeccion = seccionContacto.getBoundingClientRect();
+      const scrollActual = window.pageYOffset;
+      const estaEnZona = rectSeccion.top <= window.innerHeight && rectSeccion.bottom >= 0;
+
+      if (estaEnZona) {
+        burbuja.classList.remove('visible-completa', 'visible-redonda');
+      } else {
+        if (scrollActual <= 50) {
+          burbuja.classList.remove('visible-redonda');
+          burbuja.classList.add('visible-completa');
+        } else if (scrollActual > ultimoScrollY && scrollActual > 50) {
+          burbuja.classList.remove('visible-completa');
+          burbuja.classList.add('visible-redonda');
+        } else if (scrollActual < ultimoScrollY) {
+          burbuja.classList.remove('visible-redonda');
+          burbuja.classList.add('visible-completa');
+        }
+      }
+      ultimoScrollY = scrollActual <= 0 ? 0 : scrollActual;
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      inicializarProductos();
+      cargarCatalogo(productos);
+
+      const contenedorFiltros = document.getElementById('contenedor-filtros');
+      if (contenedorFiltros) {
+        contenedorFiltros.addEventListener('wheel', (e) => {
+          if (e.deltaY !== 0) {
+            e.preventDefault();
+            contenedorFiltros.scrollLeft += e.deltaY;
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>
