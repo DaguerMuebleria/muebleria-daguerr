@@ -9,8 +9,8 @@ const productosColchoneria = [
     descripcion: "• jajaja\n• lero\n• lero lero",
     oculto: false, 
     imagenes: [
-      "Imagenes/LineaBlanca/LavMabe24k757638389785/1.jpg",
-      "Imagenes/LineaBlanca/LavMabe24k757638389785/2.jpg"
+      "Imagenes/LineaBlanca/Lavadoras/LavMabe24k757638389785/1.jpg",
+      "Imagenes/LineaBlanca/Lavadoras/LavMabe24k757638389785/2.jpg"
     ]
   },
 ];
