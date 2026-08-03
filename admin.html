@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administracion - Subir Productos</title>
+    <!-- Libreria de Supabase -->
+    <script src="https://cdn.jsdelivr.5net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .card { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; max-width: 600px; }
+        h2 { margin-top: 0; color: #333; }
+        label { display: block; margin-top: 15px; font-weight: bold; color: #555; }
+        input, select, textarea { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        textarea { resize: vertical; height: 80px; }
+        .drop-zone { border: 2px dashed #007bff; padding: 20px; text-align: center; border-radius: 5px; margin-top: 10px; background: #f9f9f9; cursor: pointer; }
+        .drop-zone.dragover { background: #eef4ff; border-color: #0056b3; }
+        #preview { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+        #preview img { width: 80px; height: 80px; object-fit: cover; border-radius: 5px; border: 1px solid #ddd; }
+        button { background: #28a745; color: white; border: none; padding: 12px; width: 100%; margin-top: 25px; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold; }
+        button:hover { background: #218838; }
+        #mensaje { margin-top: 15px; text-align: center; font-weight: bold; }
+        .oculto { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Subir Nuevo Mueble / Articulo</h2>
+    
+    <label for="titulo">Titulo del Articulo:</label>
+    <input type="text" id="titulo" placeholder="Ej. Comedor Munich 6 Sillas">
+
+    <label for="categoria">Categoria:</label>
+    <select id="categoria" onchange="verificarCategoria()">
+        <option value="">Selecciona una categoria...</option>
+        <option value="Cocinas">Cocinas</option>
+        <option value="Linea Blanca">Linea Blanca</option>
+        <option value="Comedores">Comedores</option>
+        <option value="Tubulares">Tubulares</option>
+        <option value="Salas">Salas</option>
+        <option value="Recamaras">Recamaras</option>
+        <option value="Closet">Closet</option>
+        <option value="Colchoneria">Colchoneria</option>
+        <option value="Deportivos">Deportivos</option>
+        <option value="Descanso">Descanso</option>
+        <option value="Hogar">Hogar</option>
+        <option value="Ropa y Calzado">Ropa y Calzado</option>
+    </select>
+
+    <!-- Subcategoria exclusiva para Linea Blanca -->
+    <div id="grupoSubcategoria" class="oculto">
+        <label for="subcategoria">Subcategoria:</label>
+        <select id="subcategoria">
+            <option value="">Selecciona una subcategoria...</option>
+            <option value="Refrigeradores">Refrigeradores</option>
+            <option value="Estufas">Estufas</option>
+            <option value="Lavadoras">Lavadoras</option>
+            <option value="Boilers">Boilers</option>
+            <option value="Abanicos/AC">Abanicos/AC</option>
+        </select>
+    </div>
+
+    <label for="estado">Estado:</label>
+    <select id="estado">
+        <option value="disponible">Disponible</option>
+        <option value="pedido">Bajo Pedido</option>
+        <option value="agotado">Agotado</option>
+    </select>
+
+    <label for="descripcion">Descripcion:</label>
+    <textarea id="descripcion" placeholder="Detalles, medidas o materiales..."></textarea>
+
+    <label>Imagenes del Producto (Arrastralas o haz clic):</label>
+    <div class="drop-zone" id="dropZone">
+        Arrastra tus fotos aqui o haz clic para seleccionarlas
+        <input type="file" id="fileInput" multiple accept="image/*" style="display: none;">
+    </div>
+    <div id="preview"></div>
+
+    <button id="btnGuardar">Guardar Producto en Supabase</button>
+    <div id="mensaje"></div>
+</div>
+
+<script>
+  const SUPABASE_URL = 'https://sbuwwydygabgweegvzoi.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNidXd3eWR5Z2FiZ3dlZWd2em9pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3ODgxOTksImV4cCI6MjEwMTM2NDE5OX0.D3iSUhyNx4CpB5xTqsfn4R5CFvyghpfzVvi_CxdnXPI';
+  
+  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  let archivosSeleccionados = [];
+
+  const dropZone = document.getElementById('dropZone');
+  const fileInput = document.getElementById('fileInput');
+  const preview = document.getElementById('preview');
+
+  function limpiarTexto(texto) {
+      return texto
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .replace(/[^a-z0-9]/g, "_");
+  }
+
+  function verificarCategoria() {
+      const cat = document.getElementById('categoria').value;
+      const grupoSub = document.getElementById('grupoSubcategoria');
+      if (cat === 'Linea Blanca') {
+          grupoSub.classList.remove('oculto');
+      } else {
+          grupoSub.classList.add('oculto');
+          document.getElementById('subcategoria').value = '';
+      }
+  }
+
+  dropZone.addEventListener('click', () => fileInput.click());
+
+  dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('dragover');
+  });
+
+  dropZone.addEventListener('dragleave', () => {
+      dropZone.classList.remove('dragover');
+  });
+
+  dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('dragover');
+      manejarArchivos(e.dataTransfer.files);
+  });
+
+  fileInput.addEventListener('change', (e) => {
+      manejarArchivos(e.target.files);
+  });
+
+  function manejarArchivos(files) {
+      for (let file of files) {
+          archivosSeleccionados.push(file);
+          const reader = new FileReader();
+          reader.onload = (e) => {
+              const img = document.createElement('img');
+              img.src = e.target.result;
+              preview.appendChild(img);
+          };
+          reader.readAsDataURL(file);
+      }
+  }
+
+  document.getElementById('btnGuardar').addEventListener('click', async () => {
+      const mensaje = document.getElementById('mensaje');
+      const tituloInput = document.getElementById('titulo').value.trim();
+      const categoria = document.getElementById('categoria').value;
+      const subcategoria = document.getElementById('subcategoria').value;
+      const estado = document.getElementById('estado').value;
+      const descripcion = document.getElementById('descripcion').value.trim();
+
+      if (!tituloInput || !categoria) {
+          alert('Por favor ingresa un titulo y selecciona una categoria.');
+          return;
+      }
+
+      mensaje.style.color = '#007bff';
+      mensaje.textContent = 'Subiendo imagenes y guardando producto...';
+
+      try {
+          let urlsImagenes = [];
+          const tituloLimpio = limpiarTexto(tituloInput);
+          const categoriaLimpiada = limpiarTexto(categoria);
+
+          for (let i = 0; i < archivosSeleccionados.length; i++) {
+              const file = archivosSeleccionados[i];
+              const extension = file.name.split('.').pop();
+              const rutaArchivo = `${categoriaLimpiada}/${tituloLimpio}_${Date.now()}_${i}.${extension}`;
+
+              const { data, error } = await supabaseClient.storage
+                  .from('fotos-productos')
+                  .upload(rutaArchivo, file);
+
+              if (error) throw error;
+
+              const { data: urlData } = supabaseClient.storage
+                  .from('fotos-productos')
+                  .getPublicUrl(rutaArchivo);
+
+              urlsImagenes.push(urlData.publicUrl);
+          }
+
+          const { error: dbError } = await supabaseClient
+              .from('productos')
+              .insert([{
+                  titulo: tituloInput,
+                  categoria: categoria,
+                  subcategoria: subcategoria || null,
+                  estado: estado,
+                  descripcion: descripcion,
+                  oculto: false,
+                  imagenes: urlsImagenes
+              }]);
+
+          if (dbError) throw dbError;
+
+          mensaje.style.color = 'green';
+          mensaje.textContent = '¡Producto y fotos guardados con exito!';
+          
+          setTimeout(() => {
+              location.reload();
+          }, 2000);
+
+      } catch (err) {
+          console.error(err);
+          mensaje.style.color = 'red';
+          mensaje.textContent = 'Hubo un error al guardar. Revisa la consola.';
+      }
+  });
+</script>
+
+</body>
+</html>
