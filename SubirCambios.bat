@@ -5,7 +5,7 @@ echo   Cambiando a la carpeta del proyecto...
 echo ==========================================
 
 :: REEMPLAZA ESTA RUTA si tu carpeta está en otro directorio exacto
-cd /d C:\Users\Luis Garza\Desktop\muebleria-daguerr
+cd /d C:\Users\Luis Garza\muebleria-daguerr
 
 echo.
 echo ==========================================
