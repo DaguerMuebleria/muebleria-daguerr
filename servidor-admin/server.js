@@ -24,6 +24,21 @@ const archivosCategorias = {
   "Ropa y Calzado": "ropaycalzado.js"
 };
 
+const subcategoriasPorCategoria = {
+  "Linea Blanca": ["Refrigeradores", "Estufas", "Lavadoras", "Boilers", "Abanicos/AC"],
+  "Cocinas": [],
+  "Colchoneria": [],
+  "Comedores": [],
+  "Tubulares": [],
+  "Salas": [],
+  "Recamaras": [],
+  "Closet": [],
+  "Deportivos": [],
+  "Descanso": [],
+  "Hogar": [],
+  "Ropa y Calzado": []
+};
+
 // PANEL ADMIN PRINCIPAL
 app.get('/admin', (req, res) => {
   let seccionesHtml = '';
@@ -44,7 +59,7 @@ app.get('/admin', (req, res) => {
         const matchTitulo = textoObjeto.match(/titulo:\s*"([^"]*)"/);
         const matchSubcat = textoObjeto.match(/subcategoria:\s*"([^"]*)"/);
         const matchEstado = textoObjeto.match(/estado:\s*"([^"]*)"/);
-        const matchDesc = textoObjeto.match(/descripcion:\s*"([\s\S]*?)"/);
+        const matchDesc = textoObjeto.match(/descripcion:\s*(?:"([^"]*)"|`([\s\S]*?)`)/);
         const matchImg = textoObjeto.match(/"([^"]+\/\d+\.jpg)"/);
 
         if (matchId && matchTitulo) {
@@ -52,7 +67,11 @@ app.get('/admin', (req, res) => {
           const titulo = matchTitulo[1];
           const subcategoria = matchSubcat ? matchSubcat[1] : '';
           const estado = matchEstado ? matchEstado[1] : 'disponible';
-          const descripcionCruda = matchDesc ? matchDesc[1].replace(/\\n/g, '\n').replace(/"/g, '&quot;') : '';
+          
+          let descripcionCruda = "";
+          if (matchDesc) {
+            descripcionCruda = (matchDesc[1] || matchDesc[2] || '').replace(/\\n/g, '\n').replace(/"/g, '&quot;');
+          }
           
           let rutaCarpetaSugerida = "";
           if (matchImg) {
@@ -80,9 +99,7 @@ app.get('/admin', (req, res) => {
       });
     }
 
-    // Identificador limpio para clases CSS y IDs de pestañas
     const catId = cat.replace(/\s+/g, '');
-    const claseActiva = index === 0 ? 'active' : '';
     const estiloDisplay = index === 0 ? 'block' : 'none';
 
     seccionesHtml += `
@@ -106,7 +123,6 @@ app.get('/admin', (req, res) => {
     `;
   });
 
-  // Generar botones interactivos del menú superior
   let botonesMenuHtml = '';
   Object.keys(archivosCategorias).forEach((cat, index) => {
     const catId = cat.replace(/\s+/g, '');
@@ -128,7 +144,7 @@ app.get('/admin', (req, res) => {
         .form-grupo { margin-bottom: 15px; }
         label { display: block; font-weight: 600; margin-bottom: 5px; }
         input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-family: inherit; box-sizing: border-box; }
-        textarea { height: 90px; }
+        textarea { height: 110px; }
         button { background-color: #c2290a; color: white; border: none; padding: 12px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; width: 100%; }
         button:hover { background-color: #a52208; }
         .btn-editar { background-color: #f0ad4e; padding: 6px 12px; width: auto; font-size: 0.85rem; color: white; }
@@ -140,7 +156,6 @@ app.get('/admin', (req, res) => {
         .checkbox-grupo { display: flex; align-items: center; gap: 10px; background: #f4f0ec; padding: 10px; border-radius: 6px; }
         .checkbox-grupo input { width: 20px; height: 20px; cursor: pointer; }
         
-        /* Estilos del Menú Interactivo de Categorías */
         .menu-categorias { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
         .btn-categoria { background-color: #e6e0da; color: #444; width: auto; padding: 10px 15px; font-size: 0.9rem; border-radius: 20px; transition: all 0.2s; }
         .btn-categoria:hover { background-color: #d4cdc6; color: #000; }
@@ -165,6 +180,11 @@ app.get('/admin', (req, res) => {
           <input type="hidden" name="editandoId" id="editandoId" value="">
 
           <div class="form-grupo">
+            <label>ID del Producto:</label>
+            <input type="number" name="idPersonalizado" id="input-id" placeholder="Se asigna automático o escribe uno...">
+          </div>
+
+          <div class="form-grupo">
             <label>Categoría:</label>
             <select name="categoria" id="cat-select" onchange="cambiarCategoria()">
               <option value="Linea Blanca">Linea Blanca</option>
@@ -185,7 +205,7 @@ app.get('/admin', (req, res) => {
           <div class="form-grupo">
             <label>Subcategoría:</label>
             <select name="subcategoria" id="subcat-select">
-              <!-- Dinámico según la categoría -->
+              <!-- Dinámico -->
             </select>
           </div>
 
@@ -205,13 +225,13 @@ app.get('/admin', (req, res) => {
 
           <div class="form-grupo">
             <label>Características / Descripción:</label>
-            <textarea name="descripcion" id="input-desc" placeholder="Escribe aquí las características..."></textarea>
+            <textarea name="descripcion" id="input-desc" placeholder="Escribe aquí como gustes: texto seguido o con saltos de línea..."></textarea>
           </div>
 
           <div class="form-grupo">
             <div class="checkbox-grupo">
-              <input type="checkbox" name="conPuntos" id="conPuntos" checked>
-              <label for="conPuntos" style="margin-bottom:0; cursor:pointer;">Formatear cada renglón con puntos automáticos (•)</label>
+              <input type="checkbox" name="conPuntos" id="conPuntos">
+              <label for="conPuntos" style="margin-bottom:0; cursor:pointer;">Agregar automáticamente viñeta (•) a cada renglón separado</label>
             </div>
           </div>
 
@@ -232,39 +252,34 @@ app.get('/admin', (req, res) => {
 
       <h2>Inventario por Categoría</h2>
       
-      <!-- Menú Interactivo de Botones -->
       <div class="menu-categorias">
         ${botonesMenuHtml}
       </div>
 
-      <!-- Tablas de Secciones -->
       ${seccionesHtml}
 
       <script>
         const subcategoriasPorCategoria = {
           "Linea Blanca": ["Refrigeradores", "Estufas", "Lavadoras", "Boilers", "Abanicos/AC"],
-          "Cocinas": [""],
-          "Colchoneria": [""],
-          "Comedores": [""],
-          "Tubulares": [""],
-          "Salas": [""],
-          "Recamaras": [""],
-          "Closet": [""],
-          "Deportivos": [""],
-          "Descanso": [""],
-          "Hogar": [""],
-          "Ropa y Calzado": [""]
+          "Cocinas": [],
+          "Colchoneria": [],
+          "Comedores": [],
+          "Tubulares": [],
+          "Salas": [],
+          "Recamaras": [],
+          "Closet": [],
+          "Deportivos": [],
+          "Descanso": [],
+          "Hogar": [],
+          "Ropa y Calzado": []
         };
 
         function mostrarCategoria(catId, btnElement) {
-          // Ocultar todas las secciones de categorías
           const secciones = document.querySelectorAll('.categoria-seccion');
           secciones.forEach(sec => sec.style.display = 'none');
 
-          // Mostrar únicamente la seleccionada
           document.getElementById('seccion-' + catId).style.display = 'block';
 
-          // Cambiar estilos activos de los botones del menú
           const botones = document.querySelectorAll('.btn-categoria');
           botones.forEach(b => b.classList.remove('btn-cat-activo'));
           btnElement.classList.add('btn-cat-activo');
@@ -274,17 +289,24 @@ app.get('/admin', (req, res) => {
           const selectSub = document.getElementById('subcat-select');
           selectSub.innerHTML = "";
           
-          const lista = subcategoriasPorCategoria[categoriaSeleccionada] || [""];
+          const lista = subcategoriasPorCategoria[categoriaSeleccionada] || [];
           
-          lista.forEach(sub => {
+          if(lista.length === 0) {
             const opt = document.createElement('option');
-            opt.value = sub;
-            opt.innerText = sub === "" ? "(Sin subcategoría)" : sub;
-            if(sub === subcatSeleccionada) {
-              opt.selected = true;
-            }
+            opt.value = "";
+            opt.innerText = "(Sin subcategoría)";
             selectSub.appendChild(opt);
-          });
+          } else {
+            lista.forEach(sub => {
+              const opt = document.createElement('option');
+              opt.value = sub;
+              opt.innerText = sub;
+              if(sub === subcatSeleccionada) {
+                opt.selected = true;
+              }
+              selectSub.appendChild(opt);
+            });
+          }
         }
 
         function actualizarSugerenciaRuta() {
@@ -305,13 +327,14 @@ app.get('/admin', (req, res) => {
 
         function cargarParaEditar(id, categoria, subcategoria, titulo, estado, descripcion, rutaCarpeta) {
           document.getElementById('editandoId').value = id;
+          document.getElementById('input-id').value = id; // Muestra el ID actual listo para editarse
           document.getElementById('cat-select').value = categoria;
           
           actualizarSubcategorias(categoria, subcategoria);
           
           document.getElementById('input-titulo').value = titulo;
           document.getElementById('select-estado').value = estado;
-          document.getElementById('input-desc').value = descripcion.replace(/• /g, ''); 
+          document.getElementById('input-desc').value = descripcion.replace(/^• /gm, ''); 
           if(rutaCarpeta) document.getElementById('input-ruta').value = rutaCarpeta;
           
           document.getElementById('form-titulo').innerText = "Editando Producto (ID: " + id + ")";
@@ -323,6 +346,7 @@ app.get('/admin', (req, res) => {
 
         function cancelarEdicion() {
           document.getElementById('editandoId').value = "";
+          document.getElementById('input-id').value = "";
           document.getElementById('cat-select').value = "Linea Blanca";
           actualizarSubcategorias("Linea Blanca");
           document.getElementById('input-titulo').value = "";
@@ -342,33 +366,37 @@ app.get('/admin', (req, res) => {
 
 // GUARDAR O ACTUALIZAR PRODUCTO
 app.post('/guardar', (req, res) => {
-  const { editandoId, categoria, subcategoria, titulo, estado, descripcion, conPuntos, rutaCarpeta, cantidadImg } = req.body;
+  let { editandoId, idPersonalizado, categoria, subcategoria, titulo, estado, descripcion, conPuntos, rutaCarpeta, cantidadImg } = req.body;
   const nombreArchivoJs = archivosCategorias[categoria];
   
   if (!nombreArchivoJs) return res.send("Categoría no válida.");
   const rutaCompletaArchivo = path.join(RUTA_JS, nombreArchivoJs);
 
+  const subcatValor = (subcategoria && subcategoria.trim() !== "") ? subcategoria : "";
+
   fs.readFile(rutaCompletaArchivo, 'utf8', (err, data) => {
-    let contenidoActual = data || "const productos = [];";
+    let contenidoActual = data || `const productos${categoria.replace(/\s+/g, '')} = [];`;
     
+    // Si estamos editando, borramos el registro anterior
     if (editandoId) {
       const regexViejo = new RegExp(`\\s*\\{\\s*id:\\s*${editandoId},[\\s\\S]*?\\n\\s*\\},?`, 'g');
       contenidoActual = contenidoActual.replace(regexViejo, '');
     }
 
-    let idFinal = editandoId;
-    if (!idFinal) {
+    // Definir el ID final: si escribiste uno en el input, usa ése; si no, calcula el siguiente consecutivo
+    let idFinal;
+    if (idPersonalizado && idPersonalizado.trim() !== "") {
+      idFinal = parseInt(idPersonalizado);
+    } else {
       const idsEncontrados = [...contenidoActual.matchAll(/id:\s*(\d+)/g)].map(m => parseInt(m[1]));
       idFinal = idsEncontrados.length > 0 ? Math.max(...idsEncontrados) + 1 : 1000;
     }
 
-    const lineas = descripcion.split('\n').filter(l => l.trim() !== '');
-    let descripcionFormateada = "";
+    let descripcionFormateada = descripcion.replace(/\r/g, '');
 
     if (conPuntos) {
-      descripcionFormateada = lineas.map(l => `• ${l.trim()}`).join('\\n');
-    } else {
-      descripcionFormateada = lineas.join('\\n');
+      const lineas = descripcionFormateada.split('\n').map(l => l.trim() !== '' ? `• ${l.trim()}` : '');
+      descripcionFormateada = lineas.join('\n');
     }
 
     let imagenesJs = [];
@@ -376,15 +404,13 @@ app.post('/guardar', (req, res) => {
       imagenesJs.push(`      "${rutaCarpeta}${i}.jpg"`);
     }
 
-    const subcatValor = subcategoria ? subcategoria : "";
-
     const nuevoProductoString = `  {
     id: ${idFinal},
     titulo: "${titulo}",
     categoria: "${categoria}",
     subcategoria: "${subcatValor}",
     estado: "${estado}",
-    descripcion: "${descripcionFormateada}",
+    descripcion: \`${descripcionFormateada}\`,
     oculto: false, 
     imagenes: [
 ${imagenesJs.join(',\n')}
@@ -407,7 +433,7 @@ ${imagenesJs.join(',\n')}
 });
 
 // ELIMINAR PRODUCTO
-app.post('/eliminar', (req, res) => {
+app.post('/eliminar', (req, res, next) => {
   const { categoria, id } = req.body;
   const nombreArchivoJs = archivosCategorias[categoria];
   if (!nombreArchivoJs) return res.send("Categoría no válida.");
