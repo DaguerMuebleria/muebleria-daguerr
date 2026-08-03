@@ -1098,8 +1098,8 @@
     });
 
     document.addEventListener('DOMContentLoaded', () => {
-      inicializarProductos();
-      cargarCatalogo(productos);
+      //inicializarProductos();
+      //cargarCatalogo(productos);
 
       const contenedorFiltros = document.getElementById('contenedor-filtros');
       if (contenedorFiltros) {
@@ -1112,5 +1112,48 @@
       }
     });
   </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+  // 1. Tus credenciales de Supabase
+  const SUPABASE_URL = 'https://sbuwwydygabgweegvzoi.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNidXd3eWR5Z2FiZ3dlZWd2em9pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3ODgxOTksImV4cCI6MjEwMTM2NDE5OX0.D3iSUhyNx4CpB5xTqsfn4R5CFvyghpfzVvi_CxdnXPI';
+  
+  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // 2. Sobrescribimos la carga para que jale de la nube
+  document.addEventListener('DOMContentLoaded', async () => {
+    try {
+      // Consultamos la tabla 'productos' en Supabase
+      const { data, error } = await supabaseClient
+        .from('productos')
+        .select('*');
+
+      if (error) {
+        console.error('Error al obtener productos:', error);
+        return;
+      }
+
+      // Convertimos los datos de Supabase al formato que usa tu página
+      window.productos = data.map(prod => ({
+        id: prod.id,
+        titulo: prod.titulo,
+        categoria: prod.categoria,
+        subcategoria: prod.subcategoria || '',
+        estado: prod.estado || 'disponible',
+        descripcion: prod.descripcion || '',
+        oculto: prod.oculto || false,
+        imagenes: prod.imagenes || []
+      }));
+
+      // Si tu función original existe, la llamamos para pintar los productos en pantalla
+      if (typeof cargarCatalogo === 'function') {
+        cargarCatalogo(window.productos);
+      }
+      
+    } catch (err) {
+      console.error('Error de conexión con Supabase:', err);
+    }
+  });
+</script>
 </body>
 </html>
