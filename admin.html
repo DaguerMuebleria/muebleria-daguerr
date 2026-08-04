@@ -91,7 +91,7 @@
     <div class="modal-content">
         <h2 id="modalTitulo">Nuevo Artículo</h2>
         
-        <label>ID del Producto:</label>
+        <label>ID del Artículo:</label>
         <input type="number" id="inputCustomId" placeholder="Ej. 105 (Dejar en blanco si es autoincrementable)">
 
         <input type="hidden" id="productoIdOriginal">
@@ -142,7 +142,7 @@
         <div class="drop-zone" onclick="document.getElementById('fileInput').click()">
             <p style="margin: 0; color: #2980b9; font-weight: bold;">📁 Arrastra tus fotos aquí o haz clic para seleccionarlas</p>
         </div>
-        <input type="file" id="fileInput" class="oculto" accept="image/*" multiple onchange="subirArchivosLocales(this.files)">
+        <input type="file" id="fileInput" class="oculto" accept="image/*" multiple onchange="subirArchivosASupabase(this.files)">
 
         <label style="margin-top: 15px;">Enlaces de Imágenes (URLs automáticas o manuales):</label>
         <div id="contenedorUrls">
@@ -311,43 +311,69 @@
       dropZone.addEventListener('drop', (e) => {
           const dt = e.dataTransfer;
           const files = dt.files;
-          subirArchivosLocales(files);
+          subirArchivosASupabase(files);
       });
   }
 
-  // Subir imagenes locales de forma automatica y generar enlaces
-  async function subirArchivosLocales(files) {
+  // Subir imagenes directo a Supabase Storage con la estructura de carpetas solicitada
+  async function subirArchivosASupabase(files) {
       if (files.length === 0) return;
+
+      const tituloArticulo = document.getElementById('inputTitulo').value.trim();
+      if (!tituloArticulo) {
+          alert('Por favor, escribe primero el "Título del Artículo" antes de subir imágenes para organizar las carpetas correctamente.');
+          return;
+      }
+
+      const categoria = document.getElementById('inputCategoria').value;
+      const subcategoria = document.getElementById('inputSubcategoria').value;
+
       const msg = document.getElementById('mensajeCarga');
       msg.style.color = '#2980b9';
-      msg.textContent = `Subiendo ${files.length} imagen(es)... por favor espera.`;
+      msg.textContent = `Subiendo ${files.length} imagen(es) a Supabase Storage...`;
 
       const contenedorUrls = document.getElementById('contenedorUrls');
-      
-      // Si hay un solo input y está vacío, lo limpiamos antes de empezar a añadir las URLs subidas
       const inputsActuales = contenedorUrls.querySelectorAll('.input-url');
       if (inputsActuales.length === 1 && inputsActuales[0].value.trim() === '') {
           contenedorUrls.innerHTML = '';
       }
 
+      // Limpiar caracteres especiales o espacios del título y categorías para evitar errores en las rutas
+      const limpiarRuta = (texto) => texto.trim().replace(/[\/\\?%*:|"<>]/g, '_').replace(/\s+/g, '_');
+
+      let catClean = limpiarRuta(categoria);
+      let subClean = subcategoria ? limpiarRuta(subcategoria) : '';
+      let titleClean = limpiarRuta(tituloArticulo);
+
       for (let i = 0; i < files.length; i++) {
-          let formData = new FormData();
-          formData.append('image', files[i]);
+          let file = files[i];
+          let fileExt = file.name.split('.').pop();
+          let fileNameUnique = `${Date.now()}_${i}.${fileExt}`;
+
+          // Construir la ruta de carpetas: categoria / subcategoria (si existe) / nombre_articulo / archivo
+          let rutaCarpeta = subClean ? `${catClean}/${subClean}/${titleClean}` : `${catClean}/${titleClean}`;
+          let rutaCompleta = `${rutaCarpeta}/${fileNameUnique}`;
 
           try {
-              let response = await fetch('https://api.imgbb.com/1/upload?key=6d207e02929255018f34293f0607dfad', {
-                  method: 'POST',
-                  body: formData
-              });
-              let result = await response.json();
-              if (result.success) {
-                  let imageUrl = result.data.url;
-                  
-                  // Crear dinámicamente el input de texto asegurando que se refleje de inmediato en pantalla
+              let { data, error } = await supabaseClient.storage
+                  .from('fotos-productos')
+                  .upload(rutaCompleta, file, { upsert: true });
+
+              if (error) {
+                  console.error("Error al subir a Supabase Storage:", error);
+                  continue;
+              }
+
+              // Obtener la URL pública de la imagen recién subida
+              let { data: urlData } = supabaseClient.storage
+                  .from('fotos-productos')
+                  .getPublicUrl(rutaCompleta);
+
+              if (urlData && urlData.publicUrl) {
                   let nuevoInput = document.createElement('input');
                   nuevoInput.type = 'url';
                   nuevoInput.className = 'input-url';
-                  nuevoInput.value = imageUrl;
+                  nuevoInput.value = urlData.publicUrl;
                   nuevoInput.style.marginTop = '5px';
                   contenedorUrls.appendChild(nuevoInput);
               }
@@ -357,7 +383,7 @@
       }
 
       msg.style.color = 'green';
-      msg.textContent = '¡Imágenes agregadas y listas con éxito!';
+      msg.textContent = '¡Imágenes guardadas en Supabase Storage con éxito!';
       setTimeout(() => { msg.textContent = ''; }, 3000);
   }
 
@@ -383,7 +409,7 @@
       });
 
       document.getElementById('mensajeCarga').style.color = '#2980b9';
-      document.getElementById('mensajeCarga').textContent = 'Guardando en la base de datos...';
+      document.getElementById('mensajeCarga').textContent = 'Guardando datos en la base de datos...';
 
       let datosAEnviar = { 
           titulo, 
