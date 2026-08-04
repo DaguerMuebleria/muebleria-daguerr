@@ -214,15 +214,10 @@
     }
 
     header {
-      padding: 18px 15px 8px 15px;
+      padding: 14px 15px 6px 15px;
       display: flex;
       justify-content: center;
       align-items: center;
-      transition: padding 0.18s linear;
-    }
-
-    .header-contenedor.compacto header {
-      padding: 8px 15px 4px 15px;
     }
 
     .logo-header {
@@ -232,19 +227,12 @@
       align-items: center;
       width: 100%;
       max-width: 280px;
-      transform-origin: center top;
-      will-change: transform;
-      transition: transform 0.18s linear;
-    }
-
-    .header-contenedor.compacto .logo-header {
-      transform: scale(0.72);
     }
 
     .logo-header .brand-script {
       display: block;
       font-family: var(--fuente-logo-script);
-      font-size: clamp(3rem, 11vw, 4rem);
+      font-size: clamp(2.6rem, 9vw, 3.4rem);
       color: var(--terracota);
       line-height: 0.85;
       text-align: center;
@@ -1342,18 +1330,6 @@
   <!-- SCRIPT ADICIONAL: SOLO EFECTOS VISUALES (no toca datos ni logica del catalogo) -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // Encabezado compacto al hacer scroll
-      const encabezado = document.getElementById('headerContenedor');
-      if (encabezado) {
-        window.addEventListener('scroll', () => {
-          if (window.pageYOffset > 40) {
-            encabezado.classList.add('compacto');
-          } else {
-            encabezado.classList.remove('compacto');
-          }
-        }, { passive: true });
-      }
-
       // Revelado suave de las tarjetas de contacto al entrar en pantalla
       const tarjetasContacto = document.querySelectorAll('.info-tarjeta');
       if ('IntersectionObserver' in window && tarjetasContacto.length) {
