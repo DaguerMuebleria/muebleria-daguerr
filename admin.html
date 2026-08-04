@@ -3,216 +3,358 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Administracion - Subir Productos</title>
+    <title>Panel de Administracion - Muebleria Daguer</title>
     <!-- Libreria de Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; display: flex; justify-content: center; }
-        .card { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; max-width: 600px; }
-        h2 { margin-top: 0; color: #333; }
-        label { display: block; margin-top: 15px; font-weight: bold; color: #555; }
+        body { font-family: Arial, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #2c3e50; margin-bottom: 25px; }
+        
+        /* Boton principal para abrir modal */
+        .btn-nuevo { background: #27ae60; color: white; border: none; padding: 12px 20px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; display: block; margin: 0 auto 20px auto; }
+        .btn-nuevo:hover { background: #219653; }
+
+        /* Categorias / Pestañas */
+        .categorias-tabs { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 25px; border-bottom: 2px solid #eee; padding-bottom: 15px; }
+        .tab-btn { background: #ecf0f1; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: bold; color: #555; }
+        .tab-btn.active { background: #2980b9; color: white; }
+
+        /* Lista de Productos */
+        .producto-card { display: flex; justify-content: space-between; align-items: center; background: #fafafa; border: 1px solid #e0e0e0; padding: 15px; border-radius: 8px; margin-bottom: 12px; gap: 15px; }
+        .producto-info { display: flex; align-items: center; gap: 15px; flex-grow: 1; }
+        .producto-img { width: 60px; height: 60px; object-fit: cover; border-radius: 6px; background: #ddd; }
+        .producto-detalles h3 { margin: 0 0 5px 0; font-size: 16px; color: #2c3e50; }
+        .producto-detalles p { margin: 0; font-size: 13px; color: #7f8c8d; }
+        
+        .acciones { display: flex; gap: 8px; }
+        .btn-editar { background: #f39c12; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .btn-eliminar { background: #c0392b; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .btn-editar:hover { background: #d68910; }
+        .btn-eliminar:hover { background: #a93226; }
+
+        /* Ventana Modal (Formulario) */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; overflow-y: auto; padding: 20px; }
+        .modal-content { background: white; padding: 30px; border-radius: 10px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .modal-content h2 { margin-top: 0; color: #2c3e50; }
+        label { display: block; margin-top: 12px; font-weight: bold; font-size: 14px; }
         input, select, textarea { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
-        textarea { resize: vertical; height: 80px; }
-        .drop-zone { border: 2px dashed #007bff; padding: 20px; text-align: center; border-radius: 5px; margin-top: 10px; background: #f9f9f9; cursor: pointer; }
-        .drop-zone.dragover { background: #eef4ff; border-color: #0056b3; }
-        #preview { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
-        #preview img { width: 80px; height: 80px; object-fit: cover; border-radius: 5px; border: 1px solid #ddd; }
-        button { background: #28a745; color: white; border: none; padding: 12px; width: 100%; margin-top: 25px; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold; }
-        button:hover { background: #218838; }
-        #mensaje { margin-top: 15px; text-align: center; font-weight: bold; }
+        textarea { resize: vertical; height: 70px; }
+        
+        .url-grupo { display: flex; gap: 5px; margin-top: 5px; }
+        .btn-add-url { background: #2980b9; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin-top: 5px; font-size: 12px; }
+        
+        .modal-botones { display: flex; gap: 10px; margin-top: 20px; }
+        .btn-guardar { background: #27ae60; color: white; border: none; padding: 12px; flex: 1; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        .btn-cancelar { background: #7f8c8d; color: white; border: none; padding: 12px; flex: 1; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        
         .oculto { display: none; }
+        #mensajeCarga { text-align: center; font-weight: bold; margin-top: 15px; color: #2980b9; }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <h2>Subir Nuevo Mueble / Articulo</h2>
+<div class="container">
+    <h1>Panel de Control - Muebleria Daguer</h1>
     
-    <label for="titulo">Titulo del Articulo:</label>
-    <input type="text" id="titulo" placeholder="Ej. Comedor Munich 6 Sillas">
+    <button class="btn-nuevo" onclick="abrirModalNuevo()">+ Agregar Nuevo Articulo</button>
 
-    <label for="categoria">Categoria:</label>
-    <select id="categoria" onchange="verificarCategoria()">
-        <option value="">Selecciona una categoria...</option>
-        <option value="Cocinas">Cocinas</option>
-        <option value="Linea Blanca">Linea Blanca</option>
-        <option value="Comedores">Comedores</option>
-        <option value="Tubulares">Tubulares</option>
-        <option value="Salas">Salas</option>
-        <option value="Recamaras">Recamaras</option>
-        <option value="Closet">Closet</option>
-        <option value="Colchoneria">Colchoneria</option>
-        <option value="Deportivos">Deportivos</option>
-        <option value="Descanso">Descanso</option>
-        <option value="Hogar">Hogar</option>
-        <option value="Ropa y Calzado">Ropa y Calzado</option>
-    </select>
+    <!-- Pestañas de Categorias -->
+    <div class="categorias-tabs" id="tabsCategorias">
+        <button class="tab-btn active" onclick="filtrarCategoria('Todas', this)">Todas</button>
+        <button class="tab-btn" onclick="filtrarCategoria('Cocinas', this)">Cocinas</button>
+        <button class="tab-btn" onclick="filtrarCategoria('Linea Blanca', this)">Linea Blanca</button>
+        <button class="tab-btn" onclick="filtrarCategoria('Comedores', this)">Comedores</button>
+        <button class="tab-btn" onclick="filtrarCategoria('Tubulares', this)">Tubulares</button>
+        <button class="tab-btn" onclick="filtrarCategoria('Salas', this)">Salas</button>
+        <button class="tab-btn" onclick="filtrarCategoria('Recamaras', this)">Recamaras</button>
+        <button class="tab-btn" onclick="filtrarCategoria('Closet', this)">Closet</button>
+        <button class="tab-btn" onclick="filtrarCategoria('Colchoneria', this)">Colchoneria</button>
+        <button class="tab-btn" onclick="filtrarCategoria('Deportivos', this)">Deportivos</button>
+        <button class="tab-btn" onclick="filtrarCategoria('Descanso', this)">Descanso</button>
+        <button class="tab-btn" onclick="filtrarCategoria('Hogar', this)">Hogar</button>
+        <button class="tab-btn" onclick="filtrarCategoria('Ropa y Calzado', this)">Ropa y Calzado</button>
+    </div>
 
-    <!-- Subcategoria exclusiva para Linea Blanca -->
-    <div id="grupoSubcategoria" class="oculto">
-        <label for="subcategoria">Subcategoria:</label>
-        <select id="subcategoria">
-            <option value="">Selecciona una subcategoria...</option>
-            <option value="Refrigeradores">Refrigeradores</option>
-            <option value="Estufas">Estufas</option>
-            <option value="Lavadoras">Lavadoras</option>
-            <option value="Boilers">Boilers</option>
-            <option value="Abanicos/AC">Abanicos/AC</option>
+    <!-- Lista donde se muestran los articulos -->
+    <div id="listaProductos">
+        <p style="text-align: center; color: #7f8c8d;">Cargando articulos...</p>
+    </div>
+</div>
+
+<!-- VENTANA MODAL PARA CREAR / EDITAR -->
+<div class="modal" id="modalProducto">
+    <div class="modal-content">
+        <h2 id="modalTitulo">Nuevo Articulo</h2>
+        <input type="hidden" id="productoId">
+
+        <label>Titulo del Articulo:</label>
+        <input type="text" id="inputTitulo" placeholder="Ej. Sala Esquinera Roma">
+
+        <label>Categoria:</label>
+        <select id="inputCategoria" onchange="verificarLineaBlancaModal()">
+            <option value="Cocinas">Cocinas</option>
+            <option value="Linea Blanca">Linea Blanca</option>
+            <option value="Comedores">Comedores</option>
+            <option value="Tubulares">Tubulares</option>
+            <option value="Salas">Salas</option>
+            <option value="Recamaras">Recamaras</option>
+            <option value="Closet">Closet</option>
+            <option value="Colchoneria">Colchoneria</option>
+            <option value="Deportivos">Deportivos</option>
+            <option value="Descanso">Descanso</option>
+            <option value="Hogar">Hogar</option>
+            <option value="Ropa y Calzado">Ropa y Calzado</option>
         </select>
+
+        <div id="grupoSubModal" class="oculto">
+            <label>Subcategoria:</label>
+            <select id="inputSubcategoria">
+                <option value="">Selecciona subcategoria...</option>
+                <option value="Refrigeradores">Refrigeradores</option>
+                <option value="Estufas">Estufas</option>
+                <option value="Lavadoras">Lavadoras</option>
+                <option value="Boilers">Boilers</option>
+                <option value="Abanicos/AC">Abanicos/AC</option>
+            </select>
+        </div>
+
+        <label>Estado:</label>
+        <select id="inputEstado">
+            <option value="disponible">Disponible</option>
+            <option value="pedido">Bajo Pedido</option>
+            <option value="agotado">Agotado</option>
+        </select>
+
+        <label>Descripcion:</label>
+        <textarea id="inputDescripcion" placeholder="Medidas, materiales, detalles..."></textarea>
+
+        <label>Enlaces de Imagenes (URLs de internet o WhatsApp):</label>
+        <div id="contenedorUrls">
+            <input type="url" class="input-url" placeholder="https://ejemplo.com/foto1.jpg">
+        </div>
+        <button type="button" class="btn-add-url" onclick="agregarCampoUrl()">+ Agregar otra imagen</button>
+
+        <div id="mensajeCarga"></div>
+
+        <div class="modal-botones">
+            <button class="btn-guardar" onclick="guardarProducto()">Guardar Articulo</button>
+            <button class="btn-cancelar" onclick="cerrarModal()">Cancelar</button>
+        </div>
     </div>
-
-    <label for="estado">Estado:</label>
-    <select id="estado">
-        <option value="disponible">Disponible</option>
-        <option value="pedido">Bajo Pedido</option>
-        <option value="agotado">Agotado</option>
-    </select>
-
-    <label for="descripcion">Descripcion:</label>
-    <textarea id="descripcion" placeholder="Detalles, medidas o materiales..."></textarea>
-
-    <label>Imagenes del Producto (Arrastralas o haz clic):</label>
-    <div class="drop-zone" id="dropZone">
-        Arrastra tus fotos aqui o haz clic para seleccionarlas
-        <input type="file" id="fileInput" multiple accept="image/*" style="display: none;">
-    </div>
-    <div id="preview"></div>
-
-    <button id="btnGuardar">Guardar Producto en Supabase</button>
-    <div id="mensaje"></div>
 </div>
 
 <script>
+  // Conexion directa con tus datos de Supabase proporcionados
   const SUPABASE_URL = 'https://sbuwwydygabgweegvzoi.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNidXd3eWR5Z2FiZ3dlZWd2em9pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3ODgxOTksImV4cCI6MjEwMTM2NDE5OX0.D3iSUhyNx4CpB5xTqsfn4R5CFvyghpfzVvi_CxdnXPI';
   
   const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  let archivosSeleccionados = [];
+  let productosGlobales = [];
+  let categoriaActual = 'Todas';
 
-  const dropZone = document.getElementById('dropZone');
-  const fileInput = document.getElementById('fileInput');
-  const preview = document.getElementById('preview');
+  // Cargar productos al abrir la pagina
+  document.addEventListener('DOMContentLoaded', cargarArticulos);
 
-  function limpiarTexto(texto) {
-      return texto
-          .toLowerCase()
-          .normalize("NFD")
-          .replace(/[\u0300-\u036f]/g, "")
-          .replace(/[^a-z0-9]/g, "_");
+  async function cargarArticulos() {
+      const { data, error } = await supabaseClient
+          .from('productos')
+          .select('*')
+          .order('id', { ascending: false });
+
+      if (error) {
+          console.error(error);
+          document.getElementById('listaProductos').innerHTML = '<p style="color:red; text-align:center;">Error al cargar los articulos.</p>';
+          return;
+      }
+
+      productosGlobales = data || [];
+      mostrarProductosFiltrados();
   }
 
-  function verificarCategoria() {
-      const cat = document.getElementById('categoria').value;
-      const grupoSub = document.getElementById('grupoSubcategoria');
+  function filtrarCategoria(cat, elementoBtn) {
+      categoriaActual = cat;
+      
+      // Cambiar estilo de botones activos
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      elementoBtn.classList.add('active');
+
+      mostrarProductosFiltrados();
+  }
+
+  function mostrarProductosFiltrados() {
+      const contenedor = document.getElementById('listaProductos');
+      
+      let filtrados = productosGlobales;
+      if (categoriaActual !== 'Todas') {
+          filtrados = productosGlobales.filter(p => p.categoria === categoriaActual);
+      }
+
+      if (filtrados.length === 0) {
+          contenedor.innerHTML = '<p style="text-align: center; color: #7f8c8d; margin-top: 30px;">No hay articulos en esta categoria.</p>';
+          return;
+      }
+
+      let html = '';
+      filtrados.forEach(prod => {
+          let primeraImg = (prod.imagenes && prod.imagenes.length > 0) ? prod.imagenes[0] : 'https://via.placeholder.com/60?text=Sin+Foto';
+          let subText = prod.subcategoria ? ` | <b>Sub:</b> ${prod.subcategoria}` : '';
+
+          html += `
+              <div class="producto-card">
+                  <div class="producto-info">
+                      <img src="${primeraImg}" class="producto-img" onerror="this.src='https://via.placeholder.com/60?text=Error'">
+                      <div class="producto-detalles">
+                          <h3>${prod.titulo}</h3>
+                          <p><b>Cat:</b> ${prod.categoria}${subText} | <b>Estado:</b> ${prod.estado}</p>
+                      </div>
+                  </div>
+                  <div class="acciones">
+                      <button class="btn-editar" onclick="abrirModalEditar(${prod.id})">Editar</button>
+                      <button class="btn-eliminar" onclick="eliminarProducto(${prod.id})">Eliminar</button>
+                  </div>
+              </div>
+          `;
+      });
+
+      contenedor.innerHTML = html;
+  }
+
+  function abrirModalNuevo() {
+      document.getElementById('modalTitulo').textContent = 'Agregar Nuevo Articulo';
+      document.getElementById('productoId').value = '';
+      document.getElementById('inputTitulo').value = '';
+      document.getElementById('inputCategoria').value = 'Cocinas';
+      document.getElementById('inputSubcategoria').value = '';
+      document.getElementById('inputEstado').value = 'disponible';
+      document.getElementById('inputDescripcion').value = '';
+      document.getElementById('contenedorUrls').innerHTML = '<input type="url" class="input-url" placeholder="https://ejemplo.com/foto1.jpg">';
+      document.getElementById('mensajeCarga').textContent = '';
+      
+      verificarLineaBlancaModal();
+      document.getElementById('modalProducto').style.display = 'flex';
+  }
+
+  function abrirModalEditar(id) {
+      const prod = productosGlobales.find(p => p.id === id);
+      if (!prod) return;
+
+      document.getElementById('modalTitulo').textContent = 'Editar Articulo';
+      document.getElementById('productoId').value = prod.id;
+      document.getElementById('inputTitulo').value = prod.titulo || '';
+      document.getElementById('inputCategoria').value = prod.categoria || 'Cocinas';
+      document.getElementById('inputSubcategoria').value = prod.subcategoria || '';
+      document.getElementById('inputEstado').value = prod.estado || 'disponible';
+      document.getElementById('inputDescripcion').value = prod.descripcion || '';
+      
+      verificarLineaBlancaModal();
+
+      // Cargar imagenes existentes en los inputs de URL
+      const contenedorUrls = document.getElementById('contenedorUrls');
+      contenedorUrls.innerHTML = '';
+      if (prod.imagenes && prod.imagenes.length > 0) {
+          prod.imagenes.forEach(url => {
+              contenedorUrls.innerHTML += `<input type="url" class="input-url" value="${url}">`;
+          });
+      } else {
+          contenedorUrls.innerHTML = `<input type="url" class="input-url" placeholder="https://ejemplo.com/foto1.jpg">`;
+      }
+
+      document.getElementById('mensajeCarga').textContent = '';
+      document.getElementById('modalProducto').style.display = 'flex';
+  }
+
+  function cerrarModal() {
+      document.getElementById('modalProducto').style.display = 'none';
+  }
+
+  function agregarCampoUrl() {
+      document.getElementById('contenedorUrls').innerHTML += `<input type="url" class="input-url" placeholder="https://ejemplo.com/foto.jpg" style="margin-top:5px;">`;
+  }
+
+  function verificarLineaBlancaModal() {
+      const cat = document.getElementById('inputCategoria').value;
+      const grupoSub = document.getElementById('grupoSubModal');
       if (cat === 'Linea Blanca') {
           grupoSub.classList.remove('oculto');
       } else {
           grupoSub.classList.add('oculto');
-          document.getElementById('subcategoria').value = '';
+          document.getElementById('inputSubcategoria').value = '';
       }
   }
 
-  dropZone.addEventListener('click', () => fileInput.click());
+  async function guardarProducto() {
+      const id = document.getElementById('productoId').value;
+      const titulo = document.getElementById('inputTitulo').value.trim();
+      const categoria = document.getElementById('inputCategoria').value;
+      const subcategoria = document.getElementById('inputSubcategoria').value;
+      const estado = document.getElementById('inputEstado').value;
+      const descripcion = document.getElementById('inputDescripcion').value.trim();
 
-  dropZone.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      dropZone.classList.add('dragover');
-  });
-
-  dropZone.addEventListener('dragleave', () => {
-      dropZone.classList.remove('dragover');
-  });
-
-  dropZone.addEventListener('drop', (e) => {
-      e.preventDefault();
-      dropZone.classList.remove('dragover');
-      manejarArchivos(e.dataTransfer.files);
-  });
-
-  fileInput.addEventListener('change', (e) => {
-      manejarArchivos(e.target.files);
-  });
-
-  function manejarArchivos(files) {
-      for (let file of files) {
-          archivosSeleccionados.push(file);
-          const reader = new FileReader();
-          reader.onload = (e) => {
-              const img = document.createElement('img');
-              img.src = e.target.result;
-              preview.appendChild(img);
-          };
-          reader.readAsDataURL(file);
-      }
-  }
-
-  document.getElementById('btnGuardar').addEventListener('click', async () => {
-      const mensaje = document.getElementById('mensaje');
-      const tituloInput = document.getElementById('titulo').value.trim();
-      const categoria = document.getElementById('categoria').value;
-      const subcategoria = document.getElementById('subcategoria').value;
-      const estado = document.getElementById('estado').value;
-      const descripcion = document.getElementById('descripcion').value.trim();
-
-      if (!tituloInput || !categoria) {
-          alert('Por favor ingresa un titulo y selecciona una categoria.');
+      if (!titulo) {
+          alert('Por favor escribe un titulo para el articulo.');
           return;
       }
 
-      mensaje.style.color = '#007bff';
-      mensaje.textContent = 'Subiendo imagenes y guardando producto...';
-
-      try {
-          let urlsImagenes = [];
-          const tituloLimpio = limpiarTexto(tituloInput);
-          const categoriaLimpiada = limpiarTexto(categoria);
-
-          for (let i = 0; i < archivosSeleccionados.length; i++) {
-              const file = archivosSeleccionados[i];
-              const extension = file.name.split('.').pop();
-              const rutaArchivo = `${categoriaLimpiada}/${tituloLimpio}_${Date.now()}_${i}.${extension}`;
-
-              const { data, error } = await supabaseClient.storage
-                  .from('fotos-productos')
-                  .upload(rutaArchivo, file);
-
-              if (error) throw error;
-
-              const { data: urlData } = supabaseClient.storage
-                  .from('fotos-productos')
-                  .getPublicUrl(rutaArchivo);
-
-              urlsImagenes.push(urlData.publicUrl);
+      // Recopilar URLs de imagenes ingresadas
+      let imagenes = [];
+      document.querySelectorAll('.input-url').forEach(input => {
+          if (input.value.trim() !== '') {
+              imagenes.push(input.value.trim());
           }
+      });
 
-          const { error: dbError } = await supabaseClient
+      document.getElementById('mensajeCarga').textContent = 'Guardando en la base de datos...';
+
+      let errorDb;
+      if (id) {
+          // Actualizar existente
+          const { error } = await supabaseClient
               .from('productos')
-              .insert([{
-                  titulo: tituloInput,
-                  categoria: categoria,
-                  subcategoria: subcategoria || null,
-                  estado: estado,
-                  descripcion: descripcion,
-                  oculto: false,
-                  imagenes: urlsImagenes
-              }]);
-
-          if (dbError) throw dbError;
-
-          mensaje.style.color = 'green';
-          mensaje.textContent = '¡Producto y fotos guardados con exito!';
-          
-          setTimeout(() => {
-              location.reload();
-          }, 2000);
-
-      } catch (err) {
-          console.error(err);
-          mensaje.style.color = 'red';
-          mensaje.textContent = 'Hubo un error al guardar. Revisa la consola.';
+              .update({ titulo, categoria, subcategoria: subcategoria || null, estado, descripcion, imagenes })
+              .eq('id', id);
+          errorDb = error;
+      } else {
+          // Insertar nuevo
+          const { error } = await supabaseClient
+              .from('productos')
+              .insert([{ titulo, categoria, subcategoria: subcategoria || null, estado, descripcion, oculto: false, imagenes }]);
+          errorDb = error;
       }
-  });
+
+      if (errorDb) {
+          console.error(errorDb);
+          document.getElementById('mensajeCarga').style.color = 'red';
+          document.getElementById('mensajeCarga').textContent = 'Hubo un error al guardar.';
+          return;
+      }
+
+      document.getElementById('mensajeCarga').style.color = 'green';
+      document.getElementById('mensajeCarga').textContent = '¡Guardado con exito!';
+      
+      setTimeout(() => {
+          cerrarModal();
+          cargarArticulos();
+      }, 1000);
+  }
+
+  async function eliminarProducto(id) {
+      if (!confirm('¿Estas seguro de que deseas eliminar este articulo?')) return;
+
+      const { error } = await supabaseClient
+          .from('productos')
+          .delete()
+          .eq('id', id);
+
+      if (error) {
+          console.error(error);
+          alert('No se pudo eliminar el articulo.');
+          return;
+      }
+
+      cargarArticulos();
+  }
 </script>
 
 </body>
