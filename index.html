@@ -14,6 +14,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
+  <!-- SUPABASE JS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
     /* 0. CARGA DE FUENTE LOCAL */
     @font-face {
@@ -606,9 +609,10 @@
     }
 
     .lista-metodos-pago li::before {
-      content: "-";
+      content: "•";
       color: var(--naranja-daguerr);
       font-weight: bold;
+      font-size: 1.2rem;
     }
 
     /* 7. SECCION DE INFORMACION Y CONTACTO */
@@ -777,7 +781,7 @@
 
   <!-- BURBUJA FLOTANTE -->
   <a href="#seccion-contacto" class="burbuja-contacto-flotante visible-completa" id="burbujaFlotante">
-    <span class="burbuja-icono">📍</span>
+    <span class="burbuja-icono">&#128205;</span>
     <span class="texto-burbuja">Ubicacion y Horarios</span>
   </a>
 
@@ -843,12 +847,12 @@
       <div class="info-tarjeta">
         <h3>Horarios de Atencion</h3>
         <ul>
-          <li><span>Lunes:</span> <span>9:00 a.m. - 1:00 p.m. y 3:00 p.m. - 7:00 p.m.</span></li>
-          <li><span>Martes:</span> <span>9:00 a.m. - 1:00 p.m. y 3:00 p.m. - 7:00 p.m.</span></li>
-          <li><span>Miercoles:</span> <span>9:00 a.m. - 1:00 p.m. y 3:00 p.m. - 7:00 p.m.</span></li>
-          <li><span>Jueves:</span> <span>9:00 a.m. - 1:00 p.m. y 3:00 p.m. - 7:00 p.m.</span></li>
-          <li><span>Viernes:</span> <span>9:00 a.m. - 1:00 p.m. y 3:00 p.m. - 7:00 p.m.</span></li>
-          <li><span>Sabado:</span> <span>9:00 a.m. - 1:00 p.m. y 3:00 p.m. - 7:00 p.m.</span></li>
+          <li><span>Lunes:</span> <span>9:00 a.m. – 1:00 p.m. y 3:00 p.m. – 7:00 p.m.</span></li>
+          <li><span>Martes:</span> <span>9:00 a.m. – 1:00 p.m. y 3:00 p.m. – 7:00 p.m.</span></li>
+          <li><span>Miercoles:</span> <span>9:00 a.m. – 1:00 p.m. y 3:00 p.m. – 7:00 p.m.</span></li>
+          <li><span>Jueves:</span> <span>9:00 a.m. – 1:00 p.m. y 3:00 p.m. – 7:00 p.m.</span></li>
+          <li><span>Viernes:</span> <span>9:00 a.m. – 1:00 p.m. y 3:00 p.m. – 7:00 p.m.</span></li>
+          <li><span>Sabado:</span> <span>9:00 a.m. – 1:00 p.m. y 3:00 p.m. – 7:00 p.m.</span></li>
           <li><span>Domingo:</span> <span>Cerrado</span></li>
         </ul>
       </div>
@@ -896,17 +900,36 @@
     <p>&copy; Muebleria Daguerr - Calidad y tradicion para tu hogar.</p>
   </footer>
 
-  <!-- LIBRERIA SUPABASE Y SCRIPT UNIFICADO Y CORREGIDO -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- SCRIPT DE CONEXIÓN A SUPABASE Y LÓGICA DE LA PÁGINA -->
   <script>
+    // CONFIGURACIÓN DE SUPABASE (CON TUS CREDENCIALES)
+    const SUPABASE_URL = 'https://sbuwwydygabgweegvzoi.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNidXd3eWR5Z2FiZ3dlZWd2em9pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3ODgxOTksImV4cCI6MjEwMTM2NDE5OX0.D3iSUhyNx4CpB5xTqsfn4R5CFvyghpfzVvi_CxdnXPI';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
     let productos = [];
     let productoActual = null;
     let indiceImagenActual = 0;
 
-    // Tus credenciales de Supabase
-    const SUPABASE_URL = 'https://sbuwwydygabgweegvzoi.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNidXd3eWR5Z2FiZ3dlZWd2em9pIiwicm9sZSI6InFub24iLCJpYXQiOjE3ODU3ODgxOTksImV4cCI6MjEwMTM2NDE5OX0.D3iSUhyNx4CpB5xTqsfn4R5CFvyghpfzVvi_CxdnXPI';
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // CARGAR PRODUCTOS DESDE SUPABASE
+    async function inicializarProductos() {
+      try {
+        const { data, error } = await supabaseClient
+          .from('productos')
+          .select('*');
+
+        if (error) {
+          console.error('Error al cargar desde Supabase:', error);
+          return;
+        }
+
+        // Filtramos los que no estén ocultos (manejando bool o string)
+        productos = (data || []).filter(p => p.oculto !== true && p.oculto !== 'true');
+        cargarCatalogo(productos);
+      } catch (err) {
+        console.error('Excepción al conectar con Supabase:', err);
+      }
+    }
 
     function obtenerBadgesHTML(estado) {
       if (estado === 'disponible') {
@@ -1071,8 +1094,9 @@
       ultimoScrollY = scrollActual <= 0 ? 0 : scrollActual;
     });
 
-    // Carga robusta de datos desde Supabase con logs de depuración integrados
-    document.addEventListener('DOMContentLoaded', async () => {
+    document.addEventListener('DOMContentLoaded', () => {
+      inicializarProductos();
+
       const contenedorFiltros = document.getElementById('contenedor-filtros');
       if (contenedorFiltros) {
         contenedorFiltros.addEventListener('wheel', (e) => {
@@ -1081,37 +1105,6 @@
             contenedorFiltros.scrollLeft += e.deltaY;
           }
         }, { passive: false });
-      }
-
-      try {
-        console.log('Conectando a Supabase...');
-        const { data, error } = await supabaseClient
-          .from('productos')
-          .select('*');
-
-        if (error) {
-          console.error('Error detallado de Supabase:', error.message, error.details, error.hint);
-          return;
-        }
-
-        console.log('Datos obtenidos de Supabase:', data);
-
-        productos = (data || []).map(prod => ({
-          id: prod.id,
-          titulo: prod.titulo,
-          categoria: prod.categoria,
-          subcategoria: prod.subcategoria || '',
-          estado: prod.estado || 'disponible',
-          descripcion: prod.descripcion || '',
-          oculto: prod.oculto || false,
-          imagenes: prod.imagenes || []
-        })).filter(p => !p.oculto);
-
-        console.log('Productos procesados:', productos);
-        cargarCatalogo(productos);
-        
-      } catch (err) {
-        console.error('Error crítico de conexión con Supabase:', err);
       }
     });
   </script>
