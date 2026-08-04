@@ -230,7 +230,7 @@
       box-shadow: 0 4px 10px rgba(194, 41, 10, 0.25);
     }
 
-    /* SUBMEN√ö EXCLUSIVO DE L√çNEA BLANCA */
+    /* SUBMEN⁄ EXCLUSIVO DE LÕNEA BLANCA */
     .submenu-linea-blanca {
       display: none;
       justify-content: flex-start;
@@ -606,7 +606,7 @@
     }
 
     .lista-metodos-pago li::before {
-      content: "‚Ä¢";
+      content: "ï";
       color: var(--naranja-daguerr);
       font-weight: bold;
       font-size: 1.2rem;
@@ -808,7 +808,7 @@
       <button class="btn-filtro" onclick="filtrarCategoria('Ropa y Calzado', this)">Ropa y Calzado</button>
     </div>
 
-    <!-- SUBMEN√ö EXCLUSIVO DE L√çNEA BLANCA -->
+    <!-- SUBMEN⁄ EXCLUSIVO DE LÕNEA BLANCA -->
     <div class="submenu-linea-blanca" id="submenuLineaBlanca">
       <button class="btn-subfiltro" onclick="filtrarSubcategoria('Refrigeradores', this)">Refrigeradores</button>
       <button class="btn-subfiltro" onclick="filtrarSubcategoria('Estufas', this)">Estufas</button>
@@ -844,12 +844,12 @@
       <div class="info-tarjeta">
         <h3>Horarios de Atencion</h3>
         <ul>
-          <li><span>Lunes:</span> <span>9:00 a.m. ‚Äì 1:00 p.m. y 3:00 p.m. ‚Äì 7:00 p.m.</span></li>
-          <li><span>Martes:</span> <span>9:00 a.m. ‚Äì 1:00 p.m. y 3:00 p.m. ‚Äì 7:00 p.m.</span></li>
-          <li><span>Miercoles:</span> <span>9:00 a.m. ‚Äì 1:00 p.m. y 3:00 p.m. ‚Äì 7:00 p.m.</span></li>
-          <li><span>Jueves:</span> <span>9:00 a.m. ‚Äì 1:00 p.m. y 3:00 p.m. ‚Äì 7:00 p.m.</span></li>
-          <li><span>Viernes:</span> <span>9:00 a.m. ‚Äì 1:00 p.m. y 3:00 p.m. ‚Äì 7:00 p.m.</span></li>
-          <li><span>Sabado:</span> <span>9:00 a.m. ‚Äì 1:00 p.m. y 3:00 p.m. ‚Äì 7:00 p.m.</span></li>
+          <li><span>Lunes:</span> <span>9:00 a.m. ñ 1:00 p.m. y 3:00 p.m. ñ 7:00 p.m.</span></li>
+          <li><span>Martes:</span> <span>9:00 a.m. ñ 1:00 p.m. y 3:00 p.m. ñ 7:00 p.m.</span></li>
+          <li><span>Miercoles:</span> <span>9:00 a.m. ñ 1:00 p.m. y 3:00 p.m. ñ 7:00 p.m.</span></li>
+          <li><span>Jueves:</span> <span>9:00 a.m. ñ 1:00 p.m. y 3:00 p.m. ñ 7:00 p.m.</span></li>
+          <li><span>Viernes:</span> <span>9:00 a.m. ñ 1:00 p.m. y 3:00 p.m. ñ 7:00 p.m.</span></li>
+          <li><span>Sabado:</span> <span>9:00 a.m. ñ 1:00 p.m. y 3:00 p.m. ñ 7:00 p.m.</span></li>
           <li><span>Domingo:</span> <span>Cerrado</span></li>
         </ul>
       </div>
@@ -874,11 +874,11 @@
         <p class="descripcion" id="modal-descripcion"></p>
 
         <div class="lista-metodos-pago">
-          <h4>Opciones y M√©todos de Pago Disponibles:</h4>
+          <h4>Opciones y MÈtodos de Pago Disponibles:</h4>
           <ul>
             <li>Pago de contado</li>
-            <li>Cr√©dito 3 y 6 meses en tienda</li>
-            <li>12 meses sin intereses con tarjeta de cr√©dito</li>
+            <li>CrÈdito 3 y 6 meses en tienda</li>
+            <li>12 meses sin intereses con tarjeta de crÈdito</li>
           </ul>
         </div>
 
@@ -897,42 +897,17 @@
     <p>&copy; Muebleria Daguerr - Calidad y tradicion para tu hogar.</p>
   </footer>
 
-  <!-- LLAMADO A TUS ARCHIVOS JS DE CADA CATEGORIA -->
-  <script src="js/Closet.js"></script>
-  <script src="js/Cocinas.js"></script>
-  <script src="js/Colchoneria.js"></script>
-  <script src="js/Comedores.js"></script>
-  <script src="js/Deportivos.js"></script>
-  <script src="js/Descanso.js"></script>
-  <script src="js/Hogar.js"></script>
-  <script src="js/LineaBlanca.js"></script>
-  <script src="js/Recamaras.js"></script>
-  <script src="js/RopayCalzado.js"></script>
-  <script src="js/Salas.js"></script>
-  <script src="js/Tubulares.js"></script>
-
-  <!-- UNION AUTOMATICA DE TODOS LOS PRODUCTOS -->
+  <!-- LIBRERIA SUPABASE Y SCRIPT UNIFICADO -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     let productos = [];
     let productoActual = null;
     let indiceImagenActual = 0;
 
-    function inicializarProductos() {
-      productos = [
-        ...(typeof productosCloset !== 'undefined' ? productosCloset : []),
-        ...(typeof productosCocinas !== 'undefined' ? productosCocinas : []),
-        ...(typeof productosColchoneria !== 'undefined' ? productosColchoneria : []),
-        ...(typeof productosComedores !== 'undefined' ? productosComedores : []),
-        ...(typeof productosDeportivos !== 'undefined' ? productosDeportivos : []),
-        ...(typeof productosDescanso !== 'undefined' ? productosDescanso : []),
-        ...(typeof productosHogar !== 'undefined' ? productosHogar : []),
-        ...(typeof productosLineaBlanca !== 'undefined' ? productosLineaBlanca : []),
-        ...(typeof productosRecamaras !== 'undefined' ? productosRecamaras : []),
-        ...(typeof productosRopayCalzado !== 'undefined' ? productosRopayCalzado : []),
-        ...(typeof productosSalas !== 'undefined' ? productosSalas : []),
-        ...(typeof productosTubulares !== 'undefined' ? productosTubulares : [])
-      ].filter(p => !p.oculto);
-    }
+    // 1. Tus credenciales de Supabase
+    const SUPABASE_URL = 'https://sbuwwydygabgweegvzoi.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNidXd3eWR5Z2FiZ3dlZWd2em9pIiwicm9sZSI6InFub24iLCJpYXQiOjE3ODU3ODgxOTksImV4cCI6MjEwMTM2NDE5OX0.D3iSUhyNx4CpB5xTqsfn4R5CFvyghpfzVvi_CxdnXPI';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     function obtenerBadgesHTML(estado) {
       if (estado === 'disponible') {
@@ -953,7 +928,7 @@
       catalogo.innerHTML = '';
 
       if (!lista || lista.length === 0) {
-        catalogo.innerHTML = `<div class="mensaje-vacio">Proximamente tendremos productos disponibles en esta categoria. ¬°Contactanos por WhatsApp para mas informacion!</div>`;
+        catalogo.innerHTML = `<div class="mensaje-vacio">Proximamente tendremos productos disponibles en esta categoria. °Contactanos por WhatsApp para mas informacion!</div>`;
         return;
       }
 
@@ -1021,7 +996,7 @@
     }
 
     function abrirModal(id) {
-      productoActual = productos.find(p => p.id === id);
+      productoActual = productos.find(p => p.id == id);
       if (!productoActual) return;
 
       indiceImagenActual = 0;
@@ -1097,10 +1072,8 @@
       ultimoScrollY = scrollActual <= 0 ? 0 : scrollActual;
     });
 
-    document.addEventListener('DOMContentLoaded', () => {
-      //inicializarProductos();
-      //cargarCatalogo(productos);
-
+    // Carga de datos desde Supabase al iniciar la pagina
+    document.addEventListener('DOMContentLoaded', async () => {
       const contenedorFiltros = document.getElementById('contenedor-filtros');
       if (contenedorFiltros) {
         contenedorFiltros.addEventListener('wheel', (e) => {
@@ -1110,50 +1083,34 @@
           }
         }, { passive: false });
       }
+
+      try {
+        const { data, error } = await supabaseClient
+          .from('productos')
+          .select('*');
+
+        if (error) {
+          console.error('Error al obtener productos:', error);
+          return;
+        }
+
+        productos = (data || []).map(prod => ({
+          id: prod.id,
+          titulo: prod.titulo,
+          categoria: prod.categoria,
+          subcategoria: prod.subcategoria || '',
+          estado: prod.estado || 'disponible',
+          descripcion: prod.descripcion || '',
+          oculto: prod.oculto || false,
+          imagenes: prod.imagenes || []
+        })).filter(p => !p.oculto);
+
+        cargarCatalogo(productos);
+        
+      } catch (err) {
+        console.error('Error de conexiÛn con Supabase:', err);
+      }
     });
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-  // 1. Tus credenciales de Supabase
-  const SUPABASE_URL = 'https://sbuwwydygabgweegvzoi.supabase.co';
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNidXd3eWR5Z2FiZ3dlZWd2em9pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3ODgxOTksImV4cCI6MjEwMTM2NDE5OX0.D3iSUhyNx4CpB5xTqsfn4R5CFvyghpfzVvi_CxdnXPI';
-  
-  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-  // 2. Sobrescribimos la carga para que jale de la nube
-  document.addEventListener('DOMContentLoaded', async () => {
-    try {
-      // Consultamos la tabla 'productos' en Supabase
-      const { data, error } = await supabaseClient
-        .from('productos')
-        .select('*');
-
-      if (error) {
-        console.error('Error al obtener productos:', error);
-        return;
-      }
-
-      // Convertimos los datos de Supabase al formato que usa tu p√°gina
-      window.productos = data.map(prod => ({
-        id: prod.id,
-        titulo: prod.titulo,
-        categoria: prod.categoria,
-        subcategoria: prod.subcategoria || '',
-        estado: prod.estado || 'disponible',
-        descripcion: prod.descripcion || '',
-        oculto: prod.oculto || false,
-        imagenes: prod.imagenes || []
-      }));
-
-      // Si tu funci√≥n original existe, la llamamos para pintar los productos en pantalla
-      if (typeof cargarCatalogo === 'function') {
-        cargarCatalogo(window.productos);
-      }
-      
-    } catch (err) {
-      console.error('Error de conexi√≥n con Supabase:', err);
-    }
-  });
-</script>
 </body>
 </html>
