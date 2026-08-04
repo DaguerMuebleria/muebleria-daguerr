@@ -324,9 +324,9 @@
 
       const contenedorUrls = document.getElementById('contenedorUrls');
       
-      // Limpiar el primer input si está vacío
-      const inputs = contenedorUrls.querySelectorAll('.input-url');
-      if (inputs.length === 1 && inputs[0].value.trim() === '') {
+      // Si hay un solo input y está vacío, lo limpiamos antes de empezar a añadir las URLs subidas
+      const inputsActuales = contenedorUrls.querySelectorAll('.input-url');
+      if (inputsActuales.length === 1 && inputsActuales[0].value.trim() === '') {
           contenedorUrls.innerHTML = '';
       }
 
@@ -342,7 +342,14 @@
               let result = await response.json();
               if (result.success) {
                   let imageUrl = result.data.url;
-                  contenedorUrls.innerHTML += `<input type="url" class="input-url" value="${imageUrl}" style="margin-top:5px;">`;
+                  
+                  // Crear dinámicamente el input de texto asegurando que se refleje de inmediato en pantalla
+                  let nuevoInput = document.createElement('input');
+                  nuevoInput.type = 'url';
+                  nuevoInput.className = 'input-url';
+                  nuevoInput.value = imageUrl;
+                  nuevoInput.style.marginTop = '5px';
+                  contenedorUrls.appendChild(nuevoInput);
               }
           } catch (err) {
               console.error(err);
@@ -350,7 +357,7 @@
       }
 
       msg.style.color = 'green';
-      msg.textContent = '¡Imágenes agregadas con éxito!';
+      msg.textContent = '¡Imágenes agregadas y listas con éxito!';
       setTimeout(() => { msg.textContent = ''; }, 3000);
   }
 
@@ -387,22 +394,18 @@
           imagenes 
       };
 
-      // Si el usuario especificó un ID personalizado
       if (customIdVal !== '') {
           datosAEnviar.id = parseInt(customIdVal);
       }
 
       let errorDb;
       if (idOriginal) {
-          // Si estamos editando un producto existente
-          // Si cambió el ID y la base de datos lo permite, se actualiza
           const { error } = await supabaseClient
               .from('productos')
               .update(datosAEnviar)
               .eq('id', idOriginal);
           errorDb = error;
       } else {
-          // Si es un producto nuevo
           const { error } = await supabaseClient
               .from('productos')
               .insert([datosAEnviar]);
