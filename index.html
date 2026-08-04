@@ -896,14 +896,14 @@
     <p>&copy; Muebleria Daguerr - Calidad y tradicion para tu hogar.</p>
   </footer>
 
-  <!-- LIBRERIA SUPABASE Y SCRIPT UNIFICADO -->
+  <!-- LIBRERIA SUPABASE Y SCRIPT UNIFICADO Y CORREGIDO -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     let productos = [];
     let productoActual = null;
     let indiceImagenActual = 0;
 
-    // 1. Tus credenciales de Supabase
+    // Tus credenciales de Supabase
     const SUPABASE_URL = 'https://sbuwwydygabgweegvzoi.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNidXd3eWR5Z2FiZ3dlZWd2em9pIiwicm9sZSI6InFub24iLCJpYXQiOjE3ODU3ODgxOTksImV4cCI6MjEwMTM2NDE5OX0.D3iSUhyNx4CpB5xTqsfn4R5CFvyghpfzVvi_CxdnXPI';
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -1071,7 +1071,7 @@
       ultimoScrollY = scrollActual <= 0 ? 0 : scrollActual;
     });
 
-    // Carga de datos desde Supabase al iniciar la pagina
+    // Carga robusta de datos desde Supabase con logs de depuración integrados
     document.addEventListener('DOMContentLoaded', async () => {
       const contenedorFiltros = document.getElementById('contenedor-filtros');
       if (contenedorFiltros) {
@@ -1084,14 +1084,17 @@
       }
 
       try {
+        console.log('Conectando a Supabase...');
         const { data, error } = await supabaseClient
           .from('productos')
           .select('*');
 
         if (error) {
-          console.error('Error al obtener productos:', error);
+          console.error('Error detallado de Supabase:', error.message, error.details, error.hint);
           return;
         }
+
+        console.log('Datos obtenidos de Supabase:', data);
 
         productos = (data || []).map(prod => ({
           id: prod.id,
@@ -1104,10 +1107,11 @@
           imagenes: prod.imagenes || []
         })).filter(p => !p.oculto);
 
+        console.log('Productos procesados:', productos);
         cargarCatalogo(productos);
         
       } catch (err) {
-        console.error('Error de conexión con Supabase:', err);
+        console.error('Error crítico de conexión con Supabase:', err);
       }
     });
   </script>
