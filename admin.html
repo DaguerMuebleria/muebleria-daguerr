@@ -3,71 +3,388 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Administracion - Muebleria Daguerr</title>
-    <!-- Libreria de Supabase -->
+    <title>Panel de Administración - Mueblería Daguerr</title>
+    <!-- Librería de Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; color: #333; }
-        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h1 { text-align: center; color: #2c3e50; margin-bottom: 25px; }
-        
-        .btn-nuevo { background: #27ae60; color: white; border: none; padding: 12px 20px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; display: block; margin: 0 auto 20px auto; }
-        .btn-nuevo:hover { background: #219653; }
+        :root {
+            --primary: #1e293b;
+            --primary-light: #334155;
+            --accent: #2563eb;
+            --accent-hover: #1d4ed8;
+            --success: #10b981;
+            --success-hover: #059669;
+            --danger: #ef4444;
+            --danger-hover: #dc2626;
+            --warning: #f59e0b;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --radius: 12px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
 
-        .categorias-tabs { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 25px; border-bottom: 2px solid #eee; padding-bottom: 15px; }
-        .tab-btn { background: #ecf0f1; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: bold; color: #555; }
-        .tab-btn.active { background: #2980b9; color: white; }
+        * { box-sizing: border-box; }
 
-        .producto-card { display: flex; justify-content: space-between; align-items: center; background: #fafafa; border: 1px solid #e0e0e0; padding: 15px; border-radius: 8px; margin-bottom: 12px; gap: 15px; }
-        .producto-info { display: flex; align-items: center; gap: 15px; flex-grow: 1; }
-        .producto-img { width: 60px; height: 60px; object-fit: cover; border-radius: 6px; background: #ddd; }
-        .producto-detalles h3 { margin: 0 0 5px 0; font-size: 16px; color: #2c3e50; }
-        .producto-detalles p { margin: 0; font-size: 13px; color: #7f8c8d; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 30px 20px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 35px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+
+        .btn-salir {
+            background: transparent;
+            color: var(--danger);
+            border: 1px solid var(--danger);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-salir:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .top-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .btn-nuevo {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 12px 22px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow);
+        }
+
+        .btn-nuevo:hover {
+            background: var(--success-hover);
+            transform: translateY(-1px);
+        }
+
+        .buscador-wrapper {
+            position: relative;
+            flex: 1;
+            max-width: 350px;
+        }
+
+        .buscador-wrapper input {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s ease;
+            background: #fff;
+        }
+
+        .buscador-wrapper input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .buscador-wrapper::before {
+            content: "🔍";
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+        }
+
+        .categorias-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+        }
+
+        .tab-btn {
+            background: #f1f5f9;
+            border: 1px solid var(--border);
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 13px;
+            color: var(--text-muted);
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn:hover {
+            background: #e2e8f0;
+            color: var(--text-main);
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .producto-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #ffffff;
+            border: 1px solid var(--border);
+            padding: 16px 20px;
+            border-radius: var(--radius);
+            margin-bottom: 12px;
+            gap: 15px;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow);
+        }
+
+        .producto-card:hover {
+            border-color: #cbd5e1;
+            transform: translateY(-2px);
+        }
+
+        .producto-info {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            flex-grow: 1;
+        }
+
+        .producto-img {
+            width: 65px;
+            height: 65px;
+            object-fit: cover;
+            border-radius: 8px;
+            background: #f1f5f9;
+            border: 1px solid var(--border);
+        }
+
+        .producto-detalles h3 {
+            margin: 0 0 6px 0;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .producto-detalles p {
+            margin: 0;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
         
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .badge-disponible { background: #d1fae5; color: #065f46; }
+        .badge-pedido { background: #fef3c7; color: #92400e; }
+        .badge-agotado { background: #fee2e2; color: #991b1b; }
+
         .acciones { display: flex; gap: 8px; }
-        .btn-editar { background: #f39c12; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        .btn-eliminar { background: #c0392b; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        .btn-editar:hover { background: #d68910; }
-        .btn-eliminar:hover { background: #a93226; }
-
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; overflow-y: auto; padding: 20px; }
-        .modal-content { background: white; padding: 30px; border-radius: 10px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-        .modal-content h2 { margin-top: 0; color: #2c3e50; }
-        label { display: block; margin-top: 12px; font-weight: bold; font-size: 14px; }
-        input, select, textarea { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
-        textarea { resize: vertical; height: 70px; }
         
-        .drop-zone { border: 2px dashed #3498db; padding: 20px; text-align: center; border-radius: 8px; background: #ecf0f1; cursor: pointer; margin-top: 5px; }
-        .drop-zone:hover { background: #d0d7de; }
+        .btn-editar, .btn-eliminar {
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.2s ease;
+        }
 
-        .preview-container { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
-        .preview-item { position: relative; width: 70px; height: 70px; border-radius: 6px; overflow: hidden; border: 1px solid #ccc; background: #eee; }
+        .btn-editar { background: #eff6ff; color: var(--accent); border: 1px solid #bfdbfe; }
+        .btn-editar:hover { background: var(--accent); color: white; }
+
+        .btn-eliminar { background: #fef2f2; color: var(--danger); border: 1px solid #fecaca; }
+        .btn-eliminar:hover { background: var(--danger); color: white; }
+
+        /* Modal Rediseñado */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 650px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-content h2 { margin-top: 0; color: var(--primary); font-size: 20px; font-weight: 700; margin-bottom: 20px; }
+        
+        label { display: block; margin-top: 15px; font-weight: 600; font-size: 13px; color: var(--primary-light); }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 10px 14px;
+            margin-top: 6px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        textarea { resize: vertical; height: 80px; }
+        
+        .drop-zone {
+            border: 2px dashed #cbd5e1;
+            padding: 25px;
+            text-align: center;
+            border-radius: 8px;
+            background: #f8fafc;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: all 0.2s ease;
+        }
+        .drop-zone:hover { border-color: var(--accent); background: #f0fdf4; }
+
+        .preview-container { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+        .preview-item {
+            position: relative;
+            width: 75px;
+            height: 75px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            background: #f1f5f9;
+        }
         .preview-item img { width: 100%; height: 100%; object-fit: cover; }
 
-        .btn-add-url { background: #2980b9; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin-top: 5px; font-size: 12px; }
+        .btn-add-url {
+            background: transparent;
+            color: var(--accent);
+            border: 1px dashed var(--accent);
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.2s ease;
+        }
+        .btn-add-url:hover { background: #eff6ff; }
         
-        .modal-botones { display: flex; gap: 10px; margin-top: 20px; }
-        .btn-guardar { background: #27ae60; color: white; border: none; padding: 12px; flex: 1; border-radius: 5px; font-weight: bold; cursor: pointer; }
-        .btn-cancelar { background: #7f8c8d; color: white; border: none; padding: 12px; flex: 1; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        .modal-botones { display: flex; gap: 12px; margin-top: 25px; }
+        
+        .btn-guardar, .btn-cancelar {
+            padding: 12px;
+            flex: 1;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-guardar { background: var(--success); color: white; }
+        .btn-guardar:hover { background: var(--success-hover); }
+
+        .btn-cancelar { background: #e2e8f0; color: var(--text-muted); }
+        .btn-cancelar:hover { background: #cbd5e1; color: var(--text-main); }
         
         .oculto { display: none; }
-        #mensajeCarga { text-align: center; font-weight: bold; margin-top: 15px; color: #2980b9; }
+        #mensajeCarga { text-align: center; font-weight: 600; margin-top: 15px; font-size: 13px; color: var(--accent); }
 
-        /* Estilos del Login y Botón de Salir */
+        /* Login Estilizado */
         #loginOverlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #2c3e50; display: flex; justify-content: center; align-items: center; z-index: 9999;
+            background: var(--primary); display: flex; justify-content: center; align-items: center; z-index: 9999;
         }
         .login-box {
-            background: white; padding: 30px; border-radius: 10px; width: 100%; max-width: 350px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3); text-align: center;
+            background: white; padding: 40px 30px; border-radius: 16px; width: 100%; max-width: 380px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3); text-align: center;
         }
-        .login-box h2 { margin-bottom: 20px; color: #2c3e50; }
-        .login-box input { width: 100%; padding: 12px; margin-top: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
-        .btn-login { background: #27ae60; color: white; border: none; padding: 12px; width: 100%; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 15px; }
-        .btn-login:hover { background: #219653; }
-        .error-login { color: #c0392b; font-size: 13px; margin-top: 10px; display: none; }
-        .btn-salir { background: #c0392b; color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-size: 12px; float: right; }
+        .login-box h2 { margin-bottom: 5px; color: var(--primary); font-size: 22px; }
+        .login-box input { width: 100%; padding: 12px; margin-top: 12px; border: 1px solid var(--border); border-radius: 8px; }
+        .btn-login {
+            background: var(--accent); color: white; border: none; padding: 12px; width: 100%;
+            border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 20px; transition: background 0.2s;
+        }
+        .btn-login:hover { background: var(--accent-hover); }
+        .error-login { color: var(--danger); font-size: 13px; margin-top: 12px; display: none; font-weight: 500; }
     </style>
 </head>
 <body>
@@ -76,7 +393,7 @@
 <div id="loginOverlay">
     <div class="login-box">
         <h2>Panel Administrativo</h2>
-        <p style="font-size: 13px; color: #7f8c8d;">Mueblería Daguerr</p>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 25px;">Mueblería Daguerr</p>
         <input type="text" id="userLogin" placeholder="Usuario">
         <input type="password" id="passLogin" placeholder="Contraseña">
         <button class="btn-login" onclick="intentarLogin()">Ingresar</button>
@@ -85,16 +402,16 @@
 </div>
 
 <div class="container">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h1 style="margin: 0; flex-grow: 1; text-align: center;">Panel de Control - Mueblería Daguerr</h1>
+    <header>
+        <h1>Panel de Control <span style="font-weight: 300; color: var(--text-muted); font-size: 18px;">| Mueblería Daguerr</span></h1>
         <button class="btn-salir" onclick="cerrarSesion()">Cerrar Sesión</button>
-    </div>
+    </header>
     
-    <button class="btn-nuevo" onclick="abrirModalNuevo()">+ Agregar Nuevo Artículo</button>
-
-    <!-- Barra de Búsqueda Rápida -->
-    <div style="margin-bottom: 20px; max-width: 400px; margin-left: auto; margin-right: auto;">
-        <input type="text" id="inputBuscador" placeholder="🔍 Buscar por nombre o ID de artículo..." oninput="filtrarPorBusqueda()" style="width: 100%; padding: 10px 15px; border-radius: 8px; border: 1px solid #bdc3c7; font-size: 14px;">
+    <div class="top-actions">
+        <button class="btn-nuevo" onclick="abrirModalNuevo()">+ Agregar Nuevo Artículo</button>
+        <div class="buscador-wrapper">
+            <input type="text" id="inputBuscador" placeholder="Buscar por nombre o ID..." oninput="filtrarPorBusqueda()">
+        </div>
     </div>
 
     <div class="categorias-tabs" id="tabsCategorias">
@@ -114,15 +431,16 @@
     </div>
 
     <div id="listaProductos">
-        <p style="text-align: center; color: #7f8c8d;">Cargando artículos...</p>
+        <p style="text-align: center; color: var(--text-muted); padding: 40px;">Cargando artículos...</p>
     </div>
 </div>
 
+<!-- Modal -->
 <div class="modal" id="modalProducto">
     <div class="modal-content">
         <h2 id="modalTitulo">Nuevo Artículo</h2>
         
-        <label>ID del Artículo:</label>
+        <label>ID del Artículo (Opcional):</label>
         <input type="number" id="inputCustomId" placeholder="Ej. 105 (Dejar en blanco si es autoincrementable)">
 
         <input type="hidden" id="productoIdOriginal">
@@ -168,15 +486,15 @@
         <label>Descripción:</label>
         <textarea id="inputDescripcion" placeholder="Medidas, materiales, detalles..."></textarea>
 
-        <label>Agregar Imágenes (Arrastra o haz clic):</label>
+        <label>Imágenes (Arrastra o haz clic):</label>
         <div class="drop-zone" onclick="document.getElementById('fileInput').click()">
-            <p style="margin: 0; color: #2980b9; font-weight: bold;">📁 Arrastra tus fotos aquí o haz clic para seleccionarlas</p>
+            <p style="margin: 0; color: var(--accent); font-weight: 600; font-size: 13px;">📁 Arrastra tus fotos aquí o haz clic para explorar</p>
         </div>
         <input type="file" id="fileInput" class="oculto" accept="image/*" multiple onchange="subirArchivosASupabase(this.files)">
 
         <div class="preview-container" id="previewContainer"></div>
 
-        <label style="margin-top: 15px;">Enlaces de Imágenes (URLs automáticas o manuales):</label>
+        <label style="margin-top: 15px;">Enlaces de Imágenes (URLs):</label>
         <div id="contenedorUrls">
             <input type="url" class="input-url" placeholder="https://ejemplo.com/foto1.jpg" style="margin-top:5px;">
         </div>
@@ -234,7 +552,7 @@
 
       if (error) {
           console.error(error);
-          document.getElementById('listaProductos').innerHTML = '<p style="color:red; text-align:center;">Error al cargar los artículos.</p>';
+          document.getElementById('listaProductos').innerHTML = '<p style="color:var(--danger); text-align:center;">Error al cargar los artículos.</p>';
           return;
       }
 
@@ -248,6 +566,13 @@
       elementoBtn.classList.add('active');
       document.getElementById('inputBuscador').value = '';
       mostrarProductosFiltrados();
+  }
+
+  function obtenerBadgeEstado(estado) {
+      let clase = 'badge-disponible';
+      if (estado === 'pedido') clase = 'badge-pedido';
+      if (estado === 'agotado') clase = 'badge-agotado';
+      return `<span class="badge ${clase}">${estado}</span>`;
   }
 
   function filtrarPorBusqueda() {
@@ -268,22 +593,22 @@
       }
 
       if (filtrados.length === 0) {
-          contenedor.innerHTML = '<p style="text-align: center; color: #7f8c8d; margin-top: 30px;">No se encontraron artículos con esa búsqueda.</p>';
+          contenedor.innerHTML = '<p style="text-align: center; color: var(--text-muted); margin-top: 30px;">No se encontraron artículos.</p>';
           return;
       }
 
       let html = '';
       filtrados.forEach(prod => {
-          let primeraImg = (prod.imagenes && prod.imagenes.length > 0) ? prod.imagenes[0] : 'https://via.placeholder.com/60?text=Sin+Foto';
+          let primeraImg = (prod.imagenes && prod.imagenes.length > 0) ? prod.imagenes[0] : 'https://via.placeholder.com/65?text=Sin+Foto';
           let subText = prod.subcategoria ? ` | <b>Sub:</b> ${prod.subcategoria}` : '';
 
           html += `
               <div class="producto-card">
                   <div class="producto-info">
-                      <img src="${primeraImg}" class="producto-img" onerror="this.src='https://via.placeholder.com/60?text=Error'">
+                      <img src="${primeraImg}" class="producto-img" onerror="this.src='https://via.placeholder.com/65?text=Error'">
                       <div class="producto-detalles">
                           <h3>[ID: ${prod.id}] ${prod.titulo}</h3>
-                          <p><b>Cat:</b> ${prod.categoria}${subText} | <b>Estado:</b> ${prod.estado}</p>
+                          <p><b>Cat:</b> ${prod.categoria}${subText} &bull; ${obtenerBadgeEstado(prod.estado)}</p>
                       </div>
                   </div>
                   <div class="acciones">
@@ -306,22 +631,22 @@
       }
 
       if (filtrados.length === 0) {
-          contenedor.innerHTML = '<p style="text-align: center; color: #7f8c8d; margin-top: 30px;">No hay artículos en esta categoría.</p>';
+          contenedor.innerHTML = '<p style="text-align: center; color: var(--text-muted); margin-top: 30px;">No hay artículos en esta categoría.</p>';
           return;
       }
 
       let html = '';
       filtrados.forEach(prod => {
-          let primeraImg = (prod.imagenes && prod.imagenes.length > 0) ? prod.imagenes[0] : 'https://via.placeholder.com/60?text=Sin+Foto';
+          let primeraImg = (prod.imagenes && prod.imagenes.length > 0) ? prod.imagenes[0] : 'https://via.placeholder.com/65?text=Sin+Foto';
           let subText = prod.subcategoria ? ` | <b>Sub:</b> ${prod.subcategoria}` : '';
 
           html += `
               <div class="producto-card">
                   <div class="producto-info">
-                      <img src="${primeraImg}" class="producto-img" onerror="this.src='https://via.placeholder.com/60?text=Error'">
+                      <img src="${primeraImg}" class="producto-img" onerror="this.src='https://via.placeholder.com/65?text=Error'">
                       <div class="producto-detalles">
                           <h3>[ID: ${prod.id}] ${prod.titulo}</h3>
-                          <p><b>Cat:</b> ${prod.categoria}${subText} | <b>Estado:</b> ${prod.estado}</p>
+                          <p><b>Cat:</b> ${prod.categoria}${subText} &bull; ${obtenerBadgeEstado(prod.estado)}</p>
                       </div>
                   </div>
                   <div class="acciones">
@@ -407,10 +732,10 @@
   function configurarDragAndDrop() {
       const dropZone = document.querySelector('.drop-zone');
       ['dragenter', 'dragover'].forEach(eventName => {
-          dropZone.addEventListener(eventName, (e) => { e.preventDefault(); dropZone.style.background = '#d0d7de'; }, false);
+          dropZone.addEventListener(eventName, (e) => { e.preventDefault(); dropZone.style.borderColor = 'var(--accent)'; dropZone.style.background = '#f0fdf4'; }, false);
       });
       ['dragleave', 'drop'].forEach(eventName => {
-          dropZone.addEventListener(eventName, (e) => { e.preventDefault(); dropZone.style.background = '#ecf0f1'; }, false);
+          dropZone.addEventListener(eventName, (e) => { e.preventDefault(); dropZone.style.borderColor = '#cbd5e1'; dropZone.style.background = '#f8fafc'; }, false);
       });
       dropZone.addEventListener('drop', (e) => {
           const dt = e.dataTransfer;
@@ -424,7 +749,7 @@
 
       const tituloArticulo = document.getElementById('inputTitulo').value.trim();
       if (!tituloArticulo) {
-          alert('Por favor, escribe primero el "Título del Artículo" antes de subir imágenes para organizar las carpetas.');
+          alert('Por favor, escribe primero el "Título del Artículo" antes de subir imágenes.');
           return;
       }
 
@@ -432,8 +757,8 @@
       const subcategoria = document.getElementById('inputSubcategoria').value;
 
       const msg = document.getElementById('mensajeCarga');
-      msg.style.color = '#2980b9';
-      msg.textContent = `Subiendo ${files.length} imagen(es) a Supabase Storage...`;
+      msg.style.color = 'var(--accent)';
+      msg.textContent = `Subiendo ${files.length} imagen(es) a Supabase...`;
 
       const contenedorUrls = document.getElementById('contenedorUrls');
       const previewContainer = document.getElementById('previewContainer');
@@ -463,7 +788,7 @@
                   .upload(rutaCompleta, file, { upsert: true });
 
               if (error) {
-                  console.error("Error al subir a Supabase Storage:", error);
+                  console.error("Error al subir a Supabase:", error);
                   alert("Error al subir imagen: " + error.message);
                   continue;
               }
@@ -492,8 +817,8 @@
           }
       }
 
-      msg.style.color = 'green';
-      msg.textContent = '¡Imágenes subidas y carpetas creadas con éxito!';
+      msg.style.color = 'var(--success)';
+      msg.textContent = '¡Imágenes subidas con éxito!';
       setTimeout(() => { msg.textContent = ''; }, 3000);
   }
 
@@ -518,8 +843,8 @@
           }
       });
 
-      document.getElementById('mensajeCarga').style.color = '#2980b9';
-      document.getElementById('mensajeCarga').textContent = 'Guardando datos en la base de datos...';
+      document.getElementById('mensajeCarga').style.color = 'var(--accent)';
+      document.getElementById('mensajeCarga').textContent = 'Guardando datos...';
 
       let datosAEnviar = { 
           titulo, 
@@ -550,12 +875,12 @@
 
       if (errorDb) {
           console.error(errorDb);
-          document.getElementById('mensajeCarga').style.color = 'red';
-          document.getElementById('mensajeCarga').textContent = 'Hubo un error al guardar: ' + (errorDb.message || '');
+          document.getElementById('mensajeCarga').style.color = 'var(--danger)';
+          document.getElementById('mensajeCarga').textContent = 'Error al guardar: ' + (errorDb.message || '');
           return;
       }
 
-      document.getElementById('mensajeCarga').style.color = 'green';
+      document.getElementById('mensajeCarga').style.color = 'var(--success)';
       document.getElementById('mensajeCarga').textContent = '¡Guardado con éxito!';
       
       setTimeout(() => {
