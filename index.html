@@ -218,11 +218,11 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      transition: padding 0.35s var(--curva);
+      transition: padding 0.18s linear;
     }
 
     .header-contenedor.compacto header {
-      padding: 10px 15px 6px 15px;
+      padding: 8px 15px 4px 15px;
     }
 
     .logo-header {
@@ -232,7 +232,13 @@
       align-items: center;
       width: 100%;
       max-width: 280px;
-      transition: transform 0.35s var(--curva);
+      transform-origin: center top;
+      will-change: transform;
+      transition: transform 0.18s linear;
+    }
+
+    .header-contenedor.compacto .logo-header {
+      transform: scale(0.72);
     }
 
     .logo-header .brand-script {
@@ -242,11 +248,6 @@
       color: var(--terracota);
       line-height: 0.85;
       text-align: center;
-      transition: font-size 0.35s var(--curva);
-    }
-
-    .header-contenedor.compacto .logo-header .brand-script {
-      font-size: clamp(2.2rem, 8vw, 2.8rem);
     }
 
     .logo-header .brand-sub {
