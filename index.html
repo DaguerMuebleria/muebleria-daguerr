@@ -230,7 +230,7 @@
       box-shadow: 0 4px 10px rgba(194, 41, 10, 0.25);
     }
 
-    /* SUBMEN⁄ EXCLUSIVO DE LÕNEA BLANCA */
+    /* SUBMEN√ö EXCLUSIVO DE L√çNEA BLANCA */
     .submenu-linea-blanca {
       display: none;
       justify-content: flex-start;
@@ -606,10 +606,9 @@
     }
 
     .lista-metodos-pago li::before {
-      content: "ï";
+      content: "-";
       color: var(--naranja-daguerr);
       font-weight: bold;
-      font-size: 1.2rem;
     }
 
     /* 7. SECCION DE INFORMACION Y CONTACTO */
@@ -778,7 +777,7 @@
 
   <!-- BURBUJA FLOTANTE -->
   <a href="#seccion-contacto" class="burbuja-contacto-flotante visible-completa" id="burbujaFlotante">
-    <span class="burbuja-icono">&#128205;</span>
+    <span class="burbuja-icono">üìç</span>
     <span class="texto-burbuja">Ubicacion y Horarios</span>
   </a>
 
@@ -808,7 +807,7 @@
       <button class="btn-filtro" onclick="filtrarCategoria('Ropa y Calzado', this)">Ropa y Calzado</button>
     </div>
 
-    <!-- SUBMEN⁄ EXCLUSIVO DE LÕNEA BLANCA -->
+    <!-- SUBMEN√ö EXCLUSIVO DE L√çNEA BLANCA -->
     <div class="submenu-linea-blanca" id="submenuLineaBlanca">
       <button class="btn-subfiltro" onclick="filtrarSubcategoria('Refrigeradores', this)">Refrigeradores</button>
       <button class="btn-subfiltro" onclick="filtrarSubcategoria('Estufas', this)">Estufas</button>
@@ -844,12 +843,12 @@
       <div class="info-tarjeta">
         <h3>Horarios de Atencion</h3>
         <ul>
-          <li><span>Lunes:</span> <span>9:00 a.m. ñ 1:00 p.m. y 3:00 p.m. ñ 7:00 p.m.</span></li>
-          <li><span>Martes:</span> <span>9:00 a.m. ñ 1:00 p.m. y 3:00 p.m. ñ 7:00 p.m.</span></li>
-          <li><span>Miercoles:</span> <span>9:00 a.m. ñ 1:00 p.m. y 3:00 p.m. ñ 7:00 p.m.</span></li>
-          <li><span>Jueves:</span> <span>9:00 a.m. ñ 1:00 p.m. y 3:00 p.m. ñ 7:00 p.m.</span></li>
-          <li><span>Viernes:</span> <span>9:00 a.m. ñ 1:00 p.m. y 3:00 p.m. ñ 7:00 p.m.</span></li>
-          <li><span>Sabado:</span> <span>9:00 a.m. ñ 1:00 p.m. y 3:00 p.m. ñ 7:00 p.m.</span></li>
+          <li><span>Lunes:</span> <span>9:00 a.m. - 1:00 p.m. y 3:00 p.m. - 7:00 p.m.</span></li>
+          <li><span>Martes:</span> <span>9:00 a.m. - 1:00 p.m. y 3:00 p.m. - 7:00 p.m.</span></li>
+          <li><span>Miercoles:</span> <span>9:00 a.m. - 1:00 p.m. y 3:00 p.m. - 7:00 p.m.</span></li>
+          <li><span>Jueves:</span> <span>9:00 a.m. - 1:00 p.m. y 3:00 p.m. - 7:00 p.m.</span></li>
+          <li><span>Viernes:</span> <span>9:00 a.m. - 1:00 p.m. y 3:00 p.m. - 7:00 p.m.</span></li>
+          <li><span>Sabado:</span> <span>9:00 a.m. - 1:00 p.m. y 3:00 p.m. - 7:00 p.m.</span></li>
           <li><span>Domingo:</span> <span>Cerrado</span></li>
         </ul>
       </div>
@@ -874,11 +873,11 @@
         <p class="descripcion" id="modal-descripcion"></p>
 
         <div class="lista-metodos-pago">
-          <h4>Opciones y MÈtodos de Pago Disponibles:</h4>
+          <h4>Opciones y M√©todos de Pago Disponibles:</h4>
           <ul>
             <li>Pago de contado</li>
-            <li>CrÈdito 3 y 6 meses en tienda</li>
-            <li>12 meses sin intereses con tarjeta de crÈdito</li>
+            <li>Cr√©dito 3 y 6 meses en tienda</li>
+            <li>12 meses sin intereses con tarjeta de cr√©dito</li>
           </ul>
         </div>
 
@@ -928,7 +927,7 @@
       catalogo.innerHTML = '';
 
       if (!lista || lista.length === 0) {
-        catalogo.innerHTML = `<div class="mensaje-vacio">Proximamente tendremos productos disponibles en esta categoria. °Contactanos por WhatsApp para mas informacion!</div>`;
+        catalogo.innerHTML = `<div class="mensaje-vacio">Proximamente tendremos productos disponibles en esta categoria. ¬°Contactanos por WhatsApp para mas informacion!</div>`;
         return;
       }
 
@@ -1108,7 +1107,7 @@
         cargarCatalogo(productos);
         
       } catch (err) {
-        console.error('Error de conexiÛn con Supabase:', err);
+        console.error('Error de conexi√≥n con Supabase:', err);
       }
     });
   </script>
