@@ -40,7 +40,6 @@
         .drop-zone { border: 2px dashed #3498db; padding: 20px; text-align: center; border-radius: 8px; background: #ecf0f1; cursor: pointer; margin-top: 5px; }
         .drop-zone:hover { background: #d0d7de; }
 
-        /* Contenedor de miniaturas en pequeño */
         .preview-container { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
         .preview-item { position: relative; width: 70px; height: 70px; border-radius: 6px; overflow: hidden; border: 1px solid #ccc; background: #eee; }
         .preview-item img { width: 100%; height: 100%; object-fit: cover; }
@@ -53,14 +52,50 @@
         
         .oculto { display: none; }
         #mensajeCarga { text-align: center; font-weight: bold; margin-top: 15px; color: #2980b9; }
+
+        /* Estilos del Login y Botón de Salir */
+        #loginOverlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #2c3e50; display: flex; justify-content: center; align-items: center; z-index: 9999;
+        }
+        .login-box {
+            background: white; padding: 30px; border-radius: 10px; width: 100%; max-width: 350px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3); text-align: center;
+        }
+        .login-box h2 { margin-bottom: 20px; color: #2c3e50; }
+        .login-box input { width: 100%; padding: 12px; margin-top: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        .btn-login { background: #27ae60; color: white; border: none; padding: 12px; width: 100%; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 15px; }
+        .btn-login:hover { background: #219653; }
+        .error-login { color: #c0392b; font-size: 13px; margin-top: 10px; display: none; }
+        .btn-salir { background: #c0392b; color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-size: 12px; float: right; }
     </style>
 </head>
 <body>
 
+<!-- Pantalla de Login -->
+<div id="loginOverlay">
+    <div class="login-box">
+        <h2>Panel Administrativo</h2>
+        <p style="font-size: 13px; color: #7f8c8d;">Mueblería Daguerr</p>
+        <input type="text" id="userLogin" placeholder="Usuario">
+        <input type="password" id="passLogin" placeholder="Contraseña">
+        <button class="btn-login" onclick="intentarLogin()">Ingresar</button>
+        <div id="errorLogin" class="error-login">Usuario o contraseña incorrectos</div>
+    </div>
+</div>
+
 <div class="container">
-    <h1>Panel de Control - Mueblería Daguerr</h1>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h1 style="margin: 0; flex-grow: 1; text-align: center;">Panel de Control - Mueblería Daguerr</h1>
+        <button class="btn-salir" onclick="cerrarSesion()">Cerrar Sesión</button>
+    </div>
     
     <button class="btn-nuevo" onclick="abrirModalNuevo()">+ Agregar Nuevo Artículo</button>
+
+    <!-- Barra de Búsqueda Rápida -->
+    <div style="margin-bottom: 20px; max-width: 400px; margin-left: auto; margin-right: auto;">
+        <input type="text" id="inputBuscador" placeholder="🔍 Buscar por nombre o ID de artículo..." oninput="filtrarPorBusqueda()" style="width: 100%; padding: 10px 15px; border-radius: 8px; border: 1px solid #bdc3c7; font-size: 14px;">
+    </div>
 
     <div class="categorias-tabs" id="tabsCategorias">
         <button class="tab-btn active" onclick="filtrarCategoria('Todas', this)">Todas</button>
@@ -139,7 +174,6 @@
         </div>
         <input type="file" id="fileInput" class="oculto" accept="image/*" multiple onchange="subirArchivosASupabase(this.files)">
 
-        <!-- Contenedor para mostrar las miniaturas en pequeño -->
         <div class="preview-container" id="previewContainer"></div>
 
         <label style="margin-top: 15px;">Enlaces de Imágenes (URLs automáticas o manuales):</label>
@@ -167,9 +201,30 @@
   let categoriaActual = 'Todas';
 
   document.addEventListener('DOMContentLoaded', () => {
+      if (localStorage.getItem('daguerr_auth') === 'true') {
+          document.getElementById('loginOverlay').style.display = 'none';
+      }
       cargarArticulos();
       configurarDragAndDrop();
   });
+
+  function intentarLogin() {
+      const usuarioIngresado = document.getElementById('userLogin').value.trim();
+      const passIngresada = document.getElementById('passLogin').value.trim();
+
+      if (usuarioIngresado === 'Admin Daguerr' && passIngresada === '00daguerr') {
+          localStorage.setItem('daguerr_auth', 'true');
+          document.getElementById('loginOverlay').style.display = 'none';
+          document.getElementById('errorLogin').style.display = 'none';
+      } else {
+          document.getElementById('errorLogin').style.display = 'block';
+      }
+  }
+
+  function cerrarSesion() {
+      localStorage.removeItem('daguerr_auth');
+      location.reload();
+  }
 
   async function cargarArticulos() {
       const { data, error } = await supabaseClient
@@ -191,10 +246,59 @@
       categoriaActual = cat;
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
       elementoBtn.classList.add('active');
+      document.getElementById('inputBuscador').value = '';
       mostrarProductosFiltrados();
   }
 
+  function filtrarPorBusqueda() {
+      const textoBusqueda = document.getElementById('inputBuscador').value.toLowerCase().trim();
+      const contenedor = document.getElementById('listaProductos');
+
+      let filtrados = productosGlobales;
+      if (categoriaActual !== 'Todas') {
+          filtrados = productosGlobales.filter(p => p.categoria === categoriaActual);
+      }
+
+      if (textoBusqueda !== '') {
+          filtrados = filtrados.filter(p => {
+              const tituloMatch = p.titulo && p.titulo.toLowerCase().includes(textoBusqueda);
+              const idMatch = p.id && p.id.toString().includes(textoBusqueda);
+              return tituloMatch || idMatch;
+          });
+      }
+
+      if (filtrados.length === 0) {
+          contenedor.innerHTML = '<p style="text-align: center; color: #7f8c8d; margin-top: 30px;">No se encontraron artículos con esa búsqueda.</p>';
+          return;
+      }
+
+      let html = '';
+      filtrados.forEach(prod => {
+          let primeraImg = (prod.imagenes && prod.imagenes.length > 0) ? prod.imagenes[0] : 'https://via.placeholder.com/60?text=Sin+Foto';
+          let subText = prod.subcategoria ? ` | <b>Sub:</b> ${prod.subcategoria}` : '';
+
+          html += `
+              <div class="producto-card">
+                  <div class="producto-info">
+                      <img src="${primeraImg}" class="producto-img" onerror="this.src='https://via.placeholder.com/60?text=Error'">
+                      <div class="producto-detalles">
+                          <h3>[ID: ${prod.id}] ${prod.titulo}</h3>
+                          <p><b>Cat:</b> ${prod.categoria}${subText} | <b>Estado:</b> ${prod.estado}</p>
+                      </div>
+                  </div>
+                  <div class="acciones">
+                      <button class="btn-editar" onclick="abrirModalEditar(${prod.id})">Editar</button>
+                      <button class="btn-eliminar" onclick="eliminarProducto(${prod.id})">Eliminar</button>
+                  </div>
+              </div>
+          `;
+      });
+
+      contenedor.innerHTML = html;
+  }
+
   function mostrarProductosFiltrados() {
+      document.getElementById('inputBuscador').value = '';
       const contenedor = document.getElementById('listaProductos');
       let filtrados = productosGlobales;
       if (categoriaActual !== 'Todas') {
@@ -371,7 +475,6 @@
               if (urlData && urlData.publicUrl) {
                   let pubUrl = urlData.publicUrl;
 
-                  // Agregar input de URL oculto/automático
                   let nuevoInput = document.createElement('input');
                   nuevoInput.type = 'url';
                   nuevoInput.className = 'input-url';
@@ -379,7 +482,6 @@
                   nuevoInput.style.marginTop = '5px';
                   contenedorUrls.appendChild(nuevoInput);
 
-                  // Mostrar miniatura visual en pequeño
                   let previewItem = document.createElement('div');
                   previewItem.className = 'preview-item';
                   previewItem.innerHTML = `<img src="${pubUrl}">`;
