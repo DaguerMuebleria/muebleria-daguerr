@@ -15,7 +15,7 @@
         .btn-nuevo { background: #27ae60; color: white; border: none; padding: 12px 20px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; display: block; margin: 0 auto 20px auto; }
         .btn-nuevo:hover { background: #219653; }
 
-        /* Categorias / PestaÃ±as */
+        /* Categorias / Pestañas */
         .categorias-tabs { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 25px; border-bottom: 2px solid #eee; padding-bottom: 15px; }
         .tab-btn { background: #ecf0f1; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: bold; color: #555; }
         .tab-btn.active { background: #2980b9; color: white; }
@@ -41,6 +41,10 @@
         input, select, textarea { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
         textarea { resize: vertical; height: 70px; }
         
+        /* Zona de arrastrar archivos */
+        .drop-zone { border: 2px dashed #3498db; padding: 20px; text-align: center; border-radius: 8px; background: #ecf0f1; cursor: pointer; margin-top: 5px; }
+        .drop-zone:hover { background: #d0d7de; }
+
         .url-grupo { display: flex; gap: 5px; margin-top: 5px; }
         .btn-add-url { background: #2980b9; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin-top: 5px; font-size: 12px; }
         
@@ -59,7 +63,7 @@
     
     <button class="btn-nuevo" onclick="abrirModalNuevo()">+ Agregar Nuevo Articulo</button>
 
-    <!-- PestaÃ±as de Categorias -->
+    <!-- Pestañas de Categorias -->
     <div class="categorias-tabs" id="tabsCategorias">
         <button class="tab-btn active" onclick="filtrarCategoria('Todas', this)">Todas</button>
         <button class="tab-btn" onclick="filtrarCategoria('Cocinas', this)">Cocinas</button>
@@ -129,11 +133,18 @@
         <label>Descripcion:</label>
         <textarea id="inputDescripcion" placeholder="Medidas, materiales, detalles..."></textarea>
 
-        <label>Enlaces de Imagenes (URLs de internet o WhatsApp):</label>
+        <!-- Zona de Arrastrar o Seleccionar Archivos -->
+        <label>Agregar Imagenes (Arrastra o haz clic):</label>
+        <div class="drop-zone" onclick="document.getElementById('fileInput').click()">
+            <p style="margin: 0; color: #2980b9; font-weight: bold;">?? Arrastra tus fotos aquí o haz clic para seleccionarlas</p>
+        </div>
+        <input type="file" id="fileInput" class="oculto" accept="image/*" multiple onchange="subirArchivosLocales(this.files)">
+
+        <label style="margin-top: 15px;">Enlaces de Imagenes (URLs automáticas o manuales):</label>
         <div id="contenedorUrls">
             <input type="url" class="input-url" placeholder="https://ejemplo.com/foto1.jpg">
         </div>
-        <button type="button" class="btn-add-url" onclick="agregarCampoUrl()">+ Agregar otra imagen</button>
+        <button type="button" class="btn-add-url" onclick="agregarCampoUrl()">+ Agregar campo de URL manual</button>
 
         <div id="mensajeCarga"></div>
 
@@ -155,7 +166,10 @@
   let categoriaActual = 'Todas';
 
   // Cargar productos al abrir la pagina
-  document.addEventListener('DOMContentLoaded', cargarArticulos);
+  document.addEventListener('DOMContentLoaded', () => {
+      cargarArticulos();
+      configurarDragAndDrop();
+  });
 
   async function cargarArticulos() {
       const { data, error } = await supabaseClient
@@ -175,17 +189,13 @@
 
   function filtrarCategoria(cat, elementoBtn) {
       categoriaActual = cat;
-      
-      // Cambiar estilo de botones activos
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
       elementoBtn.classList.add('active');
-
       mostrarProductosFiltrados();
   }
 
   function mostrarProductosFiltrados() {
       const contenedor = document.getElementById('listaProductos');
-      
       let filtrados = productosGlobales;
       if (categoriaActual !== 'Todas') {
           filtrados = productosGlobales.filter(p => p.categoria === categoriaActual);
@@ -250,7 +260,6 @@
       
       verificarLineaBlancaModal();
 
-      // Cargar imagenes existentes en los inputs de URL
       const contenedorUrls = document.getElementById('contenedorUrls');
       contenedorUrls.innerHTML = '';
       if (prod.imagenes && prod.imagenes.length > 0) {
@@ -284,6 +293,61 @@
       }
   }
 
+  // Configurar zona para arrastrar archivos
+  function configurarDragAndDrop() {
+      const dropZone = document.querySelector('.drop-zone');
+      ['dragenter', 'dragover'].forEach(eventName => {
+          dropZone.addEventListener(eventName, (e) => { e.preventDefault(); dropZone.style.background = '#d0d7de'; }, false);
+      });
+      ['dragleave', 'drop'].forEach(eventName => {
+          dropZone.addEventListener(eventName, (e) => { e.preventDefault(); dropZone.style.background = '#ecf0f1'; }, false);
+      });
+      dropZone.addEventListener('drop', (e) => {
+          const dt = e.dataTransfer;
+          const files = dt.files;
+          subirArchivosLocales(files);
+      });
+  }
+
+  // Subir imagenes locales de forma automatica y generar enlaces
+  async function subirArchivosLocales(files) {
+      if (files.length === 0) return;
+      const msg = document.getElementById('mensajeCarga');
+      msg.style.color = '#2980b9';
+      msg.textContent = `Subiendo ${files.length} imagen(es)... por favor espera.`;
+
+      const contenedorUrls = document.getElementById('contenedorUrls');
+      
+      // Limpiar el primer input si esta vacio
+      const inputs = contenedorUrls.querySelectorAll('.input-url');
+      if (inputs.length === 1 && inputs[0].value.trim() === '') {
+          contenedorUrls.innerHTML = '';
+      }
+
+      for (let i = 0; i < files.length; i++) {
+          let formData = new FormData();
+          formData.append('image', files[i]);
+
+          try {
+              let response = await fetch('https://api.imgbb.com/1/upload?key=6d207e02929255018f34293f0607dfad', {
+                  method: 'POST',
+                  body: formData
+              });
+              let result = await response.json();
+              if (result.success) {
+                  let imageUrl = result.data.url;
+                  contenedorUrls.innerHTML += `<input type="url" class="input-url" value="${imageUrl}" style="margin-top:5px;">`;
+              }
+          } catch (err) {
+              console.error(err);
+          }
+      }
+
+      msg.style.color = 'green';
+      msg.textContent = '¡Imágenes agregadas con éxito!';
+      setTimeout(() => { msg.textContent = ''; }, 3000);
+  }
+
   async function guardarProducto() {
       const id = document.getElementById('productoId').value;
       const titulo = document.getElementById('inputTitulo').value.trim();
@@ -297,7 +361,6 @@
           return;
       }
 
-      // Recopilar URLs de imagenes ingresadas
       let imagenes = [];
       document.querySelectorAll('.input-url').forEach(input => {
           if (input.value.trim() !== '') {
@@ -305,18 +368,17 @@
           }
       });
 
+      document.getElementById('mensajeCarga').style.color = '#2980b9';
       document.getElementById('mensajeCarga').textContent = 'Guardando en la base de datos...';
 
       let errorDb;
       if (id) {
-          // Actualizar existente
           const { error } = await supabaseClient
               .from('productos')
               .update({ titulo, categoria, subcategoria: subcategoria || null, estado, descripcion, imagenes })
               .eq('id', id);
           errorDb = error;
       } else {
-          // Insertar nuevo
           const { error } = await supabaseClient
               .from('productos')
               .insert([{ titulo, categoria, subcategoria: subcategoria || null, estado, descripcion, oculto: false, imagenes }]);
@@ -331,7 +393,7 @@
       }
 
       document.getElementById('mensajeCarga').style.color = 'green';
-      document.getElementById('mensajeCarga').textContent = 'Â¡Guardado con exito!';
+      document.getElementById('mensajeCarga').textContent = '¡Guardado con exito!';
       
       setTimeout(() => {
           cerrarModal();
@@ -340,7 +402,7 @@
   }
 
   async function eliminarProducto(id) {
-      if (!confirm('Â¿Estas seguro de que deseas eliminar este articulo?')) return;
+      if (!confirm('¿Estas seguro de que deseas eliminar este articulo?')) return;
 
       const { error } = await supabaseClient
           .from('productos')
