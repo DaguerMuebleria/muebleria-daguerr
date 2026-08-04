@@ -343,7 +343,20 @@
 
     @media (min-width: 768px) {
       .filtros, .submenu-linea-blanca { padding-left: 30px; padding-right: 30px; }
-      .filtros { justify-content: center; }
+      .filtros {
+        justify-content: center;
+        flex-wrap: wrap;
+        overflow-x: visible;
+        white-space: normal;
+        row-gap: 12px;
+      }
+      .submenu-linea-blanca {
+        justify-content: center;
+        flex-wrap: wrap;
+        overflow-x: visible;
+        white-space: normal;
+        row-gap: 10px;
+      }
     }
 
     /* ===== SECCION HERO (NUEVO, DECORATIVO) ===== */
