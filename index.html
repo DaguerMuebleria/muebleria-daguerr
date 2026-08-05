@@ -57,6 +57,33 @@
       --fuente-cuerpo: 'Poppins', sans-serif;
     }
 
+    /* MODO OSCURO */
+    body.modo-oscuro {
+      --crema: #12100e;
+      --crema-tarjeta: #1a1613;
+      --crema-suave: #221d18;
+      --tinta: #f4ece6;
+      --tinta-suave: #b8a89e;
+      --tinta-tenue: #8a7a70;
+      --blanco: #1a1613;
+      --linea: rgba(244, 236, 230, 0.1);
+      --sombra-suave: 0 10px 30px rgba(0, 0, 0, 0.3);
+      --sombra-media: 0 18px 45px rgba(0, 0, 0, 0.5);
+    }
+
+    body.modo-oscuro .header-contenedor {
+      background-color: rgba(26, 22, 19, 0.92);
+    }
+
+    body.modo-oscuro .hero-bienvenida {
+      background: radial-gradient(ellipse at top, rgba(194, 41, 10, 0.12), transparent 60%), var(--crema);
+    }
+
+    body.modo-oscuro .imagen-mueble,
+    body.modo-oscuro .carrusel-contenedor {
+      background-color: #241e19;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -77,6 +104,7 @@
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
 
     a { color: inherit; }
@@ -194,6 +222,37 @@
       animation: trazoHilo 1s var(--curva) 0.6s forwards;
     }
 
+    /* BOTÓN MODO OSCURO / CLARO SUPERIOR */
+    .btn-modo-toggle {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      background: var(--crema-suave);
+      border: 1px solid var(--linea);
+      color: var(--tinta);
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-family: var(--fuente-cuerpo);
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s ease;
+      z-index: 1001;
+    }
+
+    .btn-modo-toggle:hover {
+      border-color: var(--terracota);
+      color: var(--terracota);
+    }
+
+    .btn-modo-toggle svg {
+      width: 16px;
+      height: 16px;
+    }
+
     /* 2. ENCABEZADO Y LOGO PRINCIPAL */
     .header-contenedor {
       position: sticky;
@@ -205,7 +264,7 @@
       box-shadow: var(--sombra-suave);
       border-bottom: 1px solid var(--linea);
       animation: fadeInUp 0.6s var(--curva);
-      transition: box-shadow 0.4s ease;
+      transition: box-shadow 0.4s ease, background-color 0.4s ease;
     }
 
     .header-contenedor::after {
@@ -221,6 +280,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      position: relative;
     }
 
     .logo-header {
@@ -275,7 +335,7 @@
 
     .btn-filtro {
       position: relative;
-      background-color: var(--blanco);
+      background-color: var(--crema-tarjeta);
       border: 1px solid var(--linea);
       padding: 10px 22px;
       border-radius: 30px;
@@ -297,7 +357,7 @@
 
     .btn-filtro.activo {
       background: linear-gradient(135deg, var(--terracota-claro), var(--terracota));
-      color: var(--blanco);
+      color: #ffffff;
       border-color: transparent;
       box-shadow: var(--sombra-terracota);
       transform: translateY(-1px);
@@ -321,13 +381,13 @@
     }
 
     .btn-subfiltro {
-      background-color: var(--blanco);
-      border: 1px solid #e4d5cd;
+      background-color: var(--crema-tarjeta);
+      border: 1px solid var(--linea);
       padding: 7px 18px;
       border-radius: 20px;
       font-size: 0.83rem;
       font-family: var(--fuente-cuerpo);
-      color: var(--terracota-profundo);
+      color: var(--terracota-claro);
       cursor: pointer;
       transition: all 0.3s ease;
       flex-shrink: 0;
@@ -336,7 +396,7 @@
 
     .btn-subfiltro:hover, .btn-subfiltro.activo {
       background-color: var(--terracota);
-      color: var(--blanco);
+      color: #ffffff;
       border-color: var(--terracota);
       box-shadow: 0 6px 16px rgba(194, 41, 10, 0.22);
     }
@@ -359,7 +419,7 @@
       }
     }
 
-    /* ===== SECCION HERO (NUEVO, DECORATIVO) ===== */
+    /* ===== SECCION HERO ===== */
     .hero-bienvenida {
       position: relative;
       padding: 56px 20px 46px;
@@ -440,12 +500,12 @@
 
     .btn-hero-primario {
       background: linear-gradient(135deg, var(--terracota-claro), var(--terracota));
-      color: var(--blanco);
+      color: #ffffff;
       box-shadow: var(--sombra-terracota);
     }
 
     .btn-hero-secundario {
-      background: var(--blanco);
+      background: var(--crema-tarjeta);
       color: var(--tinta);
       border: 1px solid var(--linea);
     }
@@ -517,7 +577,7 @@
       border-radius: 18px;
       overflow: hidden;
       box-shadow: var(--sombra-suave);
-      transition: transform 0.45s var(--curva), box-shadow 0.45s var(--curva);
+      transition: transform 0.45s var(--curva), box-shadow 0.45s var(--curva), background-color 0.3s ease;
       display: flex;
       flex-direction: column;
       border: 1px solid var(--linea);
@@ -549,6 +609,7 @@
       background: var(--crema-tarjeta);
       position: relative;
       z-index: 2;
+      transition: background-color 0.3s ease;
     }
 
     .info-mueble h3 {
@@ -583,6 +644,10 @@
     .agotado { background-color: #fce8e6; color: #c5221f; }
     .pedido { background-color: #fef3d9; color: #96660a; }
 
+    body.modo-oscuro .disponible { background-color: rgba(19, 115, 51, 0.25); color: #81c995; }
+    body.modo-oscuro .agotado { background-color: rgba(197, 34, 31, 0.25); color: #f28b82; }
+    body.modo-oscuro .pedido { background-color: rgba(150, 102, 10, 0.25); color: #fdd663; }
+
     .btn-whatsapp {
       display: block;
       text-align: center;
@@ -607,7 +672,7 @@
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
-      background: rgba(24, 17, 13, 0.82);
+      background: rgba(10, 8, 6, 0.85);
       z-index: 10000;
       display: none;
       justify-content: center;
@@ -620,7 +685,8 @@
     .modal-detalle.activo { display: flex; }
 
     .modal-contenido {
-      background: var(--blanco);
+      background: var(--crema-tarjeta);
+      color: var(--tinta);
       width: 100%;
       max-width: 660px;
       max-height: 94vh;
@@ -631,6 +697,7 @@
       display: flex;
       flex-direction: column;
       animation: modalScaleIn 0.4s var(--curva-rebote);
+      border: 1px solid var(--linea);
     }
 
     .btn-cerrar {
@@ -743,7 +810,7 @@
 
     .btn-cerrar-imagen:hover { background: var(--terracota); transform: rotate(90deg); }
 
-    .cuerpo-modal { padding: 26px; background: var(--blanco); }
+    .cuerpo-modal { padding: 26px; background: var(--crema-tarjeta); }
 
     .cuerpo-modal h2 {
       font-size: 1.4rem;
@@ -773,7 +840,7 @@
       font-size: 0.92rem;
       font-weight: 700;
       margin-bottom: 10px;
-      color: var(--terracota-profundo);
+      color: var(--terracota-claro);
     }
 
     .lista-metodos-pago ul { list-style: none; padding-left: 0; }
@@ -817,7 +884,7 @@
       align-items: center;
       opacity: 0;
       transform: translateY(24px);
-      transition: opacity 0.7s var(--curva), transform 0.7s var(--curva);
+      transition: opacity 0.7s var(--curva), transform 0.7s var(--curva), background-color 0.3s ease;
     }
 
     .nosotros-contenedor.visible { opacity: 1; transform: translateY(0); }
@@ -854,7 +921,7 @@
       padding: 30px 20px;
       border-radius: 18px;
       background: linear-gradient(150deg, var(--terracota-claro), var(--terracota) 60%, var(--terracota-profundo));
-      color: var(--blanco);
+      color: #ffffff;
       position: relative;
       overflow: hidden;
     }
@@ -893,11 +960,12 @@
 
     /* 7. SECCION DE INFORMACION Y CONTACTO */
     .seccion-info-contacto {
-      background-color: var(--tinta);
-      background-image: radial-gradient(ellipse at 20% 0%, rgba(194, 41, 10, 0.18), transparent 55%);
+      background-color: var(--crema-suave);
+      background-image: radial-gradient(ellipse at 20% 0%, rgba(194, 41, 10, 0.08), transparent 55%);
       padding: 64px 20px;
       margin-top: 40px;
       position: relative;
+      border-top: 1px solid var(--linea);
     }
 
     .encabezado-contacto {
@@ -906,10 +974,10 @@
       text-align: center;
     }
 
-    .encabezado-contacto .eyebrow-seccion { color: var(--oro-suave); }
+    .encabezado-contacto .eyebrow-seccion { color: var(--oro); }
 
     .encabezado-contacto h2 {
-      color: var(--crema);
+      color: var(--tinta);
       font-weight: 600;
       font-size: clamp(1.25rem, 3.4vw, 1.7rem);
       margin-top: 6px;
@@ -928,10 +996,10 @@
       padding: 26px;
       border-radius: 18px;
       box-shadow: var(--sombra-media);
-      border: 1px solid rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--linea);
       opacity: 0;
       transform: translateY(24px);
-      transition: opacity 0.7s var(--curva), transform 0.7s var(--curva);
+      transition: opacity 0.7s var(--curva), transform 0.7s var(--curva), background-color 0.3s ease;
     }
 
     .info-tarjeta.visible { opacity: 1; transform: translateY(0); }
@@ -940,7 +1008,7 @@
       width: 38px; height: 38px;
       border-radius: 50%;
       background: linear-gradient(135deg, var(--terracota-claro), var(--terracota));
-      color: var(--blanco);
+      color: #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -998,7 +1066,7 @@
       bottom: 25px;
       left: 25px;
       background: linear-gradient(135deg, var(--terracota-claro), var(--terracota));
-      color: var(--blanco);
+      color: #ffffff;
       box-shadow: 0 10px 28px rgba(194, 41, 10, 0.4);
       display: flex;
       align-items: center;
@@ -1060,7 +1128,7 @@
       border-radius: 50%;
       border: none;
       background: linear-gradient(135deg, var(--terracota-claro), var(--terracota));
-      color: var(--blanco);
+      color: #ffffff;
       box-shadow: var(--sombra-terracota);
       display: flex;
       align-items: center;
@@ -1090,12 +1158,13 @@
     footer {
       text-align: center;
       padding: 28px;
-      background-color: var(--tinta);
-      color: var(--crema-suave);
+      background-color: var(--crema-suave);
+      color: var(--tinta-suave);
       margin-top: auto;
       font-size: 0.82rem;
       width: 100%;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      border-top: 1px solid var(--linea);
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
   </style>
 </head>
@@ -1125,6 +1194,12 @@
 
   <!-- CONTENEDOR SUPERIOR UNIFICADO -->
   <div class="header-contenedor" id="headerContenedor">
+    <!-- BOTÓN DE MODO OSCURO / CLARO EN LA PARTE SUPERIOR -->
+    <button class="btn-modo-toggle" id="btnModoToggle" onclick="alternarModoOscuro()" aria-label="Alternar Modo Oscuro">
+      <svg id="iconoModo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+      <span id="textoModo">Modo Oscuro</span>
+    </button>
+
     <header>
       <div class="logo-header">
         <span class="brand-script">Daguerr</span>
@@ -1173,12 +1248,12 @@
   </section>
 
   <!-- CATALOGO CONTENEDOR -->
-  <section class="seccion-catalogo">
+  <section class="seccion-catalogo" id="catalogo">
     <div class="encabezado-seccion">
       <span class="eyebrow-seccion">Catalogo completo</span>
       <h2>Encuentra lo que tu hogar necesita</h2>
     </div>
-    <main class="contenedor-catalogo" id="catalogo"></main>
+    <main class="contenedor-catalogo" id="contenedor-productos"></main>
   </section>
 
   <!-- SECCION SOBRE NOSOTROS -->
@@ -1309,7 +1384,6 @@
           return;
         }
 
-        // Filtramos los que no estén ocultos (manejando bool o string)
         productos = (data || []).filter(p => p.oculto !== true && p.oculto !== 'true');
         cargarCatalogo(productos);
       } catch (err) {
@@ -1331,7 +1405,7 @@
     }
 
     function cargarCatalogo(lista = productos) {
-      const catalogo = document.getElementById('catalogo');
+      const catalogo = document.getElementById('contenedor-productos');
       if (!catalogo) return;
       catalogo.innerHTML = '';
 
@@ -1349,7 +1423,7 @@
         const imgSrc = (item.imagenes && item.imagenes.length > 0) ? item.imagenes[0] : '';
 
         tarjeta.innerHTML = `
-          <div style="width: 100%; height: 220px; background-color: #f7f7f7; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+          <div style="width: 100%; height: 220px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
             <img src="${imgSrc}" alt="${item.titulo || 'Mueble'}" class="imagen-mueble" style="width: 100%; height: 100%; object-fit: contain;">
           </div>
           <div class="info-mueble">
@@ -1451,6 +1525,29 @@
       document.getElementById('modal-img-grande').classList.remove('activo');
     }
 
+    // ALTERNAR MODO OSCURO / CLARO
+    function alternarModoOscuro() {
+      const body = document.body;
+      body.classList.toggle('modo-oscuro');
+      const esOscuro = body.classList.contains('modo-oscuro');
+      
+      localStorage.setItem('modoOscuro', esOscuro ? 'activado' : 'desactivado');
+      actualizarBotonModo(esOscuro);
+    }
+
+    function actualizarBotonModo(esOscuro) {
+      const textoModo = document.getElementById('textoModo');
+      const iconoModo = document.getElementById('iconoModo');
+      
+      if (esOscuro) {
+        textoModo.innerText = 'Modo Claro';
+        iconoModo.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
+      } else {
+        textoModo.innerText = 'Modo Oscuro';
+        iconoModo.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
+      }
+    }
+
     let ultimoScrollY = window.pageYOffset;
 
     window.addEventListener('scroll', () => {
@@ -1481,6 +1578,12 @@
     });
 
     document.addEventListener('DOMContentLoaded', () => {
+      // Cargar preferencia guardada de modo oscuro
+      if (localStorage.getItem('modoOscuro') === 'activado') {
+        document.body.classList.add('modo-oscuro');
+        actualizarBotonModo(true);
+      }
+
       inicializarProductos();
 
       const contenedorFiltros = document.getElementById('contenedor-filtros');
@@ -1495,10 +1598,9 @@
     });
   </script>
 
-  <!-- SCRIPT ADICIONAL: SOLO EFECTOS VISUALES (no toca datos ni logica del catalogo) -->
+  <!-- SCRIPT ADICIONAL: EFECTOS VISUALES -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // Boton flotante para volver arriba
       const btnArriba = document.getElementById('btnVolverArriba');
       if (btnArriba) {
         window.addEventListener('scroll', () => {
@@ -1510,7 +1612,6 @@
         }, { passive: true });
       }
 
-      // Revelado suave de las tarjetas de contacto y la seccion "Sobre Nosotros" al entrar en pantalla
       const elementosRevelado = document.querySelectorAll('.info-tarjeta, .nosotros-contenedor');
       if ('IntersectionObserver' in window && elementosRevelado.length) {
         const observadorRevelado = new IntersectionObserver((entradas) => {
@@ -1530,3 +1631,4 @@
   </script>
 </body>
 </html>
+```[cite: 1]
