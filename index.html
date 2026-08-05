@@ -27,10 +27,7 @@
     }
 
     /* ============================================
-       SISTEMA DE DISENO - MUEBLERIA DAGUERR
-       Paleta: terracota de marca + tinta cafe oscuro
-       + acento dorado como hilo conductor (guino textil
-       de tapiceria) para subrayados y detalles.
+       SISTEMA DE DISEÑO - MUEBLERIA DAGUERR
     ============================================ */
     :root {
       --terracota: #c2290a;
@@ -208,7 +205,6 @@
       color: #ffe6e0;
       text-align: right;
       margin-top: 2px;
-      padding-right: 0;
       margin-right: -12px;
     }
 
@@ -222,35 +218,65 @@
       animation: trazoHilo 1s var(--curva) 0.6s forwards;
     }
 
-    /* BOTÓN MODO OSCURO / CLARO SUPERIOR */
-    .btn-modo-toggle {
+    /* SWITCH ESTILO MODO OSCURO / CLARO SUPERIOR IZQUIERDA */
+    .switch-modo-contenedor {
       position: absolute;
-      top: 15px;
-      right: 20px;
-      background: var(--crema-suave);
-      border: 1px solid var(--linea);
-      color: var(--tinta);
-      padding: 8px 14px;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      font-family: var(--fuente-cuerpo);
-      font-weight: 600;
-      cursor: pointer;
+      top: 14px;
+      left: 16px;
       display: flex;
       align-items: center;
       gap: 6px;
-      transition: all 0.3s ease;
       z-index: 1001;
     }
 
-    .btn-modo-toggle:hover {
-      border-color: var(--terracota);
-      color: var(--terracota);
+    .switch-modo {
+      position: relative;
+      display: inline-block;
+      width: 42px;
+      height: 22px;
     }
 
-    .btn-modo-toggle svg {
-      width: 16px;
+    .switch-modo input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .switch-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: var(--tinta-tenue);
+      transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 22px;
+      border: 1px solid var(--linea);
+    }
+
+    .switch-slider:before {
+      position: absolute;
+      content: "";
       height: 16px;
+      width: 16px;
+      left: 2px;
+      bottom: 2px;
+      background-color: white;
+      transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 50%;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    input:checked + .switch-slider {
+      background-color: var(--terracota);
+    }
+
+    input:checked + .switch-slider:before {
+      transform: translateX(20px);
+    }
+
+    .switch-icono {
+      width: 14px;
+      height: 14px;
+      color: var(--tinta-suave);
     }
 
     /* 2. ENCABEZADO Y LOGO PRINCIPAL */
@@ -289,7 +315,6 @@
       text-decoration: none;
       width: 100%;
       max-width: 280px;
-      margin-right: 25px;
     }
 
     .logo-header .brand-script {
@@ -1194,11 +1219,14 @@
 
   <!-- CONTENEDOR SUPERIOR UNIFICADO -->
   <div class="header-contenedor" id="headerContenedor">
-    <!-- BOTÓN DE MODO OSCURO / CLARO EN LA PARTE SUPERIOR -->
-    <button class="btn-modo-toggle" id="btnModoToggle" onclick="alternarModoOscuro()" aria-label="Alternar Modo Oscuro">
-      <svg id="iconoModo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-      <span id="textoModo">Modo Oscuro</span>
-    </button>
+    <!-- SWITCH DE MODO OSCURO / CLARO EN LA PARTE SUPERIOR IZQUIERDA -->
+    <div class="switch-modo-contenedor">
+      <svg class="switch-icono" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+      <label class="switch-modo" aria-label="Alternar Modo Oscuro">
+        <input type="checkbox" id="switchModoOscuro" onchange="alternarModoOscuro()">
+        <span class="switch-slider"></span>
+      </label>
+    </div>
 
     <header>
       <div class="logo-header">
@@ -1525,27 +1553,13 @@
       document.getElementById('modal-img-grande').classList.remove('activo');
     }
 
-    // ALTERNAR MODO OSCURO / CLARO
+    // ALTERNAR MODO OSCURO / CLARO MEDIANTE SWITCH
     function alternarModoOscuro() {
       const body = document.body;
       body.classList.toggle('modo-oscuro');
       const esOscuro = body.classList.contains('modo-oscuro');
       
       localStorage.setItem('modoOscuro', esOscuro ? 'activado' : 'desactivado');
-      actualizarBotonModo(esOscuro);
-    }
-
-    function actualizarBotonModo(esOscuro) {
-      const textoModo = document.getElementById('textoModo');
-      const iconoModo = document.getElementById('iconoModo');
-      
-      if (esOscuro) {
-        textoModo.innerText = 'Modo Claro';
-        iconoModo.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
-      } else {
-        textoModo.innerText = 'Modo Oscuro';
-        iconoModo.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
-      }
     }
 
     let ultimoScrollY = window.pageYOffset;
@@ -1578,10 +1592,11 @@
     });
 
     document.addEventListener('DOMContentLoaded', () => {
-      // Cargar preferencia guardada de modo oscuro
+      // Cargar preferencia guardada de modo oscuro y sincronizar switch
       if (localStorage.getItem('modoOscuro') === 'activado') {
         document.body.classList.add('modo-oscuro');
-        actualizarBotonModo(true);
+        const switchElem = document.getElementById('switchModoOscuro');
+        if (switchElem) switchElem.checked = true;
       }
 
       inicializarProductos();
@@ -1631,4 +1646,3 @@
   </script>
 </body>
 </html>
-```[cite: 1]
