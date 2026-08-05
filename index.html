@@ -28,10 +28,6 @@
 
     /* ============================================
        SISTEMA DE DISEÑO - MUEBLERIA DAGUERR
-       Concepto: "Vitrina de vidrio" — superficies
-       traslucidas como las vitrinas de exhibicion de
-       una mueblería, con una luz calida de fondo
-       (aurora) que se mueve despacio detras del vidrio.
     ============================================ */
     :root {
       --terracota: #c2290a;
@@ -39,8 +35,6 @@
       --terracota-claro: #e0602f;
       --oro: #b8874a;
       --oro-suave: #dcb27c;
-      --rosa-aurora: #e8a790;
-
       --crema: #faf6f1;
       --crema-tarjeta: #fffdfb;
       --crema-suave: #f3ece3;
@@ -49,15 +43,9 @@
       --tinta-tenue: #96887d;
       --blanco: #ffffff;
       --linea: rgba(36, 27, 22, 0.09);
-
-      --vidrio: rgba(255, 255, 255, 0.6);
-      --vidrio-fuerte: rgba(255, 255, 255, 0.82);
-      --vidrio-borde: rgba(255, 255, 255, 0.7);
-
       --sombra-suave: 0 10px 30px rgba(36, 27, 22, 0.07);
       --sombra-media: 0 18px 45px rgba(36, 27, 22, 0.14);
-      --sombra-vidrio: 0 20px 60px rgba(36, 27, 22, 0.16);
-      --sombra-terracota: 0 14px 34px rgba(194, 41, 10, 0.24);
+      --sombra-terracota: 0 14px 34px rgba(194, 41, 10, 0.22);
       --curva: cubic-bezier(.22, 1, .36, 1);
       --curva-rebote: cubic-bezier(.34, 1.56, .64, 1);
 
@@ -68,26 +56,30 @@
 
     /* MODO OSCURO */
     body.modo-oscuro {
-      --crema: #100d0b;
-      --crema-tarjeta: #1c1613;
-      --crema-suave: #241d18;
+      --crema: #12100e;
+      --crema-tarjeta: #1a1613;
+      --crema-suave: #221d18;
       --tinta: #f4ece6;
-      --tinta-suave: #bfaea2;
-      --tinta-tenue: #8c7c70;
-      --blanco: #1c1613;
+      --tinta-suave: #b8a89e;
+      --tinta-tenue: #8a7a70;
+      --blanco: #1a1613;
       --linea: rgba(244, 236, 230, 0.1);
-
-      --vidrio: rgba(28, 22, 19, 0.55);
-      --vidrio-fuerte: rgba(28, 22, 19, 0.82);
-      --vidrio-borde: rgba(244, 236, 230, 0.1);
-
-      --sombra-suave: 0 10px 30px rgba(0, 0, 0, 0.35);
-      --sombra-media: 0 18px 45px rgba(0, 0, 0, 0.55);
-      --sombra-vidrio: 0 25px 70px rgba(0, 0, 0, 0.55);
+      --sombra-suave: 0 10px 30px rgba(0, 0, 0, 0.3);
+      --sombra-media: 0 18px 45px rgba(0, 0, 0, 0.5);
     }
 
-    body.modo-oscuro .fondo-aurora .mancha { opacity: 0.28; }
-    body.modo-oscuro .mapa-responsive { filter: saturate(0.7) brightness(0.72) contrast(1.05); }
+    body.modo-oscuro .header-contenedor {
+      background-color: rgba(26, 22, 19, 0.92);
+    }
+
+    body.modo-oscuro .hero-bienvenida {
+      background: radial-gradient(ellipse at top, rgba(194, 41, 10, 0.12), transparent 60%), var(--crema);
+    }
+
+    body.modo-oscuro .imagen-mueble,
+    body.modo-oscuro .carrusel-contenedor {
+      background-color: #241e19;
+    }
 
     * {
       box-sizing: border-box;
@@ -109,8 +101,7 @@
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
-      position: relative;
-      transition: background-color 0.4s ease, color 0.4s ease;
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
 
     a { color: inherit; }
@@ -119,60 +110,6 @@
       outline: 2px solid var(--terracota);
       outline-offset: 3px;
       border-radius: 4px;
-    }
-
-    /* ===== FONDO AURORA (manchas de luz difuminadas y flotantes) ===== */
-    .fondo-aurora {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      overflow: hidden;
-      pointer-events: none;
-    }
-
-    .fondo-aurora .mancha {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(70px);
-      opacity: 0.4;
-      transition: opacity 0.6s ease;
-      will-change: transform;
-    }
-
-    .fondo-aurora .m1 {
-      width: 46vw; height: 46vw;
-      top: -14vw; left: -10vw;
-      background: radial-gradient(circle, var(--terracota-claro), transparent 70%);
-      animation: flotarBlob1 26s ease-in-out infinite;
-    }
-
-    .fondo-aurora .m2 {
-      width: 40vw; height: 40vw;
-      top: 20vh; right: -14vw;
-      background: radial-gradient(circle, var(--oro-suave), transparent 70%);
-      animation: flotarBlob2 32s ease-in-out infinite;
-    }
-
-    .fondo-aurora .m3 {
-      width: 34vw; height: 34vw;
-      bottom: -12vw; left: 18vw;
-      background: radial-gradient(circle, var(--rosa-aurora), transparent 70%);
-      animation: flotarBlob3 30s ease-in-out infinite;
-    }
-
-    @keyframes flotarBlob1 {
-      0%, 100% { transform: translate(0, 0) scale(1); }
-      50%      { transform: translate(6vw, 8vh) scale(1.12); }
-    }
-
-    @keyframes flotarBlob2 {
-      0%, 100% { transform: translate(0, 0) scale(1); }
-      50%      { transform: translate(-7vw, 5vh) scale(1.08); }
-    }
-
-    @keyframes flotarBlob3 {
-      0%, 100% { transform: translate(0, 0) scale(1); }
-      50%      { transform: translate(5vw, -6vh) scale(1.1); }
     }
 
     /* ===== ANIMACIONES ===== */
@@ -191,7 +128,7 @@
     }
 
     @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(30px) scale(0.97); filter: blur(4px); }
+      from { opacity: 0; transform: translateY(28px) scale(0.98); filter: blur(3px); }
       to   { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
     }
 
@@ -211,11 +148,6 @@
       50%      { transform: translateY(-6px); }
     }
 
-    @keyframes brillo {
-      0%   { background-position: -150% 0; }
-      100% { background-position: 250% 0; }
-    }
-
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
         animation-duration: 0.001ms !important;
@@ -223,7 +155,6 @@
         transition-duration: 0.001ms !important;
         scroll-behavior: auto !important;
       }
-      .fondo-aurora { display: none; }
     }
 
     /* 1. ANIMACION DE BIENVENIDA */
@@ -234,7 +165,7 @@
       width: 100%;
       height: 100%;
       background:
-        radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.14), transparent 55%),
+        radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.12), transparent 55%),
         linear-gradient(150deg, var(--terracota-claro), var(--terracota) 55%, var(--terracota-profundo));
       color: var(--blanco);
       display: flex;
@@ -287,11 +218,15 @@
       animation: trazoHilo 1s var(--curva) 0.6s forwards;
     }
 
-    /* SWITCH MODO OSCURO / CLARO */
+    /* SWITCH ESTILO MODO OSCURO / CLARO SUPERIOR IZQUIERDA */
     .switch-modo-contenedor {
+      position: absolute;
+      top: 14px;
+      left: 16px;
       display: flex;
       align-items: center;
       gap: 6px;
+      z-index: 1001;
     }
 
     .switch-modo {
@@ -311,10 +246,10 @@
       position: absolute;
       cursor: pointer;
       top: 0; left: 0; right: 0; bottom: 0;
-      background-color: rgba(150, 136, 125, 0.35);
-      transition: 0.3s var(--curva);
+      background-color: var(--tinta-tenue);
+      transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       border-radius: 22px;
-      border: 1px solid var(--vidrio-borde);
+      border: 1px solid var(--linea);
     }
 
     .switch-slider:before {
@@ -325,7 +260,7 @@
       left: 2px;
       bottom: 2px;
       background-color: white;
-      transition: 0.3s var(--curva);
+      transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       border-radius: 50%;
       box-shadow: 0 1px 3px rgba(0,0,0,0.2);
     }
@@ -338,56 +273,40 @@
       transform: translateX(20px);
     }
 
-    .switch-icono { width: 14px; height: 14px; color: var(--tinta-suave); flex-shrink: 0; }
+    .switch-icono {
+      width: 14px;
+      height: 14px;
+      color: var(--tinta-suave);
+    }
 
-    /* 2. ENCABEZADO EN VIDRIO (glass navbar) */
+    /* 2. ENCABEZADO Y LOGO PRINCIPAL */
     .header-contenedor {
       position: sticky;
       top: 0;
       z-index: 1000;
-      margin: 12px 12px 0;
-      background: var(--vidrio);
-      backdrop-filter: blur(18px) saturate(1.4);
-      -webkit-backdrop-filter: blur(18px) saturate(1.4);
-      border: 1px solid var(--vidrio-borde);
-      border-radius: 26px;
-      box-shadow: var(--sombra-vidrio);
+      background-color: rgba(255, 253, 251, 0.92);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: var(--sombra-suave);
+      border-bottom: 1px solid var(--linea);
       animation: fadeInUp 0.6s var(--curva);
-      transition: background-color 0.4s ease, box-shadow 0.35s ease;
-      overflow: hidden;
+      transition: box-shadow 0.4s ease, background-color 0.4s ease;
     }
 
-    @media (min-width: 768px) {
-      .header-contenedor { margin: 16px 24px 0; }
-    }
-
-    .header-contenedor.flotando {
-      box-shadow: 0 25px 70px rgba(36, 27, 22, 0.22);
-    }
-
-    .barra-superior {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 18px 4px;
-      gap: 12px;
-    }
-
-    .barra-superior .marca-mini {
-      font-family: var(--fuente-logo-sub);
-      font-size: 0.68rem;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      font-weight: 700;
-      color: var(--oro);
-      opacity: 0.9;
+    .header-contenedor::after {
+      content: "";
+      display: block;
+      height: 3px;
+      width: 100%;
+      background: linear-gradient(90deg, var(--terracota-profundo), var(--terracota) 45%, var(--oro));
     }
 
     header {
-      padding: 0 15px 6px 15px;
+      padding: 14px 15px 6px 15px;
       display: flex;
       justify-content: center;
       align-items: center;
+      position: relative;
     }
 
     .logo-header {
@@ -401,11 +320,8 @@
     .logo-header .brand-script {
       display: block;
       font-family: var(--fuente-logo-script);
-      font-size: clamp(2.5rem, 8.6vw, 3.2rem);
-      background: linear-gradient(100deg, var(--terracota-profundo), var(--terracota) 40%, var(--terracota-claro) 65%, var(--terracota));
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
+      font-size: clamp(2.6rem, 9vw, 3.4rem);
+      color: var(--terracota);
       line-height: 0.85;
       text-align: center;
     }
@@ -413,7 +329,7 @@
     .logo-header .brand-sub {
       display: block;
       font-family: var(--fuente-logo-sub);
-      font-size: clamp(0.66rem, 2.6vw, 0.82rem);
+      font-size: clamp(0.68rem, 2.8vw, 0.85rem);
       letter-spacing: 4px;
       text-transform: uppercase;
       font-weight: 800;
@@ -423,12 +339,12 @@
       padding-right: 12px;
     }
 
-    /* 3. FILTROS DE CATEGORIA (pildoras de vidrio) */
+    /* 3. FILTROS DE CATEGORIA */
     .filtros {
       display: flex;
       justify-content: flex-start;
-      gap: 9px;
-      padding: 8px 16px 16px;
+      gap: 10px;
+      padding: 6px 20px 16px 20px;
       overflow-x: auto;
       white-space: nowrap;
       -webkit-overflow-scrolling: touch;
@@ -436,30 +352,27 @@
       max-width: 100%;
     }
 
-    .filtros::-webkit-scrollbar { height: 4px; }
+    .filtros::-webkit-scrollbar { height: 5px; }
     .filtros::-webkit-scrollbar-thumb {
-      background: rgba(194, 41, 10, 0.25);
+      background: rgba(194, 41, 10, 0.2);
       border-radius: 10px;
     }
 
     .btn-filtro {
       position: relative;
-      background: rgba(255, 255, 255, 0.35);
-      border: 1px solid var(--vidrio-borde);
-      padding: 9px 20px;
+      background-color: var(--crema-tarjeta);
+      border: 1px solid var(--linea);
+      padding: 10px 22px;
       border-radius: 30px;
-      font-size: 0.88rem;
+      font-size: 0.92rem;
       font-family: var(--fuente-cuerpo);
       font-weight: 500;
       color: var(--tinta-suave);
       cursor: pointer;
-      backdrop-filter: blur(6px);
       transition: transform 0.35s var(--curva), box-shadow 0.35s var(--curva),
                   background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
       flex-shrink: 0;
     }
-
-    body.modo-oscuro .btn-filtro { background: rgba(255, 255, 255, 0.05); }
 
     .btn-filtro:hover {
       transform: translateY(-2px);
@@ -480,10 +393,11 @@
       display: none;
       justify-content: flex-start;
       gap: 8px;
-      padding: 10px 16px 16px;
+      padding: 12px 20px 18px 20px;
       overflow-x: auto;
       white-space: nowrap;
-      border-top: 1px dashed var(--vidrio-borde);
+      background-color: var(--crema-suave);
+      border-top: 1px dashed var(--linea);
     }
 
     .submenu-linea-blanca.activo {
@@ -492,11 +406,11 @@
     }
 
     .btn-subfiltro {
-      background: rgba(255, 255, 255, 0.3);
-      border: 1px solid var(--vidrio-borde);
-      padding: 7px 16px;
+      background-color: var(--crema-tarjeta);
+      border: 1px solid var(--linea);
+      padding: 7px 18px;
       border-radius: 20px;
-      font-size: 0.8rem;
+      font-size: 0.83rem;
       font-family: var(--fuente-cuerpo);
       color: var(--terracota-claro);
       cursor: pointer;
@@ -504,8 +418,6 @@
       flex-shrink: 0;
       font-weight: 600;
     }
-
-    body.modo-oscuro .btn-subfiltro { background: rgba(255, 255, 255, 0.04); }
 
     .btn-subfiltro:hover, .btn-subfiltro.activo {
       background-color: var(--terracota);
@@ -515,13 +427,13 @@
     }
 
     @media (min-width: 768px) {
-      .filtros, .submenu-linea-blanca { padding-left: 26px; padding-right: 26px; }
+      .filtros, .submenu-linea-blanca { padding-left: 30px; padding-right: 30px; }
       .filtros {
         justify-content: center;
         flex-wrap: wrap;
         overflow-x: visible;
         white-space: normal;
-        row-gap: 10px;
+        row-gap: 12px;
       }
       .submenu-linea-blanca {
         justify-content: center;
@@ -535,21 +447,17 @@
     /* ===== SECCION HERO ===== */
     .hero-bienvenida {
       position: relative;
-      padding: 60px 18px 40px;
+      padding: 56px 20px 46px;
       text-align: center;
-      overflow: visible;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse at top, rgba(194, 41, 10, 0.06), transparent 60%),
+        var(--crema);
     }
 
     .hero-contenido {
-      max-width: 660px;
+      max-width: 640px;
       margin: 0 auto;
-      padding: 42px 30px;
-      background: var(--vidrio);
-      backdrop-filter: blur(22px) saturate(1.3);
-      -webkit-backdrop-filter: blur(22px) saturate(1.3);
-      border: 1px solid var(--vidrio-borde);
-      border-radius: 32px;
-      box-shadow: var(--sombra-vidrio);
       animation: fadeInUp 0.8s var(--curva) both;
     }
 
@@ -558,7 +466,7 @@
       align-items: center;
       gap: 10px;
       font-family: var(--fuente-logo-sub);
-      font-size: 0.7rem;
+      font-size: 0.72rem;
       letter-spacing: 3px;
       text-transform: uppercase;
       font-weight: 700;
@@ -575,7 +483,7 @@
     .hero-titulo {
       font-family: var(--fuente-cuerpo);
       font-weight: 600;
-      font-size: clamp(1.6rem, 5vw, 2.6rem);
+      font-size: clamp(1.6rem, 5vw, 2.5rem);
       line-height: 1.25;
       color: var(--tinta);
       margin: 16px 0 14px;
@@ -583,11 +491,8 @@
 
     .hero-titulo span {
       font-style: italic;
+      color: var(--terracota);
       font-weight: 700;
-      background: linear-gradient(100deg, var(--terracota-profundo), var(--terracota-claro));
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
     }
 
     .hero-texto {
@@ -607,7 +512,6 @@
     }
 
     .btn-hero-primario, .btn-hero-secundario {
-      position: relative;
       display: inline-flex;
       align-items: center;
       gap: 8px;
@@ -616,7 +520,6 @@
       text-decoration: none;
       font-weight: 600;
       font-size: 0.92rem;
-      overflow: hidden;
       transition: transform 0.35s var(--curva-rebote), box-shadow 0.35s var(--curva);
     }
 
@@ -627,28 +530,9 @@
     }
 
     .btn-hero-secundario {
-      background: rgba(255, 255, 255, 0.4);
+      background: var(--crema-tarjeta);
       color: var(--tinta);
-      border: 1px solid var(--vidrio-borde);
-      backdrop-filter: blur(6px);
-    }
-
-    body.modo-oscuro .btn-hero-secundario { background: rgba(255, 255, 255, 0.06); }
-
-    .btn-hero-primario::after, .btn-hero-secundario::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(100deg, transparent 40%, rgba(255,255,255,0.45) 50%, transparent 60%);
-      background-size: 250% 100%;
-      background-position: -150% 0;
-      opacity: 0;
-      transition: opacity 0.2s ease;
-    }
-
-    .btn-hero-primario:hover::after, .btn-hero-secundario:hover::after {
-      opacity: 1;
-      animation: brillo 1.1s ease;
+      border: 1px solid var(--linea);
     }
 
     .btn-hero-primario:hover, .btn-hero-secundario:hover {
@@ -658,7 +542,7 @@
     .btn-hero-secundario:hover { border-color: var(--terracota); color: var(--terracota); }
 
     /* ===== ENCABEZADO DE SECCION CATALOGO ===== */
-    .seccion-catalogo { padding-top: 10px; position: relative; z-index: 1; }
+    .seccion-catalogo { padding-top: 6px; }
 
     .encabezado-seccion {
       max-width: 1200px;
@@ -683,7 +567,7 @@
       margin-top: 6px;
     }
 
-    /* 4. REJILLA DE PRODUCTOS (tarjetas de vidrio) */
+    /* 4. REJILLA DE PRODUCTOS */
     .contenedor-catalogo {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -714,16 +598,14 @@
     }
 
     .tarjeta-mueble {
-      background: var(--vidrio-fuerte);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border-radius: 20px;
+      background: var(--crema-tarjeta);
+      border-radius: 18px;
       overflow: hidden;
       box-shadow: var(--sombra-suave);
-      transition: transform 0.45s var(--curva), box-shadow 0.45s var(--curva), background-color 0.3s ease, border-color 0.3s ease;
+      transition: transform 0.45s var(--curva), box-shadow 0.45s var(--curva), background-color 0.3s ease;
       display: flex;
       flex-direction: column;
-      border: 1px solid var(--vidrio-borde);
+      border: 1px solid var(--linea);
       cursor: pointer;
       animation: fadeInUp 0.7s var(--curva) both;
       will-change: transform;
@@ -732,7 +614,6 @@
     .tarjeta-mueble:hover {
       transform: translateY(-8px);
       box-shadow: var(--sombra-media);
-      border-color: rgba(194, 41, 10, 0.35);
     }
 
     .imagen-mueble {
@@ -750,12 +631,14 @@
       display: flex;
       flex-direction: column;
       flex-grow: 1;
+      background: var(--crema-tarjeta);
       position: relative;
       z-index: 2;
+      transition: background-color 0.3s ease;
     }
 
     .info-mueble h3 {
-      font-size: 1.1rem;
+      font-size: 1.12rem;
       font-weight: 600;
       margin-bottom: 6px;
       color: var(--tinta);
@@ -791,7 +674,6 @@
     body.modo-oscuro .pedido { background-color: rgba(150, 102, 10, 0.25); color: #fdd663; }
 
     .btn-whatsapp {
-      position: relative;
       display: block;
       text-align: center;
       background: linear-gradient(135deg, #29d76b, #1eb956);
@@ -801,7 +683,6 @@
       border-radius: 12px;
       font-weight: 600;
       font-size: 0.96rem;
-      overflow: hidden;
       transition: transform 0.3s var(--curva), box-shadow 0.3s ease;
       box-shadow: 0 8px 18px rgba(37, 211, 102, 0.28);
     }
@@ -811,39 +692,37 @@
       box-shadow: 0 10px 22px rgba(37, 211, 102, 0.38);
     }
 
-    /* 5. VENTANA MODAL (panel de vidrio esmerilado) */
+    /* 5. VENTANA MODAL AMPLIADA Y ADAPTADA */
     .modal-detalle {
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
-      background: rgba(20, 15, 11, 0.55);
+      background: rgba(10, 8, 6, 0.85);
       z-index: 10000;
       display: none;
       justify-content: center;
       align-items: center;
       padding: 10px;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
     }
 
     .modal-detalle.activo { display: flex; }
 
     .modal-contenido {
-      background: var(--vidrio-fuerte);
-      backdrop-filter: blur(26px) saturate(1.3);
-      -webkit-backdrop-filter: blur(26px) saturate(1.3);
+      background: var(--crema-tarjeta);
       color: var(--tinta);
       width: 100%;
       max-width: 660px;
       max-height: 94vh;
-      border-radius: 26px;
+      border-radius: 22px;
       overflow-y: auto;
       position: relative;
-      box-shadow: 0 30px 70px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
       display: flex;
       flex-direction: column;
       animation: modalScaleIn 0.4s var(--curva-rebote);
-      border: 1px solid var(--vidrio-borde);
+      border: 1px solid var(--linea);
     }
 
     .btn-cerrar {
@@ -956,7 +835,7 @@
 
     .btn-cerrar-imagen:hover { background: var(--terracota); transform: rotate(90deg); }
 
-    .cuerpo-modal { padding: 26px; }
+    .cuerpo-modal { padding: 26px; background: var(--crema-tarjeta); }
 
     .cuerpo-modal h2 {
       font-size: 1.4rem;
@@ -975,14 +854,12 @@
     }
 
     .lista-metodos-pago {
-      background: rgba(255, 255, 255, 0.35);
+      background: var(--crema);
       border-radius: 14px;
       padding: 18px;
       margin-bottom: 26px;
-      border: 1px solid var(--vidrio-borde);
+      border: 1px solid var(--linea);
     }
-
-    body.modo-oscuro .lista-metodos-pago { background: rgba(255, 255, 255, 0.04); }
 
     .lista-metodos-pago h4 {
       font-size: 0.92rem;
@@ -1018,17 +895,13 @@
       max-width: 1200px;
       margin: 20px auto 0;
       padding: 50px 20px;
-      position: relative;
-      z-index: 1;
     }
 
     .nosotros-contenedor {
-      background: var(--vidrio);
-      backdrop-filter: blur(20px) saturate(1.3);
-      -webkit-backdrop-filter: blur(20px) saturate(1.3);
-      border: 1px solid var(--vidrio-borde);
-      border-radius: 28px;
-      box-shadow: var(--sombra-vidrio);
+      background: var(--crema-tarjeta);
+      border: 1px solid var(--linea);
+      border-radius: 24px;
+      box-shadow: var(--sombra-suave);
       padding: 44px 30px;
       display: grid;
       grid-template-columns: 1fr;
@@ -1071,7 +944,7 @@
       justify-content: center;
       text-align: center;
       padding: 30px 20px;
-      border-radius: 20px;
+      border-radius: 18px;
       background: linear-gradient(150deg, var(--terracota-claro), var(--terracota) 60%, var(--terracota-profundo));
       color: #ffffff;
       position: relative;
@@ -1082,7 +955,7 @@
       content: "";
       position: absolute;
       inset: 0;
-      background: radial-gradient(circle at 25% 15%, rgba(255, 255, 255, 0.22), transparent 55%);
+      background: radial-gradient(circle at 25% 15%, rgba(255, 255, 255, 0.18), transparent 55%);
     }
 
     .cifra-numero {
@@ -1112,10 +985,12 @@
 
     /* 7. SECCION DE INFORMACION Y CONTACTO */
     .seccion-info-contacto {
-      padding: 64px 18px;
-      margin-top: 46px;
+      background-color: var(--crema-suave);
+      background-image: radial-gradient(ellipse at 20% 0%, rgba(194, 41, 10, 0.08), transparent 55%);
+      padding: 64px 20px;
+      margin-top: 40px;
       position: relative;
-      z-index: 1;
+      border-top: 1px solid var(--linea);
     }
 
     .encabezado-contacto {
@@ -1142,13 +1017,11 @@
     }
 
     .info-tarjeta {
-      background: var(--vidrio);
-      backdrop-filter: blur(18px) saturate(1.3);
-      -webkit-backdrop-filter: blur(18px) saturate(1.3);
+      background: var(--crema-tarjeta);
       padding: 26px;
-      border-radius: 20px;
+      border-radius: 18px;
       box-shadow: var(--sombra-media);
-      border: 1px solid var(--vidrio-borde);
+      border: 1px solid var(--linea);
       opacity: 0;
       transform: translateY(24px);
       transition: opacity 0.7s var(--curva), transform 0.7s var(--curva), background-color 0.3s ease;
@@ -1203,10 +1076,10 @@
       position: relative;
       width: 100%;
       height: 190px;
-      border-radius: 14px;
+      border-radius: 12px;
       overflow: hidden;
       margin-top: 14px;
-      border: 1px solid var(--vidrio-borde);
+      border: 1px solid var(--linea);
       filter: saturate(0.9);
     }
 
@@ -1309,32 +1182,18 @@
 
     footer {
       text-align: center;
-      padding: 26px;
-      margin: 20px 12px 12px;
-      background: var(--vidrio);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      padding: 28px;
+      background-color: var(--crema-suave);
       color: var(--tinta-suave);
       margin-top: auto;
       font-size: 0.82rem;
-      border-radius: 20px;
-      border: 1px solid var(--vidrio-borde);
-      position: relative;
-      z-index: 1;
-      transition: background-color 0.4s ease, color 0.4s ease;
+      width: 100%;
+      border-top: 1px solid var(--linea);
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
-
-    @media (min-width: 768px) { footer { margin: 24px 24px 20px; } }
   </style>
 </head>
 <body>
-
-  <!-- FONDO ANIMADO (aurora de luz detras del vidrio) -->
-  <div class="fondo-aurora" aria-hidden="true">
-    <div class="mancha m1"></div>
-    <div class="mancha m2"></div>
-    <div class="mancha m3"></div>
-  </div>
 
   <!-- ANIMACION DE BIENVENIDA -->
   <div id="welcome-screen">
@@ -1358,18 +1217,15 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
   </button>
 
-  <!-- CONTENEDOR SUPERIOR UNIFICADO (glass navbar) -->
+  <!-- CONTENEDOR SUPERIOR UNIFICADO -->
   <div class="header-contenedor" id="headerContenedor">
-    <div class="barra-superior">
-      <span class="marca-mini">Desde 1995</span>
-      <!-- SWITCH DE MODO OSCURO / CLARO -->
-      <div class="switch-modo-contenedor">
-        <svg class="switch-icono" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-        <label class="switch-modo" aria-label="Alternar Modo Oscuro">
-          <input type="checkbox" id="switchModoOscuro" onchange="alternarModoOscuro()">
-          <span class="switch-slider"></span>
-        </label>
-      </div>
+    <!-- SWITCH DE MODO OSCURO / CLARO EN LA PARTE SUPERIOR IZQUIERDA -->
+    <div class="switch-modo-contenedor">
+      <svg class="switch-icono" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+      <label class="switch-modo" aria-label="Alternar Modo Oscuro">
+        <input type="checkbox" id="switchModoOscuro" onchange="alternarModoOscuro()">
+        <span class="switch-slider"></span>
+      </label>
     </div>
 
     <header>
@@ -1761,23 +1617,15 @@
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const btnArriba = document.getElementById('btnVolverArriba');
-      const encabezado = document.getElementById('headerContenedor');
-
-      window.addEventListener('scroll', () => {
-        if (window.pageYOffset > 500) {
-          if (btnArriba) btnArriba.classList.add('visible');
-        } else {
-          if (btnArriba) btnArriba.classList.remove('visible');
-        }
-
-        if (encabezado) {
-          if (window.pageYOffset > 12) {
-            encabezado.classList.add('flotando');
+      if (btnArriba) {
+        window.addEventListener('scroll', () => {
+          if (window.pageYOffset > 500) {
+            btnArriba.classList.add('visible');
           } else {
-            encabezado.classList.remove('flotando');
+            btnArriba.classList.remove('visible');
           }
-        }
-      }, { passive: true });
+        }, { passive: true });
+      }
 
       const elementosRevelado = document.querySelectorAll('.info-tarjeta, .nosotros-contenedor');
       if ('IntersectionObserver' in window && elementosRevelado.length) {
