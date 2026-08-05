@@ -435,7 +435,7 @@
         label { display: block; margin-top: 14px; font-weight: 600; font-size: 13px; color: var(--primary-light); }
         label:first-of-type { margin-top: 0; }
 
-        input[type="text"], input[type="number"], input[type="url"], select, textarea {
+        input[type="text"], input[type="password"], input[type="number"], input[type="url"], select, textarea {
             width: 100%;
             padding: 10px 14px;
             margin-top: 6px;
@@ -591,7 +591,7 @@
     <div class="login-card">
         <h2>Panel Administrativo</h2>
         <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 25px;">Mueblería Daguerr</p>
-        <input type="text" id="userLogin" placeholder="Usuario">
+        <input type="text" id="userLogin" placeholder="Correo electrónico">
         <input type="password" id="passLogin" placeholder="Contraseña">
         <button class="btn-login-action" onclick="intentarLogin()">Acceder al Sistema</button>
         <div id="errorLogin" class="login-error">Credenciales incorrectas</div>
@@ -732,11 +732,14 @@
   let productosGlobales = [];
   let categoriaActual = 'Todas';
 
-  document.addEventListener('DOMContentLoaded', () => {
-      if (localStorage.getItem('daguerr_auth') === 'true') {
+  document.addEventListener('DOMContentLoaded', async () => {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (session) {
           document.getElementById('loginScreen').style.display = 'none';
+          cargarArticulos();
+      } else {
+          document.getElementById('loginScreen').style.display = 'flex';
       }
-      cargarArticulos();
       configurarDragAndDrop();
   });
 
@@ -747,21 +750,27 @@
       overlay.classList.toggle('open');
   }
 
-  function intentarLogin() {
-      const usuarioIngresado = document.getElementById('userLogin').value.trim();
+  async function intentarLogin() {
+      const emailIngresado = document.getElementById('userLogin').value.trim();
       const passIngresada = document.getElementById('passLogin').value.trim();
 
-      if (usuarioIngresado === 'admin' && passIngresada === 'davilaguerrero60') {
-          localStorage.setItem('daguerr_auth', 'true');
-          document.getElementById('loginScreen').style.display = 'none';
-          document.getElementById('errorLogin').style.display = 'none';
-      } else {
+      const { data, error } = await supabaseClient.auth.signInWithPassword({
+          email: emailIngresado,
+          password: passIngresada,
+      });
+
+      if (error) {
           document.getElementById('errorLogin').style.display = 'block';
+          return;
       }
+
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('errorLogin').style.display = 'none';
+      cargarArticulos();
   }
 
-  function cerrarSesion() {
-      localStorage.removeItem('daguerr_auth');
+  async function cerrarSesion() {
+      await supabaseClient.auth.signOut();
       location.reload();
   }
 
