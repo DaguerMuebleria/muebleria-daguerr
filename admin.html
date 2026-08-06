@@ -467,11 +467,64 @@
         }
         .dropzone-box:hover { border-color: var(--accent); background: #f0fdf4; }
 
-        .preview-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        /* Contenedor de Previsualización y Reordenamiento de Imágenes */
+        .preview-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .preview-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            gap: 10px;
+        }
+        .preview-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            overflow: hidden;
+        }
         .preview-thumb {
-            width: 65px; height: 65px; border-radius: var(--radius-sm); overflow: hidden; border: 1px solid var(--border); background: #f1f5f9;
+            width: 50px; height: 50px; border-radius: var(--radius-sm); overflow: hidden; border: 1px solid var(--border); background: #f1f5f9; flex-shrink: 0;
         }
         .preview-thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .preview-url-text {
+            font-size: 12px;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 250px;
+        }
+        .preview-actions {
+            display: flex;
+            gap: 5px;
+            flex-shrink: 0;
+        }
+        .btn-img-action {
+            background: white;
+            border: 1px solid var(--border);
+            padding: 5px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-main);
+            transition: all 0.2s;
+        }
+        .btn-img-action:hover { background: #e2e8f0; }
+        .btn-img-delete {
+            background: #fef2f2;
+            color: var(--danger);
+            border-color: #fecaca;
+        }
+        .btn-img-delete:hover { background: var(--danger); color: white; }
 
         .btn-suburl {
             background: transparent; color: var(--accent); border: 1px dashed var(--accent); padding: 8px; border-radius: var(--radius-sm); cursor: pointer; margin-top: 8px; font-size: 12px; font-weight: 600; width: 100%;
@@ -706,13 +759,14 @@
             </div>
             <input type="file" id="fileInput" class="oculto" accept="image/*" multiple onchange="subirArchivosASupabase(this.files)">
 
-            <div class="preview-grid" id="previewContainer"></div>
+            <!-- Lista visual de imágenes con opción de reordenar y eliminar antes de guardar -->
+            <label style="margin-top: 15px;">Imágenes del Artículo (Puedes reordenar o eliminar antes de guardar):</label>
+            <div class="preview-list" id="previewContainer"></div>
 
-            <label style="margin-top: 15px;">Enlaces de Imágenes (URLs):</label>
-            <div id="contenedorUrls">
-                <input type="url" class="input-url" placeholder="https://ejemplo.com/foto1.jpg" style="margin-top:5px;">
+            <div style="display: flex; gap: 8px; margin-top: 8px;">
+                <input type="url" id="inputUrlManual" placeholder="https://ejemplo.com/foto.jpg" style="margin-top:0; flex:1;">
+                <button type="button" class="btn-suburl" style="margin-top:0; width:auto; padding: 10px 15px;" onclick="agregarUrlManual()">+ Agregar URL</button>
             </div>
-            <button type="button" class="btn-suburl" onclick="agregarCampoUrl()">+ Agregar URL manual</button>
 
             <div id="msgLoader"></div>
         </div>
@@ -731,6 +785,7 @@
 
   let productosGlobales = [];
   let categoriaActual = 'Todas';
+  let imagenesActuales = []; // Array en memoria para controlar el orden y existencia de las fotos en el modal
 
   // Comprobar si ya hay una sesión activa de Supabase al cargar la página
   window.addEventListener('DOMContentLoaded', async () => {
@@ -758,7 +813,6 @@
           return;
       }
 
-      // Convertimos el nombre de usuario ingresado al formato de correo interno requerido por Supabase Auth
       const emailFicticio = `${usuarioIngresado}@muebleriadaguerr.local`;
 
       const { data, error } = await supabaseClient.auth.signInWithPassword({
@@ -883,8 +937,9 @@
       document.getElementById('inputSubcategoria').value = '';
       document.getElementById('inputEstado').value = 'disponible';
       document.getElementById('inputDescripcion').value = '';
-      document.getElementById('contenedorUrls').innerHTML = '<input type="url" class="input-url" placeholder="https://ejemplo.com/foto1.jpg" style="margin-top:5px;">';
-      document.getElementById('previewContainer').innerHTML = '';
+      document.getElementById('inputUrlManual').value = '';
+      imagenesActuales = [];
+      renderizarPreviews();
       document.getElementById('msgLoader').textContent = '';
       
       verificarLineaBlancaModal();
@@ -903,22 +958,12 @@
       document.getElementById('inputSubcategoria').value = prod.subcategoria || '';
       document.getElementById('inputEstado').value = prod.estado || 'disponible';
       document.getElementById('inputDescripcion').value = prod.descripcion || '';
+      document.getElementById('inputUrlManual').value = '';
       
       verificarLineaBlancaModal();
 
-      const contenedorUrls = document.getElementById('contenedorUrls');
-      contenedorUrls.innerHTML = '';
-      const previewContainer = document.getElementById('previewContainer');
-      previewContainer.innerHTML = '';
-
-      if (prod.imagenes && prod.imagenes.length > 0) {
-          prod.imagenes.forEach(url => {
-              contenedorUrls.innerHTML += `<input type="url" class="input-url" value="${url}" style="margin-top:5px;">`;
-              previewContainer.innerHTML += `<div class="preview-thumb"><img src="${url}"></div>`;
-          });
-      } else {
-          contenedorUrls.innerHTML = `<input type="url" class="input-url" placeholder="https://ejemplo.com/foto1.jpg" style="margin-top:5px;">`;
-      }
+      imagenesActuales = prod.imagenes ? [...prod.imagenes] : [];
+      renderizarPreviews();
 
       document.getElementById('msgLoader').textContent = '';
       document.getElementById('modalProducto').style.display = 'flex';
@@ -928,8 +973,53 @@
       document.getElementById('modalProducto').style.display = 'none';
   }
 
-  function agregarCampoUrl() {
-      document.getElementById('contenedorUrls').innerHTML += `<input type="url" class="input-url" placeholder="https://ejemplo.com/foto.jpg" style="margin-top:5px;">`;
+  function agregarUrlManual() {
+      const input = document.getElementById('inputUrlManual');
+      const val = input.value.trim();
+      if (!val) return;
+      imagenesActuales.push(val);
+      input.value = '';
+      renderizarPreviews();
+  }
+
+  function eliminarImagenLocal(index) {
+      imagenesActuales.splice(index, 1);
+      renderizarPreviews();
+  }
+
+  function moverImagen(index, direccion) {
+      const nuevoIndex = index + direccion;
+      if (nuevoIndex < 0 || nuevoIndex >= imagenesActuales.length) return;
+      const temp = imagenesActuales[index];
+      imagenesActuales[index] = imagenesActuales[nuevoIndex];
+      imagenesActuales[nuevoIndex] = temp;
+      renderizarPreviews();
+  }
+
+  function renderizarPreviews() {
+      const container = document.getElementById('previewContainer');
+      if (imagenesActuales.length === 0) {
+          container.innerHTML = '<p style="font-size: 12px; color: var(--text-muted); text-align: center; margin: 5px 0;">No hay imágenes agregadas.</p>';
+          return;
+      }
+
+      let html = '';
+      imagenesActuales.forEach((url, index) => {
+          html += `
+              <div class="preview-item">
+                  <div class="preview-left">
+                      <div class="preview-thumb"><img src="${url}" onerror="this.src='https://via.placeholder.com/50?text=Error'"></div>
+                      <div class="preview-url-text" title="${url}">${index + 1}. ${url}</div>
+                  </div>
+                  <div class="preview-actions">
+                      ${index > 0 ? `<button type="button" class="btn-img-action" onclick="moverImagen(${index}, -1)" title="Subir">⬆️</button>` : ''}
+                      ${index < imagenesActuales.length - 1 ? `<button type="button" class="btn-img-action" onclick="moverImagen(${index}, 1)" title="Bajar">⬇️</button>` : ''}
+                      <button type="button" class="btn-img-action btn-img-delete" onclick="eliminarImagenLocal(${index})" title="Eliminar imagen">❌</button>
+                  </div>
+              </div>
+          `;
+      });
+      container.innerHTML = html;
   }
 
   function verificarLineaBlancaModal() {
@@ -1002,14 +1092,6 @@
       msg.style.color = 'var(--accent)';
       msg.textContent = `Optimizando y subiendo ${files.length} archivo(s)...`;
 
-      const contenedorUrls = document.getElementById('contenedorUrls');
-      const previewContainer = document.getElementById('previewContainer');
-      
-      const inputsActuales = contenedorUrls.querySelectorAll('.input-url');
-      if (inputsActuales.length === 1 && inputsActuales[0].value.trim() === '') {
-          contenedorUrls.innerHTML = '';
-      }
-
       const limpiarRuta = (t) => t.trim().replace(/[\/\\?%*:|"<>]/g, '_').replace(/\s+/g, '_');
       let catClean = limpiarRuta(categoria);
       let subClean = subcategoria ? limpiarRuta(subcategoria) : '';
@@ -1039,15 +1121,14 @@
                   .getPublicUrl(rutaCompleta);
 
               if (urlData && urlData.publicUrl) {
-                  let pubUrl = urlData.publicUrl;
-                  contenedorUrls.innerHTML += `<input type="url" class="input-url" value="${pubUrl}" style="margin-top:5px;">`;
-                  previewContainer.innerHTML += `<div class="preview-thumb"><img src="${pubUrl}"></div>`;
+                  imagenesActuales.push(urlData.publicUrl);
               }
           } catch (err) {
               console.error(err);
           }
       }
 
+      renderizarPreviews();
       msg.style.color = 'var(--success)';
       msg.textContent = '¡Imágenes optimizadas y subidas con éxito!';
       setTimeout(() => { msg.textContent = ''; }, 3000);
@@ -1067,15 +1148,10 @@
           return;
       }
 
-      let imagenes = [];
-      document.querySelectorAll('.input-url').forEach(input => {
-          if (input.value.trim() !== '') imagenes.push(input.value.trim());
-      });
-
       document.getElementById('msgLoader').style.color = 'var(--accent)';
       document.getElementById('msgLoader').textContent = 'Guardando cambios...';
 
-      let datosAEnviar = { titulo, categoria, subcategoria: subcategoria || null, estado, descripcion, imagenes };
+      let datosAEnviar = { titulo, categoria, subcategoria: subcategoria || null, estado, descripcion, imagenes: imagenesActuales };
       if (customIdVal !== '') datosAEnviar.id = parseInt(customIdVal);
 
       let errorDb;
@@ -1102,8 +1178,30 @@
   }
 
   async function eliminarProducto(id) {
-      if (!confirm('¿Seguro que deseas eliminar este artículo?')) return;
+      if (!confirm('¿Seguro que deseas eliminar este artículo y sus carpetas de fotos asociadas?')) return;
 
+      // 1. Buscar el producto antes de borrarlo para obtener las URLs de las imágenes y eliminar su carpeta física en el bucket
+      const prodAEliminar = productosGlobales.find(p => p.id === id);
+      if (prodAEliminar && prodAEliminar.imagenes && prodAEliminar.imagenes.length > 0) {
+          try {
+              // Extraemos las rutas relativas de los archivos dentro del bucket para eliminarlas
+              let rutasArchivos = prodAEliminar.imagenes
+                  .filter(url => url.includes('/fotos-productos/'))
+                  .map(url => {
+                      const partes = url.split('/fotos-productos/');
+                      return partes[1] ? decodeURIComponent(partes[1]) : null;
+                  })
+                  .filter(Boolean);
+
+              if (rutasArchivos.length > 0) {
+                  await supabaseClient.storage.from('fotos-productos').remove(rutasArchivos);
+              }
+          } catch (err) {
+              console.error("Error al limpiar archivos del storage:", err);
+          }
+      }
+
+      // 2. Eliminar el registro en la base de datos de Supabase
       const { error } = await supabaseClient.from('productos').delete().eq('id', id);
       if (error) {
           alert('No se pudo eliminar el artículo.');
