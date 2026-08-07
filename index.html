@@ -1537,8 +1537,10 @@
       } else {
         submenuLB.classList.remove('activo');
         if (cat === 'Todos') {
+          // Muestra todos los productos ocultando los que estén marcados como ocultos
           cargarCatalogo(productos);
         } else {
+          // CORRECCIÓN: Compara utilizando la función normalizar en ambos extremos
           const filtrados = productos.filter(p => normalizar(p.categoria) === normalizar(cat));
           cargarCatalogo(filtrados); 
         }
