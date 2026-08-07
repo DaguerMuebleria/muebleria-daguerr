@@ -45,7 +45,7 @@
             overflow: hidden;
         }
 
-        /* Isla Dinámica / Notch superior */
+        /* Isla Dinámica / Notch superior simulado */
         .dynamic-island {
             position: absolute;
             top: 14px;
@@ -64,6 +64,9 @@
             height: 100%;
             border: none;
             background: #fff;
+            /* AQUÍ ESTÁ EL TRUCO: Empuja la página dentro del simulador para que no choque con la isla */
+            margin-top: 35px; 
+            height: calc(100% - 35px);
         }
     </style>
 </head>
@@ -76,7 +79,7 @@
 
     <div class="iphone-frame">
         <div class="dynamic-island"></div>
-        <!-- Aquí carga tu web publicada -->
+        <!-- Carga tu web publicada con el espacio respetado -->
         <iframe id="screenFrame" src="https://muebleriadaguerr.com"></iframe>
     </div>
 
