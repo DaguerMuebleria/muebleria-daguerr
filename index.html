@@ -616,6 +616,43 @@
       box-shadow: var(--sombra-media);
     }
 
+    .contenedor-imagen-tarjeta {
+      width: 100%;
+      height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+      background-color: var(--crema-suave);
+    }
+
+    /* SEÑALADOR DISCRETO DE CANTIDAD DE FOTOS */
+    .badge-fotos-contador {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(36, 27, 22, 0.65);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      color: #ffffff;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      z-index: 3;
+      pointer-events: none;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+
+    .badge-fotos-contador svg {
+      width: 12px;
+      height: 12px;
+    }
+
     .imagen-mueble {
       width: 100%;
       height: 220px;
@@ -1449,10 +1486,20 @@
         tarjeta.onclick = () => abrirModal(item.id);
 
         const imgSrc = (item.imagenes && item.imagenes.length > 0) ? item.imagenes[0] : '';
+        const totalFotos = (item.imagenes && item.imagenes.length > 1) ? item.imagenes.length : 0;
+
+        // Generar etiqueta HTML para el indicador de fotos si hay más de 1
+        const badgeFotosHTML = totalFotos > 1 ? `
+          <div class="badge-fotos-contador" title="${totalFotos} imágenes disponibles">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            <span>${totalFotos}</span>
+          </div>
+        ` : '';
 
         tarjeta.innerHTML = `
-          <div style="width: 100%; height: 220px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-            <img src="${imgSrc}" alt="${item.titulo || 'Mueble'}" class="imagen-mueble" style="width: 100%; height: 100%; object-fit: contain;">
+          <div class="contenedor-imagen-tarjeta">
+            ${badgeFotosHTML}
+            <img src="${imgSrc}" alt="${item.titulo || 'Mueble'}" class="imagen-mueble" loading="lazy">
           </div>
           <div class="info-mueble">
             <div class="contenedor-badges">
