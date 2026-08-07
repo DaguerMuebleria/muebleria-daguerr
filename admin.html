@@ -670,6 +670,7 @@
         <button class="sidebar-btn-cat" onclick="filtrarCategoria('Deportivos', this)">⚽ Deportivos</button>
         <button class="sidebar-btn-cat" onclick="filtrarCategoria('Descanso', this)">🛋️ Descanso</button>
         <button class="sidebar-btn-cat" onclick="filtrarCategoria('Hogar', this)">🏠 Hogar</button>
+        <button class="sidebar-btn-cat" onclick="filtrarCategoria('Electronica', this)">📱 Electrónica</button>
         <button class="sidebar-btn-cat" onclick="filtrarCategoria('Ropa y Calzado', this)">👕 Ropa y Calzado</button>
     </div>
     <div class="sidebar-footer">
@@ -727,6 +728,7 @@
                 <option value="Deportivos">Deportivos</option>
                 <option value="Descanso">Descanso</option>
                 <option value="Hogar">Hogar</option>
+                <option value="Electronica">Electrónica</option>
                 <option value="Ropa y Calzado">Ropa y Calzado</option>
             </select>
 
@@ -1180,11 +1182,9 @@
   async function eliminarProducto(id) {
       if (!confirm('¿Seguro que deseas eliminar este artículo y sus carpetas de fotos asociadas?')) return;
 
-      // 1. Buscar el producto antes de borrarlo para obtener las URLs de las imágenes y eliminar su carpeta física en el bucket
       const prodAEliminar = productosGlobales.find(p => p.id === id);
       if (prodAEliminar && prodAEliminar.imagenes && prodAEliminar.imagenes.length > 0) {
           try {
-              // Extraemos las rutas relativas de los archivos dentro del bucket para eliminarlas
               let rutasArchivos = prodAEliminar.imagenes
                   .filter(url => url.includes('/fotos-productos/'))
                   .map(url => {
@@ -1201,7 +1201,6 @@
           }
       }
 
-      // 2. Eliminar el registro en la base de datos de Supabase
       const { error } = await supabaseClient.from('productos').delete().eq('id', id);
       if (error) {
           alert('No se pudo eliminar el artículo.');
