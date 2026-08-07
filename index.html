@@ -6,14 +6,6 @@
   <meta name="google-site-verification" content="QpEtGqhVy4j8vrfr504r205jVhasmnNbbDrQMiHrvis" />
   <title>Muebleria Daguerr - Catalogo</title>
 
-  <!-- Google Tag Manager (Lo más arriba posible en el head) -->
-  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-  })(window,document,'script','dataLayer','GTM-WZP2JH9S');</script>
-  <!-- End Google Tag Manager -->
-
   <!-- PRECARGAR LA FUENTE DEL LOGO PARA EVITAR PARPADEOS -->
   <link rel="preload" href="ITCEDSCR.TTF" as="font" type="font/ttf" crossorigin>
 
@@ -1241,11 +1233,6 @@
 </head>
 <body>
 
-  <!-- Google Tag Manager (noscript) - Justo después de la etiqueta de apertura body -->
-  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WZP2JH9S"
-  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-  <!-- End Google Tag Manager (noscript) -->
-
   <!-- ANIMACION DE BIENVENIDA -->
   <div id="welcome-screen">
     <div class="logo-bienvenida">
@@ -1436,12 +1423,6 @@
     <img id="img-ampliada" src="" alt="Imagen Ampliada">
   </div>
 
-  <!-- BANNER DISCRETO DE COOKIES -->
-  <div id="cookie-banner" style="position: fixed; bottom: 0; left: 0; width: 100%; background: #222; color: #fff; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; font-size: 14px; z-index: 9999; box-sizing: border-box;">
-      <span>Este sitio utiliza cookies para analizar el tráfico y mejorar la experiencia de navegación[cite: 1].</span>
-      <button onclick="aceptarCookies()" style="background: #4da6ff; color: #fff; border: none; padding: 6px 12px; cursor: pointer; border-radius: 4px; font-weight: bold;">Aceptar</button>
-  </div>
-
   <footer>
     <p>&copy; Muebleria Daguerr - Calidad y tradicion para tu hogar.</p>
   </footer>
@@ -1456,17 +1437,6 @@
     let productos = [];
     let productoActual = null;
     let indiceImagenActual = 0;
-
-    // SCRIPT PARA CONTROLAR EL BANNER DE COOKIES
-    function aceptarCookies() {
-        document.getElementById('cookie-banner').style.display = 'none';
-        localStorage.setItem('cookiesAceptadas', 'true');[cite: 1]
-    }
-
-    // Oculta el banner automáticamente si el usuario ya lo aceptó anteriormente
-    if (localStorage.getItem('cookiesAceptadas')) {
-        document.getElementById('cookie-banner').style.display = 'none';[cite: 1]
-    }
 
     // CARGAR PRODUCTOS DESDE SUPABASE
     async function inicializarProductos() {
