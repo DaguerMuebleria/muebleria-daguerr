@@ -572,16 +572,17 @@
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
       gap: 26px;
-      padding: 26px 20px 20px;
+      padding: 26px 20px 40px;
       max-width: 1200px;
       margin: 0 auto;
       width: 100%;
+      flex-grow: 1;
       position: relative;
       z-index: 1;
     }
 
     @media (min-width: 640px) {
-      .contenedor-catalogo { padding: 30px 30px 20px; gap: 28px; }
+      .contenedor-catalogo { padding: 30px 30px 50px; gap: 28px; }
     }
 
     @media (min-width: 1024px) {
@@ -594,73 +595,6 @@
       padding: 60px 20px;
       color: var(--tinta-tenue);
       font-size: 1.05rem;
-    }
-
-    /* 5. CONTROLES DE PAGINACIÓN COMPACTOS Y MODERNOS */
-    .paginacion-contenedor {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 16px;
-      max-width: 480px;
-      margin: 12px auto;
-      background: var(--crema-tarjeta);
-      border: 1px solid var(--linea);
-      border-radius: 16px;
-      box-shadow: var(--sombra-suave);
-    }
-
-    .paginacion-contenedor.superior {
-      margin-bottom: 5px;
-      margin-top: 15px;
-    }
-
-    .paginacion-contenedor.inferior {
-      margin-top: 15px;
-      margin-bottom: 40px;
-    }
-
-    .btn-paginacion {
-      background: linear-gradient(135deg, var(--terracota-claro), var(--terracota));
-      border: none;
-      color: #ffffff;
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-family: var(--fuente-cuerpo);
-      font-weight: 600;
-      font-size: 0.85rem;
-      cursor: pointer;
-      transition: all 0.3s var(--curva);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      box-shadow: 0 4px 12px rgba(194, 41, 10, 0.18);
-    }
-
-    .btn-paginacion:hover:not(:disabled) {
-      background: linear-gradient(135deg, var(--terracota), var(--terracota-profundo));
-      transform: translateY(-2px) scale(1.02);
-      box-shadow: 0 8px 20px rgba(194, 41, 10, 0.3);
-    }
-
-    .btn-paginacion:disabled {
-      opacity: 0.35;
-      cursor: not-allowed;
-      box-shadow: none;
-      background: var(--tinta-tenue);
-    }
-
-    .info-paginacion {
-      font-size: 0.88rem;
-      font-weight: 600;
-      color: var(--terracota);
-      background: var(--crema-suave);
-      padding: 6px 12px;
-      border-radius: 14px;
-      border: 1px solid var(--linea);
-      letter-spacing: 0.3px;
-      white-space: nowrap;
     }
 
     .tarjeta-mueble {
@@ -693,6 +627,7 @@
       background-color: var(--crema-suave);
     }
 
+    /* SEÑALADOR DISCRETO DE CANTIDAD DE FOTOS */
     .badge-fotos-contador {
       position: absolute;
       top: 10px;
@@ -794,7 +729,7 @@
       box-shadow: 0 10px 22px rgba(37, 211, 102, 0.38);
     }
 
-    /* 6. VENTANA MODAL AMPLIADA Y ADAAPTADA */
+    /* 5. VENTANA MODAL AMPLIADA Y ADAPTADA */
     .modal-detalle {
       position: fixed;
       top: 0; left: 0;
@@ -898,7 +833,7 @@
     .btn-carrusel.prev { left: 14px; }
     .btn-carrusel.next { right: 14px; }
 
-    /* 7. MODAL PARA AMPLIAR IMAGEN (LIGHTBOX) */
+    /* 6. MODAL PARA AMPLIAR IMAGEN (LIGHTBOX) */
     .modal-imagen-grande {
       position: fixed; top: 0; left: 0;
       width: 100%; height: 100%;
@@ -1085,7 +1020,7 @@
       }
     }
 
-    /* 8. SECCION DE INFORMACION Y CONTACTO */
+    /* 7. SECCION DE INFORMACION Y CONTACTO */
     .seccion-info-contacto {
       background-color: var(--crema-suave);
       background-image: radial-gradient(ellipse at 20% 0%, rgba(194, 41, 10, 0.08), transparent 55%);
@@ -1339,28 +1274,28 @@
 
     <!-- FILTROS DE CATEGORIA PRINCIPALES -->
     <div class="filtros" id="contenedor-filtros">
-      <button class="btn-filtro activo" onclick="cambiarCategoria('Todos', this)">Todos</button>
-      <button class="btn-filtro" onclick="cambiarCategoria('Cocinas', this)">Cocinas</button>
-      <button class="btn-filtro" onclick="cambiarCategoria('Linea Blanca', this)">Linea Blanca</button>
-      <button class="btn-filtro" onclick="cambiarCategoria('Comedores', this)">Comedores</button>
-      <button class="btn-filtro" onclick="cambiarCategoria('Tubulares', this)">Tubulares</button>
-      <button class="btn-filtro" onclick="cambiarCategoria('Salas', this)">Salas</button>
-      <button class="btn-filtro" onclick="cambiarCategoria('Recamaras', this)">Recamaras</button>
-      <button class="btn-filtro" onclick="cambiarCategoria('Closet', this)">Closet</button>
-      <button class="btn-filtro" onclick="cambiarCategoria('Colchoneria', this)">Colchoneria</button>
-      <button class="btn-filtro" onclick="cambiarCategoria('Deportivos', this)">Deportivos</button>
-      <button class="btn-filtro" onclick="cambiarCategoria('Descanso', this)">Descanso</button>
-      <button class="btn-filtro" onclick="cambiarCategoria('Hogar', this)">Hogar</button>
-      <button class="btn-filtro" onclick="cambiarCategoria('Ropa y Calzado', this)">Ropa y Calzado</button>
+      <button class="btn-filtro activo" onclick="filtrarCategoria('Todos', this)">Todos</button>
+      <button class="btn-filtro" onclick="filtrarCategoria('Cocinas', this)">Cocinas</button>
+      <button class="btn-filtro" onclick="filtrarCategoria('Linea Blanca', this)">Linea Blanca</button>
+      <button class="btn-filtro" onclick="filtrarCategoria('Comedores', this)">Comedores</button>
+      <button class="btn-filtro" onclick="filtrarCategoria('Tubulares', this)">Tubulares</button>
+      <button class="btn-filtro" onclick="filtrarCategoria('Salas', this)">Salas</button>
+      <button class="btn-filtro" onclick="filtrarCategoria('Recamaras', this)">Recamaras</button>
+      <button class="btn-filtro" onclick="filtrarCategoria('Closet', this)">Closet</button>
+      <button class="btn-filtro" onclick="filtrarCategoria('Colchoneria', this)">Colchoneria</button>
+      <button class="btn-filtro" onclick="filtrarCategoria('Deportivos', this)">Deportivos</button>
+      <button class="btn-filtro" onclick="filtrarCategoria('Descanso', this)">Descanso</button>
+      <button class="btn-filtro" onclick="filtrarCategoria('Hogar', this)">Hogar</button>
+      <button class="btn-filtro" onclick="filtrarCategoria('Ropa y Calzado', this)">Ropa y Calzado</button>
     </div>
 
     <!-- SUBMENÚ EXCLUSIVO DE LÍNEA BLANCA -->
     <div class="submenu-linea-blanca" id="submenuLineaBlanca">
-      <button class="btn-subfiltro" onclick="cambiarSubcategoria('Refrigeradores', this)">Refrigeradores</button>
-      <button class="btn-subfiltro" onclick="cambiarSubcategoria('Estufas', this)">Estufas</button>
-      <button class="btn-subfiltro" onclick="cambiarSubcategoria('Lavadoras', this)">Lavadoras</button>
-      <button class="btn-subfiltro" onclick="cambiarSubcategoria('Boilers', this)">Boilers</button>
-      <button class="btn-subfiltro" onclick="cambiarSubcategoria('Abanicos/AC', this)">Abanicos/AC</button>
+      <button class="btn-subfiltro" onclick="filtrarSubcategoria('Refrigeradores', this)">Refrigeradores</button>
+      <button class="btn-subfiltro" onclick="filtrarSubcategoria('Estufas', this)">Estufas</button>
+      <button class="btn-subfiltro" onclick="filtrarSubcategoria('Lavadoras', this)">Lavadoras</button>
+      <button class="btn-subfiltro" onclick="filtrarSubcategoria('Boilers', this)">Boilers</button>
+      <button class="btn-subfiltro" onclick="filtrarSubcategoria('Abanicos/AC', this)">Abanicos/AC</button>
     </div>
   </div>
 
@@ -1383,31 +1318,7 @@
       <span class="eyebrow-seccion">Catalogo completo</span>
       <h2>Encuentra lo que tu hogar necesita</h2>
     </div>
-
-    <!-- PAGINACIÓN SUPERIOR -->
-    <div class="paginacion-contenedor superior" id="paginacionContenedorSuperior">
-      <button class="btn-paginacion" id="btnAnteriorSup" onclick="cambiarPagina(-1)" disabled>
-        &#10094; Anterior
-      </button>
-      <span class="info-paginacion" id="infoPaginacionSup">Página 1 de 1</span>
-      <button class="btn-paginacion" id="btnSiguienteSup" onclick="cambiarPagina(1)">
-        Siguiente &#10095;
-      </button>
-    </div>
-    
-    <!-- REJILLA DE PRODUCTOS -->
     <main class="contenedor-catalogo" id="contenedor-productos"></main>
-
-    <!-- PAGINACIÓN INFERIOR -->
-    <div class="paginacion-contenedor inferior" id="paginacionContenedorInferior">
-      <button class="btn-paginacion" id="btnAnteriorInf" onclick="cambiarPagina(-1)" disabled>
-        &#10094; Anterior
-      </button>
-      <span class="info-paginacion" id="infoPaginacionInf">Página 1 de 1</span>
-      <button class="btn-paginacion" id="btnSiguienteInf" onclick="cambiarPagina(1)">
-        Siguiente &#10095;
-      </button>
-    </div>
   </section>
 
   <!-- SECCION SOBRE NOSOTROS -->
@@ -1515,56 +1426,34 @@
     <p>&copy; Muebleria Daguerr - Calidad y tradicion para tu hogar.</p>
   </footer>
 
-  <!-- SCRIPT DE CONEXIÓN A SUPABASE Y LÓGICA DE PAGINACIÓN -->
+  <!-- SCRIPT DE CONEXIÓN A SUPABASE Y LÓGICA DE LA PÁGINA -->
   <script>
-    // CONFIGURACIÓN DE SUPABASE
+    // CONFIGURACIÓN DE SUPABASE (CON TUS CREDENCIALES)
     const SUPABASE_URL = 'https://sbuwwydygabgweegvzoi.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNidXd3eWR5Z2FiZ3dlZWd2em9pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3ODgxOTksImV4cCI6MjEwMTM2NDE5OX0.D3iSUhyNx4CpB5xTqsfn4R5CFvyghpfzVvi_CxdnXPI';
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // VARIABLES DE PAGINACIÓN Y FILTROS
-    let paginaActual = 1;
-    const productosPorPagina = 12;
-    let categoriaActiva = 'Todos';
-    let subcategoriaActiva = null;
+    let productos = [];
     let productoActual = null;
     let indiceImagenActual = 0;
 
-    const normalizar = (texto) => (texto || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    // CARGAR PRODUCTOS DESDE SUPABASE
+    async function inicializarProductos() {
+      try {
+        const { data, error } = await supabaseClient
+          .from('productos')
+          .select('*');
 
-    // CARGAR PRODUCTOS DESDE SUPABASE USANDO PAGINACIÓN REAL
-    async function cargarProductosPaginados() {
-      const catalogo = document.getElementById('contenedor-productos');
-      if (!catalogo) return;
+        if (error) {
+          console.error('Error al cargar desde Supabase:', error);
+          return;
+        }
 
-      const inicio = (paginaActual - 1) * productosPorPagina;
-      const fin = inicio + productosPorPagina - 1;
-
-      let query = supabaseClient
-        .from('productos')
-        .select('*', { count: 'exact' });
-
-      query = query.not('oculto', 'eq', true);
-
-      if (categoriaActiva !== 'Todos') {
-        query = query.ilike('categoria', categoriaActiva);
+        productos = (data || []).filter(p => p.oculto !== true && p.oculto !== 'true');
+        cargarCatalogo(productos);
+      } catch (err) {
+        console.error('Excepción al conectar con Supabase:', err);
       }
-
-      if (subcategoriaActiva) {
-        query = query.ilike('subcategoria', subcategoriaActiva);
-      }
-
-      query = query.order('id', { ascending: false }).range(inicio, fin);
-
-      const { data, error, count } = await query;
-
-      if (error) {
-        console.error('Error al consultar Supabase:', error);
-        catalogo.innerHTML = `<div class="mensaje-vacio">Hubo un error al cargar los productos. Por favor, intenta de nuevo.</div>`;
-        return;
-      }
-
-      renderizarCatalogo(data, count);
     }
 
     function obtenerBadgesHTML(estado) {
@@ -1580,32 +1469,26 @@
       }
     }
 
-    function renderizarCatalogo(lista, totalRegistros) {
+    function cargarCatalogo(lista = productos) {
       const catalogo = document.getElementById('contenedor-productos');
+      if (!catalogo) return;
       catalogo.innerHTML = '';
 
-      const contenedorSup = document.getElementById('paginacionContenedorSuperior');
-      const contenedorInf = document.getElementById('paginacionContenedorInferior');
-
       if (!lista || lista.length === 0) {
-        catalogo.innerHTML = `<div class="mensaje-vacio">No hay productos disponibles en esta sección por el momento. ¡Escríbenos por WhatsApp para más información!</div>`;
-        if (contenedorSup) contenedorSup.style.display = 'none';
-        if (contenedorInf) contenedorInf.style.display = 'none';
+        catalogo.innerHTML = `<div class="mensaje-vacio">Proximamente tendremos productos disponibles en esta categoria. ¡Contactanos por WhatsApp para mas informacion!</div>`;
         return;
       }
-
-      if (contenedorSup) contenedorSup.style.display = 'flex';
-      if (contenedorInf) contenedorInf.style.display = 'flex';
 
       lista.forEach((item, index) => {
         const tarjeta = document.createElement('div');
         tarjeta.className = 'tarjeta-mueble';
-        tarjeta.style.animationDelay = `${index * 0.04}s`;
+        tarjeta.style.animationDelay = `${index * 0.05}s`;
         tarjeta.onclick = () => abrirModal(item.id);
 
         const imgSrc = (item.imagenes && item.imagenes.length > 0) ? item.imagenes[0] : '';
         const totalFotos = (item.imagenes && item.imagenes.length > 1) ? item.imagenes.length : 0;
 
+        // Generar etiqueta HTML para el indicador de fotos si hay más de 1
         const badgeFotosHTML = totalFotos > 1 ? `
           <div class="badge-fotos-contador" title="${totalFotos} imágenes disponibles">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
@@ -1629,40 +1512,13 @@
         `;
         catalogo.appendChild(tarjeta);
       });
-
-      actualizarControlesPaginacion(totalRegistros);
     }
 
-    function actualizarControlesPaginacion(totalRegistros) {
-      const totalPaginas = Math.ceil(totalRegistros / productosPorPagina) || 1;
-      const textoPagina = `Página ${paginaActual} de ${totalPaginas}`;
+    const normalizar = (texto) => (texto || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 
-      // Actualizar parte superior
-      document.getElementById('infoPaginacionSup').innerText = textoPagina;
-      document.getElementById('btnAnteriorSup').disabled = paginaActual <= 1;
-      document.getElementById('btnSiguienteSup').disabled = paginaActual >= totalPaginas;
-
-      // Actualizar parte inferior
-      document.getElementById('infoPaginacionInf').innerText = textoPagina;
-      document.getElementById('btnAnteriorInf').disabled = paginaActual <= 1;
-      document.getElementById('btnSiguienteInf').disabled = paginaActual >= totalPaginas;
-    }
-
-    function cambiarPagina(direccion) {
-      paginaActual += direccion;
-      cargarProductosPaginados();
-      
-      // Desplazarse suavemente al inicio de la sección del catálogo para mejor experiencia visual
-      document.getElementById('catalogo').scrollIntoView({ behavior: 'smooth' });
-    }
-
-    function cambiarCategoria(cat, btn) {
+    function filtrarCategoria(cat, btn) {
       document.querySelectorAll('.btn-filtro').forEach(b => b.classList.remove('activo'));
       if (btn) btn.classList.add('activo');
-
-      categoriaActiva = cat;
-      subcategoriaActiva = null;
-      paginaActual = 1;
 
       const submenuLB = document.getElementById('submenuLineaBlanca');
       
@@ -1670,40 +1526,36 @@
         submenuLB.classList.add('activo');
         const primerSubBtn = submenuLB.querySelector('.btn-subfiltro');
         if (primerSubBtn) {
-          document.querySelectorAll('.btn-subfiltro').forEach(b => b.classList.remove('activo'));
-          primerSubBtn.classList.add('activo');
-          subcategoriaActiva = primerSubBtn.innerText;
+          const nombreSub = primerSubBtn.innerText;
+          filtrarSubcategoria(nombreSub, primerSubBtn);
+        } else {
+          const lb = productos.filter(p => normalizar(p.categoria) === 'linea blanca');
+          cargarCatalogo(lb);
         }
       } else {
         submenuLB.classList.remove('activo');
+        if (cat === 'Todos') {
+          cargarCatalogo(productos);
+        } else {
+          const filtrados = productos.filter(p => normalizar(p.categoria) === normalizar(cat));
+          cargarCatalogo(filtrados); 
+        }
       }
-
-      cargarProductosPaginados();
     }
 
-    function cambiarSubcategoria(subcat, btn) {
+    function filtrarSubcategoria(subcat, btn) {
       document.querySelectorAll('.btn-subfiltro').forEach(b => b.classList.remove('activo'));
       if (btn) btn.classList.add('activo');
 
-      subcategoriaActiva = subcat;
-      paginaActual = 1;
-      cargarProductosPaginados();
+      const lineaBlancaProductos = productos.filter(p => normalizar(p.categoria) === 'linea blanca');
+      const filtrados = lineaBlancaProductos.filter(p => normalizar(p.subcategoria) === normalizar(subcat));
+      cargarCatalogo(filtrados);
     }
 
     function abrirModal(id) {
-      abrirModalPorId(id);
-    }
+      productoActual = productos.find(p => p.id == id);
+      if (!productoActual) return;
 
-    async function abrirModalPorId(id) {
-      const { data, error } = await supabaseClient
-        .from('productos')
-        .select('*')
-        .eq('id', id)
-        .single();
-
-      if (error || !data) return;
-
-      productoActual = data;
       indiceImagenActual = 0;
       actualizarImagenModal();
 
@@ -1748,10 +1600,12 @@
       document.getElementById('modal-img-grande').classList.remove('activo');
     }
 
+    // ALTERNAR MODO OSCURO / CLARO MEDIANTE SWITCH
     function alternarModoOscuro() {
       const body = document.body;
       body.classList.toggle('modo-oscuro');
       const esOscuro = body.classList.contains('modo-oscuro');
+      
       localStorage.setItem('modoOscuro', esOscuro ? 'activado' : 'desactivado');
     }
 
@@ -1785,13 +1639,14 @@
     });
 
     document.addEventListener('DOMContentLoaded', () => {
+      // Cargar preferencia guardada de modo oscuro y sincronizar switch
       if (localStorage.getItem('modoOscuro') === 'activado') {
         document.body.classList.add('modo-oscuro');
         const switchElem = document.getElementById('switchModoOscuro');
         if (switchElem) switchElem.checked = true;
       }
 
-      cargarProductosPaginados();
+      inicializarProductos();
 
       const contenedorFiltros = document.getElementById('contenedor-filtros');
       if (contenedorFiltros) {
