@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador iPhone - Mueblería Daguerr</title>
+    <style>
+        body {
+            background: #121212;
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            color: #fff;
+        }
+        .controls {
+            margin-bottom: 15px;
+            display: flex;
+            gap: 10px;
+        }
+        input, button {
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #444;
+            background: #222;
+            color: #fff;
+            outline: none;
+        }
+        input { width: 250px; }
+        button { cursor: pointer; background: #007aff; border: none; }
+        button:hover { background: #005ec4; }
+
+        /* Contenedor del Celular con Marco Realista */
+        .iphone-frame {
+            position: relative;
+            width: 390px;
+            height: 800px;
+            background: #000;
+            border-radius: 50px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+            border: 12px solid #2a2a2a;
+            overflow: hidden;
+        }
+
+        /* Isla Dinámica / Notch superior */
+        .dynamic-island {
+            position: absolute;
+            top: 14px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 32px;
+            background: #000;
+            border-radius: 20px;
+            z-index: 100;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #fff;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="controls">
+        <input type="text" id="pageInput" value="https://muebleriadaguerr.com">
+        <button onclick="cargarPagina()">Cargar Página</button>
+    </div>
+
+    <div class="iphone-frame">
+        <div class="dynamic-island"></div>
+        <!-- Aquí carga tu web publicada -->
+        <iframe id="screenFrame" src="https://muebleriadaguerr.com"></iframe>
+    </div>
+
+    <script>
+        function cargarPagina() {
+            const url = document.getElementById('pageInput').value;
+            document.getElementById('screenFrame').src = url;
+        }
+    </script>
+
+</body>
+</html>
