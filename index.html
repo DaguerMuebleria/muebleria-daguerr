@@ -133,13 +133,8 @@
     }
 
     @keyframes modalScaleIn {
-      from { opacity: 0; transform: scale(0.88) translateY(20px); filter: blur(4px); }
-      to   { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
-    }
-
-    @keyframes modalFadeIn {
-      from { opacity: 0; backdrop-filter: blur(0px); -webkit-backdrop-filter: blur(0px); }
-      to   { opacity: 1; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+      from { opacity: 0; transform: scale(0.92) translateY(12px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
     }
 
     @keyframes pulsoSuave {
@@ -621,17 +616,6 @@
       box-shadow: var(--sombra-media);
     }
 
-    .contenedor-imagen-tarjeta {
-      position: relative;
-      width: 100%;
-      height: 220px;
-      background-color: var(--crema-suave);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
-
     .imagen-mueble {
       width: 100%;
       height: 220px;
@@ -641,35 +625,6 @@
     }
 
     .tarjeta-mueble:hover .imagen-mueble { transform: scale(1.07); }
-
-    /* INDICADOR MINIMALISTA DE MULTIPLES FOTOS */
-    .indicador-fotos {
-      position: absolute;
-      bottom: 10px;
-      right: 10px;
-      background: rgba(20, 15, 12, 0.62);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-      color: #ffffff;
-      padding: 3px 8px;
-      border-radius: 20px;
-      font-size: 0.7rem;
-      font-weight: 500;
-      letter-spacing: 0.3px;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      z-index: 5;
-      pointer-events: none;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-    }
-
-    .indicador-fotos svg {
-      width: 11px;
-      height: 11px;
-      opacity: 0.9;
-    }
 
     .info-mueble {
       padding: 20px;
@@ -737,7 +692,7 @@
       box-shadow: 0 10px 22px rgba(37, 211, 102, 0.38);
     }
 
-    /* 5. VENTANA MODAL AMPLIADA Y ADAPTADA CON ANIMACIÓN FLUIDA */
+    /* 5. VENTANA MODAL AMPLIADA Y ADAPTADA */
     .modal-detalle {
       position: fixed;
       top: 0; left: 0;
@@ -752,10 +707,7 @@
       -webkit-backdrop-filter: blur(6px);
     }
 
-    .modal-detalle.activo {
-      display: flex;
-      animation: modalFadeIn 0.35s ease forwards;
-    }
+    .modal-detalle.activo { display: flex; }
 
     .modal-contenido {
       background: var(--crema-tarjeta);
@@ -769,7 +721,7 @@
       box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
       display: flex;
       flex-direction: column;
-      animation: modalScaleIn 0.4s var(--curva-rebote) forwards;
+      animation: modalScaleIn 0.4s var(--curva-rebote);
       border: 1px solid var(--linea);
     }
 
@@ -1399,7 +1351,7 @@
 
   <!-- MODAL DE DETALLE DE PRODUCTO -->
   <div class="modal-detalle" id="modal-producto">
-    <div class="modal-contenido" id="modal-contenido-ref">
+    <div class="modal-contenido">
       <button class="btn-cerrar" onclick="cerrarModal()">&times;</button>
 
       <div class="carrusel-contenedor">
@@ -1497,20 +1449,10 @@
         tarjeta.onclick = () => abrirModal(item.id);
 
         const imgSrc = (item.imagenes && item.imagenes.length > 0) ? item.imagenes[0] : '';
-        const totalImagenes = (item.imagenes && Array.isArray(item.imagenes)) ? item.imagenes.length : 0;
-        
-        // Indicador minimalista si hay más de 1 imagen
-        const indicadorHTML = totalImagenes > 1 ? `
-          <div class="indicador-fotos" title="${totalImagenes} fotos disponibles">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-            <span>+${totalImagenes - 1}</span>
-          </div>
-        ` : '';
 
         tarjeta.innerHTML = `
-          <div class="contenedor-imagen-tarjeta">
-            <img src="${imgSrc}" alt="${item.titulo || 'Mueble'}" class="imagen-mueble">
-            ${indicadorHTML}
+          <div style="width: 100%; height: 220px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+            <img src="${imgSrc}" alt="${item.titulo || 'Mueble'}" class="imagen-mueble" style="width: 100%; height: 100%; object-fit: contain;">
           </div>
           <div class="info-mueble">
             <div class="contenedor-badges">
@@ -1580,20 +1522,7 @@
     }
 
     function cerrarModal() {
-      const modal = document.getElementById('modal-producto');
-      const contenido = document.getElementById('modal-contenido-ref');
-      
-      // Animación de salida fluida
-      if (contenido) {
-        contenido.style.animation = 'modalScaleIn 0.3s var(--curva) reverse forwards';
-      }
-      modal.style.animation = 'modalFadeIn 0.3s ease reverse forwards';
-      
-      setTimeout(() => {
-        modal.classList.remove('activo');
-        modal.style.animation = '';
-        if (contenido) contenido.style.animation = '';
-      }, 300);
+      document.getElementById('modal-producto').classList.remove('activo');
     }
 
     function cambiarImagen(direccion) {
@@ -1684,22 +1613,9 @@
     });
   </script>
 
-  <!-- SCRIPT ADICIONAL: EFECTOS VISUALES Y HOOK DE CLIC FUERA -->
+  <!-- SCRIPT ADICIONAL: EFECTOS VISUALES -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const modalRef = document.getElementById('modal-contenido-ref');
-      const modalOverlay = document.getElementById('modal-producto');
-
-      const listenerOutside = (event) => {
-        if (!modalOverlay.classList.contains('activo')) return;
-        if (modalRef && !modalRef.contains(event.target)) {
-          cerrarModal();
-        }
-      };
-
-      document.addEventListener("mousedown", listenerOutside);
-      document.addEventListener("touchstart", listenerOutside);
-
       const btnArriba = document.getElementById('btnVolverArriba');
       if (btnArriba) {
         window.addEventListener('scroll', () => {
