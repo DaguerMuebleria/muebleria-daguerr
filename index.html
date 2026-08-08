@@ -1,25 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <script>
-  async function verificarMantenimiento() {
-    const { data, error } = await supabaseClient
-      .from('configuracion')
-      .select('modo_mantenimiento')
-      .eq('id', 1) // Asumiendo que usas el ID 1
-      .single();
-
-    if (data && data.modo_mantenimiento === true) {
-      document.body.innerHTML = `
-        <div style="text-align:center; padding-top:50px; font-family:sans-serif;">
-          <h1>En mantenimiento</h1>
-          <p>Estamos mejorando el catálogo. Regresa pronto.</p>
-        </div>
-      `;
-    }
-  }
-  verificarMantenimiento();
-</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="google-site-verification" content="QpEtGqhVy4j8vrfr504r205jVhasmnNbbDrQMiHrvis" />
