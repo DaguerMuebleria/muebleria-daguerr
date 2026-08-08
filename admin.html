@@ -841,7 +841,7 @@
       const { data } = await supabaseClient
           .from('configuracion')
           .select('modo_mantenimiento')
-          .eq('id', 1)
+          .eq('estado_sitio', 1)
           .single();
       
       if (data) {
