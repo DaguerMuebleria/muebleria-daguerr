@@ -838,10 +838,10 @@
   }
 
   async function verificarEstadoInicial() {
-      const { data } = await supabaseClient
-          .from('configuracion')
-          .select('modo_mantenimiento')
-          .eq('estado_sitio', 1)
+      const { data, error } = await supabase
+  .from('configuracion')
+  .select('modo_mantenimiento')
+  .eq('estado_sitio', 1);
           .single();
       
       if (data) {
