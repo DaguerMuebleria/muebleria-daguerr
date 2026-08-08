@@ -685,6 +685,10 @@
             <h1>Gestión de Inventario</h1>
             <p>Administra los productos de Mueblería Daguerr en tiempo real.</p>
         </div>
+        <!-- Botón de Mantenimiento -->
+        <button id="btnMantenimiento" class="btn-primary-action" style="background:var(--warning);" onclick="toggleMantenimiento()">
+            ⚙️ Activar Mantenimiento
+        </button>
     </header>
 
     <div class="action-bar">
@@ -787,17 +791,63 @@
 
   let productosGlobales = [];
   let categoriaActual = 'Todas';
-  let imagenesActuales = []; // Array en memoria para controlar el orden y existencia de las fotos en el modal
+  let imagenesActuales = []; 
 
-  // Comprobar si ya hay una sesión activa de Supabase al cargar la página
   window.addEventListener('DOMContentLoaded', async () => {
       const { data: { session } } = await supabaseClient.auth.getSession();
       if (session) {
           document.getElementById('loginScreen').style.display = 'none';
           cargarArticulos();
+          verificarEstadoInicial();
       }
       configurarDragAndDrop();
   });
+
+  // Funciones de Mantenimiento
+  async function toggleMantenimiento() {
+      const { data, error } = await supabaseClient
+          .from('configuracion')
+          .select('modo_mantenimiento')
+          .eq('id', 1)
+          .single();
+
+      if (error) {
+          alert("Error al conectar con Supabase");
+          return;
+      }
+
+      const nuevoEstado = !data.modo_mantenimiento;
+
+      const { error: updateError } = await supabaseClient
+          .from('configuracion')
+          .update({ modo_mantenimiento: nuevoEstado })
+          .eq('id', 1);
+
+      if (updateError) {
+          alert("Error al guardar: " + updateError.message);
+      } else {
+          alert("Modo mantenimiento ahora está: " + (nuevoEstado ? "ACTIVADO" : "DESACTIVADO"));
+          actualizarBotonMantenimiento(nuevoEstado);
+      }
+  }
+
+  function actualizarBotonMantenimiento(activo) {
+      const btn = document.getElementById('btnMantenimiento');
+      btn.textContent = activo ? "✅ Desactivar Mantenimiento" : "⚙️ Activar Mantenimiento";
+      btn.style.background = activo ? "var(--success)" : "var(--warning)";
+  }
+
+  async function verificarEstadoInicial() {
+      const { data } = await supabaseClient
+          .from('configuracion')
+          .select('modo_mantenimiento')
+          .eq('id', 1)
+          .single();
+      
+      if (data) {
+          actualizarBotonMantenimiento(data.modo_mantenimiento);
+      }
+  }
 
   function toggleMenuMobil() {
       const sidebar = document.getElementById('appSidebar');
@@ -830,6 +880,7 @@
       document.getElementById('errorLogin').style.display = 'none';
       document.getElementById('loginScreen').style.display = 'none';
       cargarArticulos();
+      verificarEstadoInicial();
   }
 
   async function cerrarSesion() {
