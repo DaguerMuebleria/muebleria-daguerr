@@ -142,38 +142,6 @@
         .sidebar-footer {
             padding: 20px;
             border-top: 1px solid rgba(255,255,255,0.08);
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .btn-maintenance {
-            width: 100%;
-            background: rgba(245, 158, 11, 0.1);
-            color: #fbbf24;
-            border: 1px solid rgba(245, 158, 11, 0.2);
-            padding: 10px;
-            border-radius: var(--radius-sm);
-            font-weight: 600;
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-
-        .btn-maintenance:hover {
-            background: var(--warning);
-            color: white;
-            border-color: var(--warning);
-        }
-
-        .btn-maintenance.active-mantenimiento {
-            background: var(--danger);
-            color: white;
-            border-color: var(--danger);
         }
 
         .btn-logout-side {
@@ -706,7 +674,6 @@
         <button class="sidebar-btn-cat" onclick="filtrarCategoria('Ropa y Calzado', this)">👕 Ropa y Calzado</button>
     </div>
     <div class="sidebar-footer">
-        <button class="btn-maintenance" id="btnMantenimiento" onclick="toggleModoMantenimiento()">⚙️ Activar Mantenimiento</button>
         <button class="btn-logout-side" onclick="cerrarSesion()">Cerrar Sesión</button>
     </div>
 </aside>
@@ -821,7 +788,6 @@
   let productosGlobales = [];
   let categoriaActual = 'Todas';
   let imagenesActuales = []; // Array en memoria para controlar el orden y existencia de las fotos en el modal
-  let estadoMantenimientoActual = false;
 
   // Comprobar si ya hay una sesión activa de Supabase al cargar la página
   window.addEventListener('DOMContentLoaded', async () => {
@@ -829,7 +795,6 @@
       if (session) {
           document.getElementById('loginScreen').style.display = 'none';
           cargarArticulos();
-          verificarEstadoMantenimiento();
       }
       configurarDragAndDrop();
   });
@@ -865,7 +830,6 @@
       document.getElementById('errorLogin').style.display = 'none';
       document.getElementById('loginScreen').style.display = 'none';
       cargarArticulos();
-      verificarEstadoMantenimiento();
   }
 
   async function cerrarSesion() {
@@ -873,47 +837,6 @@
       document.getElementById('loginScreen').style.display = 'flex';
       document.getElementById('userLogin').value = '';
       document.getElementById('passLogin').value = '';
-  }
-
-  async function verificarEstadoMantenimiento() {
-      const { data, error } = await supabaseClient
-          .from('configuracion')
-          .select('modo_mantenimiento')
-          .eq('estado_sitio', 1)
-          .single();
-
-      if (!error && data) {
-          estadoMantenimientoActual = data.modo_mantenimiento;
-          actualizarUIBotonMantenimiento();
-      }
-  }
-
-  async function toggleModoMantenimiento() {
-      const nuevoEstado = !estadoMantenimientoActual;
-      
-      const { error } = await supabaseClient
-          .from('configuracion')
-          .update({ modo_mantenimiento: nuevoEstado })
-          .eq('estado_sitio', 1);
-
-      if (error) {
-          alert('Error al actualizar el modo mantenimiento: ' + error.message);
-          return;
-      }
-
-      estadoMantenimientoActual = nuevoEstado;
-      actualizarUIBotonMantenimiento();
-  }
-
-  function actualizarUIBotonMantenimiento() {
-      const btn = document.getElementById('btnMantenimiento');
-      if (estadoMantenimientoActual) {
-          btn.textContent = '⚙️ Desactivar Mantenimiento';
-          btn.classList.add('active-mantenimiento');
-      } else {
-          btn.textContent = '⚙️ Activar Mantenimiento';
-          btn.classList.remove('active-mantenimiento');
-      }
   }
 
   async function cargarArticulos() {
