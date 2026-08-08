@@ -142,6 +142,38 @@
         .sidebar-footer {
             padding: 20px;
             border-top: 1px solid rgba(255,255,255,0.08);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-maintenance {
+            width: 100%;
+            background: rgba(245, 158, 11, 0.1);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            padding: 10px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-maintenance:hover {
+            background: var(--warning);
+            color: white;
+            border-color: var(--warning);
+        }
+
+        .btn-maintenance.active-mantenimiento {
+            background: var(--danger);
+            color: white;
+            border-color: var(--danger);
         }
 
         .btn-logout-side {
@@ -674,6 +706,7 @@
         <button class="sidebar-btn-cat" onclick="filtrarCategoria('Ropa y Calzado', this)">👕 Ropa y Calzado</button>
     </div>
     <div class="sidebar-footer">
+        <button class="btn-maintenance" id="btnMantenimiento" onclick="toggleModoMantenimiento()">⚙️ Activar Mantenimiento</button>
         <button class="btn-logout-side" onclick="cerrarSesion()">Cerrar Sesión</button>
     </div>
 </aside>
@@ -685,10 +718,6 @@
             <h1>Gestión de Inventario</h1>
             <p>Administra los productos de Mueblería Daguerr en tiempo real.</p>
         </div>
-        <!-- Botón de Mantenimiento -->
-        <button id="btnMantenimiento" class="btn-primary-action" style="background:var(--warning);" onclick="toggleMantenimiento()">
-            ⚙️ Activar Mantenimiento
-        </button>
     </header>
 
     <div class="action-bar">
@@ -791,63 +820,19 @@
 
   let productosGlobales = [];
   let categoriaActual = 'Todas';
-  let imagenesActuales = []; 
+  let imagenesActuales = []; // Array en memoria para controlar el orden y existencia de las fotos en el modal
+  let estadoMantenimientoActual = false;
 
+  // Comprobar si ya hay una sesión activa de Supabase al cargar la página
   window.addEventListener('DOMContentLoaded', async () => {
       const { data: { session } } = await supabaseClient.auth.getSession();
       if (session) {
           document.getElementById('loginScreen').style.display = 'none';
           cargarArticulos();
-          verificarEstadoInicial();
+          verificarEstadoMantenimiento();
       }
       configurarDragAndDrop();
   });
-
-  // Funciones de Mantenimiento
-  async function toggleMantenimiento() {
-      const { data, error } = await supabaseClient
-          .from('configuracion')
-          .select('modo_mantenimiento')
-          .eq('id', 1)
-          .single();
-
-      if (error) {
-          alert("Error al conectar con Supabase");
-          return;
-      }
-
-      const nuevoEstado = !data.modo_mantenimiento;
-
-      const { error: updateError } = await supabaseClient
-          .from('configuracion')
-          .update({ modo_mantenimiento: nuevoEstado })
-          .eq('id', 1);
-
-      if (updateError) {
-          alert("Error al guardar: " + updateError.message);
-      } else {
-          alert("Modo mantenimiento ahora está: " + (nuevoEstado ? "ACTIVADO" : "DESACTIVADO"));
-          actualizarBotonMantenimiento(nuevoEstado);
-      }
-  }
-
-  function actualizarBotonMantenimiento(activo) {
-      const btn = document.getElementById('btnMantenimiento');
-      btn.textContent = activo ? "✅ Desactivar Mantenimiento" : "⚙️ Activar Mantenimiento";
-      btn.style.background = activo ? "var(--success)" : "var(--warning)";
-  }
-
-  async function verificarEstadoInicial() {
-      const { data, error } = await supabase
-  .from('configuracion')
-  .select('modo_mantenimiento')
-  .eq('estado_sitio', 1);
-          .single();
-      
-      if (data) {
-          actualizarBotonMantenimiento(data.modo_mantenimiento);
-      }
-  }
 
   function toggleMenuMobil() {
       const sidebar = document.getElementById('appSidebar');
@@ -880,7 +865,7 @@
       document.getElementById('errorLogin').style.display = 'none';
       document.getElementById('loginScreen').style.display = 'none';
       cargarArticulos();
-      verificarEstadoInicial();
+      verificarEstadoMantenimiento();
   }
 
   async function cerrarSesion() {
@@ -888,6 +873,47 @@
       document.getElementById('loginScreen').style.display = 'flex';
       document.getElementById('userLogin').value = '';
       document.getElementById('passLogin').value = '';
+  }
+
+  async function verificarEstadoMantenimiento() {
+      const { data, error } = await supabaseClient
+          .from('configuracion')
+          .select('modo_mantenimiento')
+          .eq('estado_sitio', 1)
+          .single();
+
+      if (!error && data) {
+          estadoMantenimientoActual = data.modo_mantenimiento;
+          actualizarUIBotonMantenimiento();
+      }
+  }
+
+  async function toggleModoMantenimiento() {
+      const nuevoEstado = !estadoMantenimientoActual;
+      
+      const { error } = await supabaseClient
+          .from('configuracion')
+          .update({ modo_mantenimiento: nuevoEstado })
+          .eq('estado_sitio', 1);
+
+      if (error) {
+          alert('Error al actualizar el modo mantenimiento: ' + error.message);
+          return;
+      }
+
+      estadoMantenimientoActual = nuevoEstado;
+      actualizarUIBotonMantenimiento();
+  }
+
+  function actualizarUIBotonMantenimiento() {
+      const btn = document.getElementById('btnMantenimiento');
+      if (estadoMantenimientoActual) {
+          btn.textContent = '⚙️ Desactivar Mantenimiento';
+          btn.classList.add('active-mantenimiento');
+      } else {
+          btn.textContent = '⚙️ Activar Mantenimiento';
+          btn.classList.remove('active-mantenimiento');
+      }
   }
 
   async function cargarArticulos() {
