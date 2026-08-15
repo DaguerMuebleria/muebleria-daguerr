@@ -12,15 +12,15 @@
   <meta name="description" content="Catalogo de Muebleria Daguerr: cocinas, recamaras, salas, linea blanca y mas, con precios y planes de financiamiento.">
   <title>Muebleria Daguerr - Catalogo</title>
 
-  <!-- PRECARGAR LA FUENTE DEL LOGO PARA EVITAR PARPADEOS -->
+  <!-- PRECARGAR LA FUENTE DEL LOGO -->
   <link rel="preload" href="ITCEDSCR.TTF" as="font" type="font/ttf" crossorigin>
 
-  <!-- TIPOGRAFIAS DE GOOGLE -->
+  <!-- TIPOGRAFIAS -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- SUPABASE JS SDK -->
+  <!-- SUPABASE -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
@@ -138,7 +138,7 @@
       }
     }
 
-    /* SWITCH ESTILO MODO OSCURO / CLARO */
+    /* SWITCH MODO OSCURO */
     .switch-modo-contenedor {
       position: absolute;
       top: 14px;
@@ -199,7 +199,7 @@
       color: var(--tinta-suave);
     }
 
-    /* 2. ENCABEZADO Y LOGO PRINCIPAL */
+    /* 2. ENCABEZADO Y LOGO */
     .header-contenedor {
       position: sticky;
       top: 0;
@@ -325,7 +325,7 @@
     .buscador-limpiar:hover { background: var(--terracota); color: #fff; }
     .buscador-caja.tiene-texto .buscador-limpiar { display: flex; }
 
-    /* 3. FILTROS DE CATEGORIA */
+    /* FILTROS */
     .filtros {
       max-width: var(--max-width-container);
       margin: 0 auto;
@@ -374,11 +374,7 @@
     }
 
     .btn-limpiar-filtros svg { width: 14px; height: 14px; }
-
-    .btn-limpiar-filtros:hover {
-      color: var(--terracota);
-      border-color: var(--terracota);
-    }
+    .btn-limpiar-filtros:hover { color: var(--terracota); border-color: var(--terracota); }
 
     /* SUBMENÚ LÍNEA BLANCA */
     .submenu-linea-blanca {
@@ -419,7 +415,7 @@
       box-shadow: 0 6px 16px rgba(194, 41, 10, 0.22);
     }
 
-    /* ===== ENCABEZADO SECCION ===== */
+    /* ENCABEZADO SECCION */
     .seccion-catalogo { padding-top: 8px; }
 
     .encabezado-seccion {
@@ -445,7 +441,7 @@
       margin-top: 8px;
     }
 
-    /* 4. REJILLA DE PRODUCTOS */
+    /* REJILLA DE PRODUCTOS */
     .contenedor-catalogo {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -517,10 +513,7 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.15);
     }
 
-    .badge-fotos-contador svg {
-      width: 13px;
-      height: 13px;
-    }
+    .badge-fotos-contador svg { width: 13px; height: 13px; }
 
     .imagen-mueble {
       width: 100%;
@@ -637,7 +630,7 @@
       box-shadow: 0 12px 28px rgba(194, 41, 10, 0.3);
     }
 
-    /* 5. MODAL DETALLE PRODUCTO */
+    /* MODAL DETALLE PRODUCTO */
     .modal-detalle {
       position: fixed;
       top: 0; left: 0;
@@ -745,7 +738,7 @@
     .btn-carrusel.prev { left: 18px; }
     .btn-carrusel.next { right: 18px; }
 
-    /* 6. MODAL IMAGEN GRANDE */
+    /* MODAL IMAGEN GRANDE */
     .modal-imagen-grande {
       position: fixed; top: 0; left: 0;
       width: 100%; height: 100%;
@@ -859,7 +852,7 @@
       white-space: pre-line;
     }
 
-    /* SECCIÓN DE PRECIOS Y PLANES */
+    /* SECCIÓN DE PRECIOS */
     .seccion-precios-modal {
       background: var(--crema);
       border-radius: 14px;
@@ -1044,9 +1037,7 @@
       }
     }
 
-    /* ==========================================================
-       CARRITO FLOTANTE
-    ========================================================== */
+    /* CARRITO FLOTANTE */
     .btn-carrito-flotante {
       position: fixed;
       bottom: 30px;
@@ -1106,9 +1097,7 @@
       transform: scale(1);
     }
 
-    /* ==========================================================
-       MODAL CARRITO
-    ========================================================== */
+    /* MODAL CARRITO */
     .modal-carrito {
       max-width: 580px;
       padding: 30px 28px 28px;
@@ -1279,9 +1268,7 @@
       fill: currentColor;
     }
 
-    /* ==========================================================
-       ÁREA DE IMPRESIÓN
-    ========================================================== */
+    /* ÁREA DE IMPRESIÓN */
     #area-impresion-cotizacion {
       display: none;
     }
@@ -1484,7 +1471,7 @@
       transition: background-color 0.3s ease, color 0.3s ease;
     }
 
-    /* Responsive */
+    /* RESPONSIVE */
     @media (max-width: 1024px) {
       .contenedor-catalogo {
         grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -1562,9 +1549,9 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
   </button>
 
-  <!-- CONTENEDOR SUPERIOR UNIFICADO -->
+  <!-- CONTENEDOR SUPERIOR -->
   <div class="header-contenedor" id="headerContenedor">
-    <!-- SWITCH DE MODO OSCURO / CLARO -->
+    <!-- SWITCH MODO OSCURO -->
     <div class="switch-modo-contenedor">
       <svg class="switch-icono" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
       <label class="switch-modo" aria-label="Alternar Modo Oscuro">
@@ -1687,7 +1674,7 @@
           </div>
         </div>
 
-        <!-- ACCIONES: Agregar al carrito y WhatsApp -->
+        <!-- ACCIONES -->
         <div class="modal-acciones">
           <button class="btn-agregar-carrito" onclick="agregarACarrito()">
             <svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
@@ -1798,6 +1785,128 @@
     let subcategoriaActiva = null;
     let terminoBusqueda = '';
     let carrito = [];
+
+    // ============================================================
+    // FUNCIÓN PARA ABRIR WHATSAPP (COMPATIBLE CON PC Y MÓVIL)
+    // ============================================================
+    function abrirWhatsApp(numero, mensaje) {
+        let num = numero.replace(/\D/g, '');
+        
+        if (num.length === 10) {
+            num = '52' + num;
+        }
+        
+        if (num.length < 10) {
+            alert('❌ El número debe tener al menos 10 dígitos. Ejemplo: 521234567890');
+            return false;
+        }
+
+        const url = `https://wa.me/${num}?text=${encodeURIComponent(mensaje)}`;
+        
+        const ventana = window.open(url, '_blank');
+        
+        if (!ventana || ventana.closed || typeof ventana.closed === 'undefined') {
+            const enlace = document.createElement('a');
+            enlace.href = url;
+            enlace.target = '_blank';
+            enlace.rel = 'noopener noreferrer';
+            document.body.appendChild(enlace);
+            enlace.click();
+            document.body.removeChild(enlace);
+        }
+        
+        return true;
+    }
+
+    // ============================================================
+    // ENVIAR WHATSAPP - PRODUCTO INDIVIDUAL
+    // ============================================================
+    function enviarWhatsAppProducto() {
+        if (!productoActual) {
+            alert('No hay producto seleccionado.');
+            return;
+        }
+
+        const telefono = prompt(
+            '📱 Ingresa el número de WhatsApp del cliente:\n\n' +
+            'Ejemplo: 521234567890 (México)\n' +
+            'Ejemplo: 56987654321 (Chile)',
+            '52'
+        );
+        
+        if (!telefono) return;
+
+        let mensaje = `*Mueblería Daguerr - Cotización*\n\n`;
+        mensaje += `📦 *Artículo:* ${productoActual.titulo || 'Sin título'}\n\n`;
+        
+        if (productoActual.descripcion) {
+            mensaje += `📝 *Características:*\n${productoActual.descripcion}\n\n`;
+        }
+
+        mensaje += `💰 *Precios y Planes:*\n`;
+        mensaje += `• *Contado:* ${formatearPrecio(productoActual.precio_contado)}\n`;
+        
+        if (productoActual.pago_mes_2) {
+            mensaje += `• *2 Meses:* ${formatearPrecio(productoActual.pago_mes_2)} /mes (Enganche: ${formatearPrecio(productoActual.enganche_2)})\n`;
+        }
+        if (productoActual.pago_mes_3) {
+            mensaje += `• *3 Meses:* ${formatearPrecio(productoActual.pago_mes_3)} /mes (Enganche: ${formatearPrecio(productoActual.enganche_3)})\n`;
+        }
+        if (productoActual.pago_mes_6) {
+            mensaje += `• *6 Meses:* ${formatearPrecio(productoActual.pago_mes_6)} /mes (Enganche: ${formatearPrecio(productoActual.enganche_6)})\n`;
+        }
+        if (productoActual.pago_tarjeta_12) {
+            mensaje += `• *12 Meses (Tarjeta):* ${formatearPrecio(productoActual.pago_tarjeta_12)}\n`;
+        }
+
+        mensaje += `\n_¡Gracias por su preferencia! Mueblería Daguerr._`;
+
+        abrirWhatsApp(telefono, mensaje);
+    }
+
+    // ============================================================
+    // ENVIAR WHATSAPP - CARRITO COMPLETO
+    // ============================================================
+    function enviarWhatsAppCarrito() {
+        if (carrito.length === 0) {
+            alert('🛒 El carrito está vacío. Agrega artículos primero.');
+            return;
+        }
+
+        const telefono = prompt(
+            '📱 Ingresa el número de WhatsApp del cliente:\n\n' +
+            'Ejemplo: 521234567890 (México)\n' +
+            'Ejemplo: 56987654321 (Chile)',
+            '52'
+        );
+        
+        if (!telefono) return;
+
+        let mensaje = `*Mueblería Daguerr - Cotización de Múltiples Artículos*\n\n`;
+        mensaje += `📋 *Artículos seleccionados:*\n\n`;
+
+        carrito.forEach((p, index) => {
+            mensaje += `${index + 1}. *${p.titulo || 'Sin título'}*\n`;
+            mensaje += `   • Contado: ${formatearPrecio(p.precio_contado)}\n`;
+            if (p.pago_mes_2) {
+                mensaje += `   • 2 Meses: ${formatearPrecio(p.pago_mes_2)}/mes (Enganche: ${formatearPrecio(p.enganche_2)})\n`;
+            }
+            if (p.pago_mes_3) {
+                mensaje += `   • 3 Meses: ${formatearPrecio(p.pago_mes_3)}/mes (Enganche: ${formatearPrecio(p.enganche_3)})\n`;
+            }
+            if (p.pago_mes_6) {
+                mensaje += `   • 6 Meses: ${formatearPrecio(p.pago_mes_6)}/mes (Enganche: ${formatearPrecio(p.enganche_6)})\n`;
+            }
+            if (p.pago_tarjeta_12) {
+                mensaje += `   • 12 Meses (Tarjeta): ${formatearPrecio(p.pago_tarjeta_12)}\n`;
+            }
+            mensaje += `\n`;
+        });
+
+        mensaje += `_¡Gracias por su preferencia! Mueblería Daguerr._`;
+
+        abrirWhatsApp(telefono, mensaje);
+    }
 
     // ============================================================
     // INICIALIZACIÓN
@@ -1992,7 +2101,6 @@
       document.getElementById('modal-descripcion').innerText = productoActual.descripcion || '';
       document.getElementById('modal-estado-contenedor').innerHTML = obtenerBadgesHTML(productoActual.estado);
 
-      // Precios
       document.getElementById('val-precio-contado').innerText = formatearPrecio(productoActual.precio_contado);
       document.getElementById('val-enganche-2').innerText = formatearPrecio(productoActual.enganche_2);
       document.getElementById('val-pago-mes-2').innerText = formatearPrecio(productoActual.pago_mes_2);
@@ -2147,95 +2255,6 @@
     }
 
     // ============================================================
-    // ENVIAR WHATSAPP - PRODUCTO INDIVIDUAL
-    // ============================================================
-    function enviarWhatsAppProducto() {
-      if (!productoActual) return;
-
-      const telefono = prompt('Ingresa el número de WhatsApp del cliente (con código de país, ej: 521234567890):', '52');
-      if (!telefono) return;
-
-      const numeroLimpio = telefono.replace(/\D/g, '');
-      if (numeroLimpio.length < 10) {
-        alert('Por favor, ingresa un número válido.');
-        return;
-      }
-
-      let mensaje = `*Mueblería Daguerr - Cotización*\n\n`;
-      mensaje += `📦 *Artículo:* ${productoActual.titulo || 'Sin título'}\n\n`;
-      
-      if (productoActual.descripcion) {
-        mensaje += `📝 *Características:*\n${productoActual.descripcion}\n\n`;
-      }
-
-      mensaje += `💰 *Precios y Planes:*\n`;
-      mensaje += `• *Contado:* ${formatearPrecio(productoActual.precio_contado)}\n`;
-      
-      if (productoActual.pago_mes_2) {
-        mensaje += `• *2 Meses:* ${formatearPrecio(productoActual.pago_mes_2)} /mes (Enganche: ${formatearPrecio(productoActual.enganche_2)})\n`;
-      }
-      if (productoActual.pago_mes_3) {
-        mensaje += `• *3 Meses:* ${formatearPrecio(productoActual.pago_mes_3)} /mes (Enganche: ${formatearPrecio(productoActual.enganche_3)})\n`;
-      }
-      if (productoActual.pago_mes_6) {
-        mensaje += `• *6 Meses:* ${formatearPrecio(productoActual.pago_mes_6)} /mes (Enganche: ${formatearPrecio(productoActual.enganche_6)})\n`;
-      }
-      if (productoActual.pago_tarjeta_12) {
-        mensaje += `• *12 Meses (Tarjeta):* ${formatearPrecio(productoActual.pago_tarjeta_12)}\n`;
-      }
-
-      mensaje += `\n_¡Gracias por su preferencia! Mueblería Daguerr._`;
-
-      const urlWhatsApp = `https://api.whatsapp.com/send?phone=${numeroLimpio}&text=${encodeURIComponent(mensaje)}`;
-      window.open(urlWhatsApp, '_blank');
-    }
-
-    // ============================================================
-    // ENVIAR WHATSAPP - CARRITO COMPLETO
-    // ============================================================
-    function enviarWhatsAppCarrito() {
-      if (carrito.length === 0) {
-        alert('El carrito está vacío. Agrega artículos primero.');
-        return;
-      }
-
-      const telefono = prompt('Ingresa el número de WhatsApp del cliente (con código de país, ej: 521234567890):', '52');
-      if (!telefono) return;
-
-      const numeroLimpio = telefono.replace(/\D/g, '');
-      if (numeroLimpio.length < 10) {
-        alert('Por favor, ingresa un número válido.');
-        return;
-      }
-
-      let mensaje = `*Mueblería Daguerr - Cotización de Múltiples Artículos*\n\n`;
-      mensaje += `📋 *Artículos seleccionados:*\n\n`;
-
-      carrito.forEach((p, index) => {
-        mensaje += `${index + 1}. *${p.titulo || 'Sin título'}*\n`;
-        mensaje += `   • Contado: ${formatearPrecio(p.precio_contado)}\n`;
-        if (p.pago_mes_2) {
-          mensaje += `   • 2 Meses: ${formatearPrecio(p.pago_mes_2)}/mes (Enganche: ${formatearPrecio(p.enganche_2)})\n`;
-        }
-        if (p.pago_mes_3) {
-          mensaje += `   • 3 Meses: ${formatearPrecio(p.pago_mes_3)}/mes (Enganche: ${formatearPrecio(p.enganche_3)})\n`;
-        }
-        if (p.pago_mes_6) {
-          mensaje += `   • 6 Meses: ${formatearPrecio(p.pago_mes_6)}/mes (Enganche: ${formatearPrecio(p.enganche_6)})\n`;
-        }
-        if (p.pago_tarjeta_12) {
-          mensaje += `   • 12 Meses (Tarjeta): ${formatearPrecio(p.pago_tarjeta_12)}\n`;
-        }
-        mensaje += `\n`;
-      });
-
-      mensaje += `_¡Gracias por su preferencia! Mueblería Daguerr._`;
-
-      const urlWhatsApp = `https://api.whatsapp.com/send?phone=${numeroLimpio}&text=${encodeURIComponent(mensaje)}`;
-      window.open(urlWhatsApp, '_blank');
-    }
-
-    // ============================================================
     // IMPRIMIR COTIZACIÓN
     // ============================================================
     function imprimirCotizacion() {
@@ -2265,7 +2284,7 @@
     }
 
     // ============================================================
-    // EVENTOS Y MODO OSCURO
+    // EVENTOS
     // ============================================================
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
