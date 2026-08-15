@@ -115,20 +115,6 @@
     }
 
     /* ===== ANIMACIONES ===== */
-    @keyframes fadeOut {
-      to { opacity: 0; visibility: hidden; }
-    }
-
-    @keyframes entradaLogo {
-      from { opacity: 0; transform: scale(0.86) translateY(6px); filter: blur(6px); }
-      to   { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
-    }
-
-    @keyframes trazoHilo {
-      from { width: 0; opacity: 0; }
-      to   { width: 100%; opacity: 1; }
-    }
-
     @keyframes fadeInUp {
       from { opacity: 0; transform: translateY(28px) scale(0.98); filter: blur(3px); }
       to   { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
@@ -146,69 +132,6 @@
         transition-duration: 0.001ms !important;
         scroll-behavior: auto !important;
       }
-    }
-
-    /* 1. ANIMACION DE BIENVENIDA */
-    #welcome-screen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background:
-        radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.12), transparent 55%),
-        linear-gradient(150deg, var(--terracota-claro), var(--terracota) 55%, var(--terracota-profundo));
-      color: var(--blanco);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-      animation: fadeOut 0.6s ease 1.2s forwards;
-      padding: 20px;
-    }
-
-    html.sin-bienvenida #welcome-screen { display: none !important; }
-
-    .logo-bienvenida {
-      display: flex;
-      flex-direction: column;
-      width: 90%;
-      max-width: 380px;
-      margin-right: 35px;
-      animation: entradaLogo 1.1s var(--curva);
-    }
-
-    .logo-bienvenida .brand-script {
-      display: block;
-      font-family: var(--fuente-logo-script);
-      font-size: clamp(4.5rem, 18vw, 7.5rem);
-      line-height: 0.85;
-      color: #fff;
-      text-align: center;
-      text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.22);
-    }
-
-    .logo-bienvenida .brand-sub {
-      display: block;
-      font-family: var(--fuente-logo-sub);
-      font-size: clamp(0.9rem, 3.8vw, 1.4rem);
-      letter-spacing: 6px;
-      text-transform: uppercase;
-      font-weight: 800;
-      color: #ffe6e0;
-      text-align: right;
-      margin-top: 2px;
-      margin-right: -12px;
-    }
-
-    .hilo-bienvenida {
-      height: 1px;
-      width: 0;
-      max-width: 180px;
-      align-self: center;
-      background: linear-gradient(90deg, transparent, var(--oro-suave), transparent);
-      margin-top: 22px;
-      animation: trazoHilo 1s var(--curva) 0.6s forwards;
     }
 
     /* SWITCH ESTILO MODO OSCURO / CLARO SUPERIOR IZQUIERDA */
@@ -1241,6 +1164,167 @@
       transform: translateY(-3px) scale(1.05);
     }
 
+    /* BOTON FLOTANTE: CARRITO DE COTIZACIÓN */
+    .btn-carrito-cotizacion {
+      position: fixed;
+      bottom: 25px;
+      left: 25px;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: none;
+      background: linear-gradient(135deg, var(--oro-suave), var(--oro));
+      color: #ffffff;
+      box-shadow: var(--sombra-media);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 997;
+      transition: box-shadow 0.3s ease, transform 0.3s var(--curva);
+    }
+
+    .btn-carrito-cotizacion svg { width: 22px; height: 22px; }
+
+    .btn-carrito-cotizacion:hover {
+      box-shadow: 0 16px 34px rgba(184, 135, 74, 0.4);
+      transform: translateY(-3px) scale(1.05);
+    }
+
+    .carrito-contador {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      min-width: 20px;
+      height: 20px;
+      padding: 0 5px;
+      border-radius: 999px;
+      background: var(--terracota);
+      color: #fff;
+      font-family: var(--fuente-logo-sub);
+      font-size: 0.7rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transform: scale(0.7);
+      transition: opacity 0.25s var(--curva), transform 0.25s var(--curva);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+    }
+
+    .carrito-contador.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* MODAL: CARRITO DE ARTICULOS PARA COTIZAR */
+    .modal-contenido-carrito {
+      max-width: 520px;
+      padding: 30px 26px 26px;
+    }
+
+    .modal-contenido-carrito .descripcion {
+      margin-bottom: 18px;
+    }
+
+    .lista-carrito {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 40vh;
+      overflow-y: auto;
+      margin-bottom: 20px;
+    }
+
+    .carrito-vacio {
+      font-size: 0.9rem;
+      color: var(--tinta-tenue);
+      text-align: center;
+      padding: 20px 10px;
+    }
+
+    .carrito-fila {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: var(--crema-suave);
+      border: 1px solid var(--linea);
+      border-radius: 12px;
+      padding: 10px 14px;
+    }
+
+    .carrito-fila-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .carrito-fila-titulo {
+      font-weight: 600;
+      font-size: 0.92rem;
+      color: var(--tinta);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .carrito-fila-precio {
+      font-size: 0.8rem;
+      color: var(--terracota);
+      font-weight: 600;
+    }
+
+    .btn-quitar-carrito {
+      flex-shrink: 0;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(194, 41, 10, 0.1);
+      color: var(--terracota);
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.25s ease, transform 0.25s ease;
+    }
+
+    .btn-quitar-carrito:hover {
+      background: var(--terracota);
+      color: #fff;
+      transform: rotate(90deg);
+    }
+
+    .carrito-acciones {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-vaciar-carrito {
+      flex-shrink: 0;
+      padding: 0 18px;
+      border-radius: 14px;
+      border: 1px solid var(--linea);
+      background: transparent;
+      color: var(--tinta-suave);
+      font-family: var(--fuente-cuerpo);
+      font-weight: 600;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: background 0.25s ease, color 0.25s ease;
+    }
+
+    .btn-vaciar-carrito:hover {
+      background: var(--crema-suave);
+      color: var(--terracota);
+    }
+
+    .carrito-acciones .btn-enviar-wsp { flex: 1; }
+
     footer {
       text-align: center;
       padding: 28px;
@@ -1252,27 +1336,166 @@
       border-top: 1px solid var(--linea);
       transition: background-color 0.3s ease, color 0.3s ease;
     }
+    /* ============================================
+       COTIZACIÓN IMPRIMIBLE (MEDIA HOJA CARTA)
+    ============================================ */
+    #area-impresion-cotizacion {
+      display: none;
+    }
+
+    .hoja-cotizacion {
+      width: 8.5in;
+      height: 5.5in;
+      padding: 0.45in 0.55in;
+      box-sizing: border-box;
+      font-family: var(--fuente-cuerpo);
+      color: #241b16;
+    }
+
+    .cot-encabezado {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .cot-logo {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cot-brand-script {
+      font-family: var(--fuente-logo-script);
+      font-size: 2.7rem;
+      line-height: 0.8;
+      color: #c2290a;
+    }
+
+    .cot-brand-sub {
+      font-family: var(--fuente-logo-sub);
+      font-size: 0.72rem;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: #b8874a;
+      margin-top: 3px;
+    }
+
+    .cot-datos-doc {
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cot-titulo-doc {
+      font-family: var(--fuente-logo-sub);
+      font-weight: 800;
+      font-size: 1.05rem;
+      letter-spacing: 2px;
+      color: #241b16;
+    }
+
+    .cot-fecha {
+      font-size: 0.78rem;
+      color: #6b5c51;
+      margin-top: 3px;
+    }
+
+    .cot-linea-oro {
+      height: 2px;
+      background: linear-gradient(90deg, #c2290a, #b8874a);
+      margin: 12px 0 16px;
+    }
+
+    .cot-tabla-precios {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      table-layout: fixed;
+    }
+
+    .cot-tabla-precios th {
+      background: #faf6f1;
+      border: 1px solid #e3d9cd;
+      font-size: 0.66rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      line-height: 1.25;
+      padding: 6px 4px;
+      color: #6b5c51;
+    }
+
+    .cot-tabla-precios td {
+      border: 1px solid #e3d9cd;
+      text-align: center;
+      padding: 7px 4px;
+      font-weight: 700;
+      font-size: 0.86rem;
+      color: #c2290a;
+    }
+
+    .cot-col-articulo {
+      width: 34%;
+      text-align: left !important;
+      font-weight: 600 !important;
+      color: #241b16 !important;
+      font-size: 0.82rem !important;
+    }
+
+    .cot-enganche {
+      display: inline-block;
+      margin-top: 2px;
+      font-weight: 400;
+      font-size: 0.62rem;
+      color: #6b5c51;
+    }
+
+    .cot-pie {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .cot-pie p {
+      font-size: 0.7rem;
+      color: #96887d;
+    }
+
+    .cot-gracias {
+      font-family: var(--fuente-logo-sub);
+      font-weight: 700;
+      color: #8a1c06;
+      margin-top: 4px;
+    }
+
+    @media print {
+      @page {
+        size: letter;
+        margin: 0;
+      }
+
+      html, body {
+        height: auto !important;
+        overflow: visible !important;
+      }
+
+      /* Oculta por completo (sin reservar espacio) todo lo que no sea la cotización,
+         evitando que el navegador pagine el resto del catálogo en blanco */
+      body > *:not(#area-impresion-cotizacion) {
+        display: none !important;
+      }
+
+      #area-impresion-cotizacion {
+        display: block;
+        position: static;
+      }
+
+      .hoja-cotizacion {
+        width: 8.5in;
+        height: 5.5in;
+      }
+    }
   </style>
 </head>
 <body>
-
-  <!-- MUESTRA LA BIENVENIDA SOLO UNA VEZ POR SESION -->
-  <script>
-    if (sessionStorage.getItem('bienvenidaVista')) {
-      document.documentElement.classList.add('sin-bienvenida');
-    } else {
-      sessionStorage.setItem('bienvenidaVista', '1');
-    }
-  </script>
-
-  <!-- ANIMACION DE BIENVENIDA -->
-  <div id="welcome-screen">
-    <div class="logo-bienvenida">
-      <span class="brand-script">Daguerr</span>
-      <span class="brand-sub">MUEBLERIA</span>
-      <div class="hilo-bienvenida"></div>
-    </div>
-  </div>
 
   <!-- BOTON VOLVER ARRIBA -->
   <button class="btn-volver-arriba" id="btnVolverArriba" aria-label="Volver arriba" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
@@ -1398,31 +1621,86 @@
           </div>
         </div>
 
-        <!-- SECCIÓN: ENVIAR COTIZACIÓN POR WHATSAPP AL CLIENTE -->
+        <!-- SECCIÓN: AGREGAR ARTICULO A LA COTIZACIÓN -->
         <div class="seccion-whatsapp">
           <h4>
-            <svg style="width:20px;height:20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
-            Enviar Cotización por WhatsApp al Cliente
+            <svg style="width:20px;height:20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+            Agregar a la Cotización
           </h4>
           <div class="whatsapp-controles">
-            <!-- Selector de número +52 o +1 -->
-            <div class="selector-pais-grupo">
-              <button type="button" class="btn-pais activo-pais" id="btn-pais-52" onclick="seleccionarPais('52')">🇲🇽 México (+52)</button>
-              <button type="button" class="btn-pais" id="btn-pais-1" onclick="seleccionarPais('1')">🇺🇸 EE.UU. (+1)</button>
-            </div>
-            <!-- Input para el número de teléfono -->
-            <div class="whatsapp-input-grupo">
-              <span class="whatsapp-prefijo-fijo" id="span-prefijo">+52</span>
-              <input type="tel" id="input-whatsapp-numero" placeholder="Escribe el número de celular..." autocomplete="off">
-            </div>
-            <!-- Botón grande para enviar -->
-            <button type="button" class="btn-enviar-wsp" onclick="enviarCotizacionWhatsApp()">
-              <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-              Enviar Cotización por WhatsApp
+            <button type="button" class="btn-enviar-wsp" id="btnAgregarCotizacion" onclick="agregarACotizacion()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              Agregar a Cotización
             </button>
           </div>
         </div>
 
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTON FLOTANTE: VER COTIZACIÓN / CARRITO DE ARTICULOS -->
+  <button class="btn-carrito-cotizacion" id="btnCarritoCotizacion" aria-label="Ver cotización" onclick="abrirCarritoCotizacion()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+    <span class="carrito-contador" id="carritoContador">0</span>
+  </button>
+
+  <!-- MODAL: CARRITO / LISTA DE ARTICULOS PARA COTIZAR -->
+  <div class="modal-detalle" id="modal-carrito">
+    <div class="modal-contenido modal-contenido-carrito">
+      <button class="btn-cerrar" onclick="cerrarCarritoCotizacion()">&times;</button>
+      <div class="cuerpo-modal">
+        <h2>Cotización de Artículos</h2>
+        <p class="descripcion">Los artículos que agregues aquí se incluirán en la cotización impresa.</p>
+
+        <div class="lista-carrito" id="listaCarritoCotizacion">
+          <!-- Filas generadas dinámicamente por JS -->
+        </div>
+
+        <div class="carrito-acciones">
+          <button type="button" class="btn-vaciar-carrito" onclick="vaciarCarritoCotizacion()">Vaciar</button>
+          <button type="button" class="btn-enviar-wsp" onclick="imprimirCotizacionCarrito()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+            Imprimir Cotización
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PLANTILLA DE COTIZACIÓN PARA IMPRESIÓN (MEDIA HOJA CARTA HACIA ARRIBA) -->
+  <div id="area-impresion-cotizacion">
+    <div class="hoja-cotizacion">
+      <div class="cot-encabezado">
+        <div class="cot-logo">
+          <span class="cot-brand-script">Daguerr</span>
+          <span class="cot-brand-sub">MUEBLERIA</span>
+        </div>
+        <div class="cot-datos-doc">
+          <span class="cot-titulo-doc">COTIZACIÓN</span>
+          <span class="cot-fecha" id="cot-fecha"></span>
+        </div>
+      </div>
+      <div class="cot-linea-oro"></div>
+
+      <table class="cot-tabla-precios">
+        <thead>
+          <tr>
+            <th class="cot-col-articulo">Artículo</th>
+            <th>Contado</th>
+            <th>3 Meses</th>
+            <th>6 Meses</th>
+            <th>12 Meses<br>(Tarjeta)</th>
+          </tr>
+        </thead>
+        <tbody id="cot-tabla-cuerpo">
+          <!-- Filas generadas dinámicamente por JS, una por articulo -->
+        </tbody>
+      </table>
+
+      <div class="cot-pie">
+        <p>Precios sujetos a cambio sin previo aviso. Cotización válida por 15 días.</p>
+        <p class="cot-gracias">¡Gracias por su preferencia, Mueblería Daguerr!</p>
       </div>
     </div>
   </div>
@@ -1452,9 +1730,9 @@
     let categoriaActiva = 'Todos';
     let subcategoriaActiva = null;
     let terminoBusqueda = '';
+    let carritoCotizacion = [];
     
     // Variable para controlar el prefijo telefónico seleccionado (por defecto 52)
-    let prefijoPaisSeleccionado = '52';
 
     async function inicializarProductos() {
       try {
@@ -1637,10 +1915,6 @@
       document.getElementById('val-pago-mes-6').innerText = formatearPrecio(productoActual.pago_mes_6);
       document.getElementById('val-pago-tarjeta-12').innerText = formatearPrecio(productoActual.pago_tarjeta_12);
 
-      // Limpiar el campo del número de WhatsApp al abrir un nuevo producto
-      const inputWsp = document.getElementById('input-whatsapp-numero');
-      if (inputWsp) inputWsp.value = '';
-
       document.getElementById('modal-producto').classList.add('activo');
     }
 
@@ -1692,60 +1966,124 @@
       document.getElementById('modal-img-grande').classList.remove('activo');
     }
 
-    // Funciones para la selección de prefijo telefónico (+52 o +1)
-    function seleccionarPais(pais) {
-      prefijoPaisSeleccionado = pais;
-      document.getElementById('btn-pais-52').classList.remove('activo-pais');
-      document.getElementById('btn-pais-1').classList.remove('activo-pais');
-      
-      document.getElementById(`btn-pais-${pais}`).classList.add('activo-pais');
-      document.getElementById('span-prefijo').innerText = `+${pais}`;
+    // Evita que texto de producto rompa el HTML al insertarse dinámicamente
+    function escaparHtml(texto) {
+      const div = document.createElement('div');
+      div.innerText = texto == null ? '' : texto;
+      return div.innerHTML;
     }
 
-    // Función que arma el mensaje de cotización sin incluir el enlace de la foto y abre WhatsApp
-    function enviarCotizacionWhatsApp() {
+    // Agrega el producto actualmente abierto en el modal al carrito de cotización
+    function agregarACotizacion() {
       if (!productoActual) return;
 
-      const inputNumero = document.getElementById('input-whatsapp-numero');
-      let numeroLimpio = inputNumero.value.replace(/\D/g, ''); // Solo números
+      const yaExiste = carritoCotizacion.some(p => p.id == productoActual.id);
+      const btn = document.getElementById('btnAgregarCotizacion');
 
-      if (!numeroLimpio || numeroLimpio.length < 7) {
-        alert('Por favor, escribe un número de WhatsApp válido.');
-        inputNumero.focus();
+      if (yaExiste) {
+        if (btn) {
+          const textoOriginal = btn.innerHTML;
+          btn.innerHTML = 'Ya está en la cotización';
+          setTimeout(() => { btn.innerHTML = textoOriginal; }, 1400);
+        }
         return;
       }
 
-      // Construir número completo con código de país
-      const telefonoCompleto = `${prefijoPaisSeleccionado}${numeroLimpio}`;
+      carritoCotizacion.push({
+        id: productoActual.id,
+        titulo: productoActual.titulo,
+        precio_contado: productoActual.precio_contado,
+        pago_mes_3: productoActual.pago_mes_3,
+        enganche_3: productoActual.enganche_3,
+        pago_mes_6: productoActual.pago_mes_6,
+        enganche_6: productoActual.enganche_6,
+        pago_tarjeta_12: productoActual.pago_tarjeta_12
+      });
 
-      // Armar el texto de la cotización ordenado y claro (sin el enlace de la imagen)
-      let mensaje = `*Mueblería Daguerr - Cotización*\n\n`;
-      mensaje += `📦 *Artículo:* ${productoActual.titulo || 'Sin título'}\n\n`;
-      
-      if (productoActual.descripcion) {
-        mensaje += `📝 *Características:*\n${productoActual.descripcion}\n\n`;
+      actualizarContadorCarrito();
+
+      if (btn) {
+        const textoOriginal = btn.innerHTML;
+        btn.innerHTML = '✓ Agregado a la cotización';
+        setTimeout(() => { btn.innerHTML = textoOriginal; }, 1400);
+      }
+    }
+
+    // Actualiza el número que aparece sobre el botón flotante del carrito
+    function actualizarContadorCarrito() {
+      const contador = document.getElementById('carritoContador');
+      if (!contador) return;
+      contador.innerText = carritoCotizacion.length;
+      contador.classList.toggle('visible', carritoCotizacion.length > 0);
+    }
+
+    // Dibuja la lista de artículos agregados dentro del modal del carrito
+    function renderizarCarritoCotizacion() {
+      const lista = document.getElementById('listaCarritoCotizacion');
+      if (!lista) return;
+
+      if (carritoCotizacion.length === 0) {
+        lista.innerHTML = '<p class="carrito-vacio">Aún no has agregado artículos. Abre un producto y presiona "Agregar a Cotización".</p>';
+        return;
       }
 
-      mensaje += `💰 *Precios y Planes:*\n`;
-      mensaje += `• *Contado:* ${formatearPrecio(productoActual.precio_contado)}\n`;
-      
-      if (productoActual.pago_mes_3) {
-        mensaje += `• *3 Meses:* ${formatearPrecio(productoActual.pago_mes_3)} /mes (Enganche: ${formatearPrecio(productoActual.enganche_3)})\n`;
-      }
-      if (productoActual.pago_mes_6) {
-        mensaje += `• *6 Meses:* ${formatearPrecio(productoActual.pago_mes_6)} /mes (Enganche: ${formatearPrecio(productoActual.enganche_6)})\n`;
-      }
-      if (productoActual.pago_tarjeta_12) {
-        mensaje += `• *12 Meses (Tarjeta):* ${formatearPrecio(productoActual.pago_tarjeta_12)}\n`;
+      lista.innerHTML = carritoCotizacion.map(p => `
+        <div class="carrito-fila">
+          <div class="carrito-fila-info">
+            <span class="carrito-fila-titulo">${escaparHtml(p.titulo || 'Sin título')}</span>
+            <span class="carrito-fila-precio">${formatearPrecio(p.precio_contado)} contado</span>
+          </div>
+          <button type="button" class="btn-quitar-carrito" aria-label="Quitar artículo" onclick="quitarDeCotizacion(${p.id})">&times;</button>
+        </div>
+      `).join('');
+    }
+
+    function abrirCarritoCotizacion() {
+      renderizarCarritoCotizacion();
+      document.getElementById('modal-carrito').classList.add('activo');
+    }
+
+    function cerrarCarritoCotizacion() {
+      document.getElementById('modal-carrito').classList.remove('activo');
+    }
+
+    function quitarDeCotizacion(id) {
+      carritoCotizacion = carritoCotizacion.filter(p => p.id != id);
+      actualizarContadorCarrito();
+      renderizarCarritoCotizacion();
+    }
+
+    function vaciarCarritoCotizacion() {
+      carritoCotizacion = [];
+      actualizarContadorCarrito();
+      renderizarCarritoCotizacion();
+    }
+
+    // Llena la plantilla imprimible con todos los artículos del carrito
+    // (solo título y precios, sin características) y lanza la impresión
+    function imprimirCotizacionCarrito() {
+      if (carritoCotizacion.length === 0) {
+        alert('Agrega al menos un artículo antes de imprimir la cotización.');
+        return;
       }
 
-      mensaje += `\n_¡Gracias por su preferencia! Mueblería Daguerr._`;
+      const hoy = new Date();
+      document.getElementById('cot-fecha').innerText = hoy.toLocaleDateString('es-MX', {
+        day: '2-digit', month: 'long', year: 'numeric'
+      });
 
-      // Codificar el texto para la URL de WhatsApp
-      const urlWhatsApp = `https://api.whatsapp.com/send?phone=${telefonoCompleto}&text=${encodeURIComponent(mensaje)}`;
+      const cuerpo = document.getElementById('cot-tabla-cuerpo');
+      cuerpo.innerHTML = carritoCotizacion.map(p => `
+        <tr>
+          <td class="cot-col-articulo">${escaparHtml(p.titulo || 'Sin título')}</td>
+          <td>${formatearPrecio(p.precio_contado)}</td>
+          <td>${p.pago_mes_3 ? formatearPrecio(p.pago_mes_3) + '/mes' : 'N/A'}${p.enganche_3 ? `<br><span class="cot-enganche">Enganche ${formatearPrecio(p.enganche_3)}</span>` : ''}</td>
+          <td>${p.pago_mes_6 ? formatearPrecio(p.pago_mes_6) + '/mes' : 'N/A'}${p.enganche_6 ? `<br><span class="cot-enganche">Enganche ${formatearPrecio(p.enganche_6)}</span>` : ''}</td>
+          <td>${p.pago_tarjeta_12 ? formatearPrecio(p.pago_tarjeta_12) : 'N/A'}</td>
+        </tr>
+      `).join('');
 
-      // Abrir WhatsApp en una nueva pestaña
-      window.open(urlWhatsApp, '_blank');
+      window.print();
     }
 
     document.addEventListener('keydown', (e) => {
