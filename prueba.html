@@ -843,4 +843,511 @@
             <input type="text" id="inputTitulo" placeholder="Ej. Sala Esquinera Roma">
 
             <div class="form-section-label">Clasificación</div>
-            <label>C
+            <label>Categoría:</label>
+            <select id="inputCategoria" onchange="verificarLineaBlancaModal()">
+                <option value="Cocinas">Cocinas</option>
+                <option value="Linea Blanca">Línea Blanca</option>
+                <option value="Comedores">Comedores</option>
+                <option value="Tubulares">Tubulares</option>
+                <option value="Salas">Salas</option>
+                <option value="Recamaras">Recámaras</option>
+                <option value="Closet">Closet</option>
+                <option value="Colchoneria">Colchonería</option>
+                <option value="Deportivos">Deportivos</option>
+                <option value="Descanso">Descanso</option>
+                <option value="Hogar">Hogar</option>
+                <option value="Electronica">Electrónica</option>
+                <option value="Ropa y Calzado">Ropa y Calzado</option>
+            </select>
+
+            <div id="grupoSubModal" class="oculto">
+                <label>Subcategoría:</label>
+                <select id="inputSubcategoria">
+                    <option value="">Selecciona subcategoría...</option>
+                    <option value="Refrigeradores">Refrigeradores</option>
+                    <option value="Estufas">Estufas</option>
+                    <option value="Lavadoras">Lavadoras</option>
+                    <option value="Boilers">Boilers</option>
+                    <option value="Abanicos/AC">Abanicos/AC</option>
+                </select>
+            </div>
+
+            <label>Estado:</label>
+            <select id="inputEstado">
+                <option value="disponible">Disponible</option>
+                <option value="pedido">Bajo Pedido</option>
+                <option value="agotado">Agotado</option>
+            </select>
+
+            <label>Descripción:</label>
+            <textarea id="inputDescripcion" placeholder="Medidas, materiales, detalles..."></textarea>
+
+            <!-- PRECIOS AGRUPADOS: Contado / 2 meses / 3 meses / 6 meses -->
+            <div class="form-section-label">💲 Precios y planes de financiamiento</div>
+            
+            <!-- Selector de meses para cálculo automático -->
+            <div style="background: #f0ebe6; padding: 12px; border-radius: var(--radius-sm); margin-bottom: 12px;">
+                <label style="margin-top:0; font-size:12px;">Calcular automáticamente para:</label>
+                <select id="selectorMeses" style="margin-top:4px;">
+                    <option value="2">2 meses</option>
+                    <option value="3" selected>3 meses</option>
+                    <option value="3y6">3 y 6 meses</option>
+                </select>
+                <div style="display:flex; gap:8px; margin-top:8px;">
+                    <input type="number" id="inputPrecioLista" placeholder="Precio de lista" style="flex:1; margin:0;">
+                    <button type="button" class="btn-primary-action" style="padding:8px 16px; font-size:12px; white-space:nowrap;" onclick="calcularPrecios()">Calcular Precios</button>
+                </div>
+            </div>
+
+            <div class="precios-card-grupo">
+                <label style="margin-top:0;">Precio de Contado (lista - 20%):</label>
+                <input type="number" id="inputPrecioContado" step="0.01" placeholder="0.00">
+
+                <!-- 2 MESES -->
+                <div id="grupo2Meses" style="margin-top:12px; border-top:1px dashed var(--border); padding-top:10px;">
+                    <label style="font-weight:700; color:var(--terracota); font-size:12px;">2 Meses</label>
+                    <div class="fila-precio">
+                        <div class="campo-precio">
+                            <label>Enganche 2 meses:</label>
+                            <input type="number" id="inputEnganche2" step="0.01" placeholder="0.00">
+                        </div>
+                        <div class="campo-precio">
+                            <label>Pago x mes (2 meses):</label>
+                            <input type="number" id="inputPago2" step="0.01" placeholder="0.00">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3 MESES -->
+                <div id="grupo3Meses" style="margin-top:12px; border-top:1px dashed var(--border); padding-top:10px;">
+                    <label style="font-weight:700; color:var(--terracota); font-size:12px;">3 Meses</label>
+                    <div class="fila-precio">
+                        <div class="campo-precio">
+                            <label>Enganche 3 meses:</label>
+                            <input type="number" id="inputEnganche3" step="0.01" placeholder="0.00">
+                        </div>
+                        <div class="campo-precio">
+                            <label>Pago x mes (3 meses):</label>
+                            <input type="number" id="inputPago3" step="0.01" placeholder="0.00">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6 MESES -->
+                <div id="grupo6Meses" style="margin-top:12px; border-top:1px dashed var(--border); padding-top:10px;">
+                    <label style="font-weight:700; color:var(--terracota); font-size:12px;">6 Meses</label>
+                    <div class="fila-precio">
+                        <div class="campo-precio">
+                            <label>Enganche 6 meses:</label>
+                            <input type="number" id="inputEnganche6" step="0.01" placeholder="0.00">
+                        </div>
+                        <div class="campo-precio">
+                            <label>Pago x mes (6 meses):</label>
+                            <input type="number" id="inputPago6" step="0.01" placeholder="0.00">
+                        </div>
+                    </div>
+                </div>
+
+                <label style="margin-top:12px;">Pago 12 meses (Tarjeta):</label>
+                <input type="number" id="inputTarjeta12" step="0.01" placeholder="0.00">
+            </div>
+            <!-- FIN PRECIOS -->
+
+            <div class="form-section-label">Imágenes</div>
+            <label style="margin-top:0;">Imágenes (Optimización Automática WebP):</label>
+            <div class="dropzone-box" onclick="document.getElementById('fileInput').click()">
+                <p style="margin: 0; color: var(--terracota); font-weight: 600; font-size: 13px;">📁 Arrastra fotos aquí o haz clic para explorar</p>
+            </div>
+            <input type="file" id="fileInput" class="oculto" accept="image/*" multiple onchange="subirArchivosASupabase(this.files)">
+
+            <label style="margin-top: 15px;">Imágenes del Artículo:</label>
+            <div class="preview-list" id="previewContainer"></div>
+
+            <div style="display: flex; gap: 8px; margin-top: 8px;">
+                <input type="url" id="inputUrlManual" placeholder="https://ejemplo.com/foto.jpg" style="margin-top:0; flex:1;">
+                <button type="button" class="btn-suburl" style="margin-top:0; width:auto; padding: 10px 15px;" onclick="agregarUrlManual()">+ Agregar URL</button>
+            </div>
+            <div id="msgLoader"></div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-modal-cancel" onclick="cerrarModal()">Cancelar</button>
+            <button class="btn-modal-save" onclick="guardarProducto()">Guardar Artículo</button>
+        </div>
+    </div>
+</div>
+
+<script>
+  const SUPABASE_URL = 'https://sbuwwydygabgweegvzoi.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNidXd3eWR5Z2FiZ3dlZWd2em9pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3ODgxOTksImV4cCI6MjEwMTM2NDE5OX0.D3iSUhyNx4CpB5xTqsfn4R5CFvyghpfzVvi_CxdnXPI';
+  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  let productosGlobales = [];
+  let categoriaActual = 'Todas';
+  let imagenesActuales = [];
+
+  window.addEventListener('DOMContentLoaded', async () => {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (session) {
+          document.getElementById('loginScreen').style.display = 'none';
+          cargarArticulos();
+      }
+      configurarDragAndDrop();
+  });
+
+  function toggleMenuMobil() {
+      const sidebar = document.getElementById('appSidebar');
+      const overlay = document.getElementById('sidebarOverlay');
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('open');
+  }
+
+  async function intentarLogin() {
+      const usuarioIngresado = document.getElementById('userLogin').value.trim();
+      const passIngresada = document.getElementById('passLogin').value.trim();
+      if (!usuarioIngresado || !passIngresada) { document.getElementById('errorLogin').style.display = 'block'; return; }
+      const emailFicticio = `${usuarioIngresado}@muebleriadaguerr.local`;
+      const { data, error } = await supabaseClient.auth.signInWithPassword({ email: emailFicticio, password: passIngresada });
+      if (error) { document.getElementById('errorLogin').style.display = 'block'; return; }
+      document.getElementById('errorLogin').style.display = 'none';
+      document.getElementById('loginScreen').style.display = 'none';
+      cargarArticulos();
+  }
+
+  async function cerrarSesion() {
+      await supabaseClient.auth.signOut();
+      location.reload();
+  }
+
+  async function cargarArticulos() {
+      const { data, error } = await supabaseClient.from('productos').select('*').order('id', { ascending: false });
+      if (error) { console.error(error); return; }
+      productosGlobales = data || [];
+      actualizarEstadisticas();
+      mostrarProductosFiltrados();
+  }
+
+  function actualizarEstadisticas() {
+      const total = productosGlobales.length;
+      const disponibles = productosGlobales.filter(p => (p.estado || 'disponible') === 'disponible').length;
+      const pedido = productosGlobales.filter(p => p.estado === 'pedido').length;
+      const agotado = productosGlobales.filter(p => p.estado === 'agotado').length;
+      const elTotal = document.getElementById('statTotal');
+      const elDisp = document.getElementById('statDisponible');
+      const elPed = document.getElementById('statPedido');
+      const elAgo = document.getElementById('statAgotado');
+      if (elTotal) elTotal.textContent = total;
+      if (elDisp) elDisp.textContent = disponibles;
+      if (elPed) elPed.textContent = pedido;
+      if (elAgo) elAgo.textContent = agotado;
+  }
+
+  function filtrarCategoria(cat, elementoBtn) {
+      categoriaActual = cat;
+      document.querySelectorAll('.sidebar-btn-cat').forEach(btn => btn.classList.remove('active'));
+      elementoBtn.classList.add('active');
+      mostrarProductosFiltrados();
+      if (window.innerWidth <= 768) toggleMenuMobil();
+  }
+
+  function filtrarPorBusqueda() {
+      const textoBusqueda = document.getElementById('inputBuscador').value.toLowerCase().trim();
+      let filtrados = productosGlobales.filter(p => categoriaActual === 'Todas' || p.categoria === categoriaActual);
+      if (textoBusqueda !== '') {
+          filtrados = filtrados.filter(p => (p.titulo && p.titulo.toLowerCase().includes(textoBusqueda)) || (p.id && p.id.toString().includes(textoBusqueda)));
+      }
+      renderizarLista(filtrados, document.getElementById('listaProductos'));
+  }
+
+  function mostrarProductosFiltrados() {
+      const contenedor = document.getElementById('listaProductos');
+      let filtrados = productosGlobales.filter(p => categoriaActual === 'Todas' || p.categoria === categoriaActual);
+      renderizarLista(filtrados, contenedor);
+  }
+
+  function renderizarLista(lista, contenedor) {
+      const contadorEl = document.getElementById('contadorResultados');
+      if (contadorEl) contadorEl.textContent = `${lista.length} artículo${lista.length === 1 ? '' : 's'}`;
+
+      if (lista.length === 0) { contenedor.innerHTML = '<div class="mensaje-vacio">No se encontraron artículos.</div>'; return; }
+      let html = '';
+      lista.forEach(prod => {
+          let primeraImg = (prod.imagenes && prod.imagenes.length > 0) ? prod.imagenes[0] : 'https://via.placeholder.com/300x200?text=Sin+Foto';
+          html += `
+              <div class="product-card">
+                  <div class="product-card-img-wrap">
+                      <span class="card-id-badge">#${prod.id}</span>
+                      <span class="badge ${prod.estado || 'disponible'}">${prod.estado || 'disponible'}</span>
+                      <img src="${primeraImg}" class="product-card-img" loading="lazy">
+                  </div>
+                  <div class="product-card-body">
+                      <h3>${prod.titulo}</h3>
+                      <span class="card-categoria">${prod.categoria}${prod.subcategoria ? ' · ' + prod.subcategoria : ''}</span>
+                     <div class="card-precios">
+    <div><span>Contado</span><b>$${prod.precio_contado || 0}</b></div>
+    <div><span>Enganche 2m</span><b>$${prod.enganche_2 || 0}</b></div>
+    <div><span>2 meses</span><b>$${prod.pago_mes_2 || 0}</b></div>
+    <div><span>Enganche 3m</span><b>$${prod.enganche_3 || 0}</b></div>
+    <div><span>3 meses</span><b>$${prod.pago_mes_3 || 0}</b></div>
+    <div><span>Enganche 6m</span><b>$${prod.enganche_6 || 0}</b></div>
+    <div><span>6 meses</span><b>$${prod.pago_mes_6 || 0}</b></div>
+    <div><span>12m tarj.</span><b>$${prod.pago_tarjeta_12 || 0}</b></div>
+</div>
+                      <div class="card-actions">
+                          <button class="btn-action btn-edit" onclick="abrirModalEditar(${prod.id})">✏️ Editar</button>
+                          <button class="btn-action btn-delete" onclick="eliminarProducto(${prod.id})">🗑️ Eliminar</button>
+                      </div>
+                  </div>
+              </div>
+          `;
+      });
+      contenedor.innerHTML = html;
+  }
+
+  // ===== FUNCIÓN PARA CALCULAR PRECIOS AUTOMÁTICAMENTE =====
+  function calcularPrecios() {
+      const precioLista = parseFloat(document.getElementById('inputPrecioLista').value);
+      if (!precioLista || precioLista <= 0) {
+          alert('Ingresa un precio de lista válido.');
+          return;
+      }
+
+      const selector = document.getElementById('selectorMeses').value;
+      
+      // Precio de contado = lista - 20%
+      const precioContado = precioLista * 0.8;
+      document.getElementById('inputPrecioContado').value = precioContado.toFixed(2);
+
+      // 2 meses: enganche = lista / 3, pago = enganche
+      const enganche2 = precioLista / 3;
+      document.getElementById('inputEnganche2').value = enganche2.toFixed(2);
+      document.getElementById('inputPago2').value = enganche2.toFixed(2);
+
+      // 3 meses: enganche = lista / 4, pago = enganche
+      const enganche3 = precioLista / 4;
+      document.getElementById('inputEnganche3').value = enganche3.toFixed(2);
+      document.getElementById('inputPago3').value = enganche3.toFixed(2);
+
+      // 6 meses: enganche = enganche3 + 25%, pago = (lista + 25% - enganche6) / 6
+      const enganche6 = enganche3 * 1.25;
+      const listaConRecargo = precioLista * 1.25;
+      const pago6 = (listaConRecargo - enganche6) / 6;
+      document.getElementById('inputEnganche6').value = enganche6.toFixed(2);
+      document.getElementById('inputPago6').value = pago6.toFixed(2);
+
+      // Mostrar/ocultar grupos según selección
+      const grupo2 = document.getElementById('grupo2Meses');
+      const grupo3 = document.getElementById('grupo3Meses');
+      const grupo6 = document.getElementById('grupo6Meses');
+
+      if (selector === '2') {
+          grupo2.style.display = 'block';
+          grupo3.style.display = 'none';
+          grupo6.style.display = 'none';
+      } else if (selector === '3') {
+          grupo2.style.display = 'none';
+          grupo3.style.display = 'block';
+          grupo6.style.display = 'none';
+      } else if (selector === '3y6') {
+          grupo2.style.display = 'none';
+          grupo3.style.display = 'block';
+          grupo6.style.display = 'block';
+      }
+  }
+
+  function abrirModalNuevo() {
+      document.getElementById('modalTitulo').textContent = 'Agregar Nuevo Artículo';
+      document.getElementById('productoIdOriginal').value = '';
+      document.getElementById('inputCustomId').value = '';
+      document.getElementById('inputTitulo').value = '';
+      document.getElementById('inputCategoria').value = 'Cocinas';
+      document.getElementById('inputSubcategoria').value = '';
+      document.getElementById('inputEstado').value = 'disponible';
+      document.getElementById('inputDescripcion').value = '';
+      document.getElementById('inputPrecioLista').value = '';
+      document.getElementById('inputPrecioContado').value = '';
+      document.getElementById('inputEnganche2').value = '';
+      document.getElementById('inputPago2').value = '';
+      document.getElementById('inputEnganche3').value = '';
+      document.getElementById('inputPago3').value = '';
+      document.getElementById('inputEnganche6').value = '';
+      document.getElementById('inputPago6').value = '';
+      document.getElementById('inputTarjeta12').value = '';
+      // Mostrar todos los grupos por defecto
+      document.getElementById('grupo2Meses').style.display = 'block';
+      document.getElementById('grupo3Meses').style.display = 'block';
+      document.getElementById('grupo6Meses').style.display = 'block';
+      imagenesActuales = [];
+      renderizarPreviews();
+      verificarLineaBlancaModal();
+      document.getElementById('modalProducto').style.display = 'flex';
+  }
+
+  function abrirModalEditar(id) {
+      const prod = productosGlobales.find(p => p.id === id);
+      if (!prod) return;
+      document.getElementById('modalTitulo').textContent = 'Editar Artículo';
+      document.getElementById('inputCustomId').value = prod.id;
+      document.getElementById('productoIdOriginal').value = prod.id;
+      document.getElementById('inputTitulo').value = prod.titulo || '';
+      document.getElementById('inputCategoria').value = prod.categoria || 'Cocinas';
+      document.getElementById('inputSubcategoria').value = prod.subcategoria || '';
+      document.getElementById('inputEstado').value = prod.estado || 'disponible';
+      document.getElementById('inputDescripcion').value = prod.descripcion || '';
+      document.getElementById('inputPrecioContado').value = prod.precio_contado || '';
+      document.getElementById('inputEnganche2').value = prod.enganche_2 || '';
+      document.getElementById('inputPago2').value = prod.pago_mes_2 || '';
+      document.getElementById('inputEnganche3').value = prod.enganche_3 || '';
+      document.getElementById('inputPago3').value = prod.pago_mes_3 || '';
+      document.getElementById('inputEnganche6').value = prod.enganche_6 || '';
+      document.getElementById('inputPago6').value = prod.pago_mes_6 || '';
+      document.getElementById('inputTarjeta12').value = prod.pago_tarjeta_12 || '';
+      document.getElementById('inputPrecioLista').value = '';
+      // Mostrar todos los grupos
+      document.getElementById('grupo2Meses').style.display = 'block';
+      document.getElementById('grupo3Meses').style.display = 'block';
+      document.getElementById('grupo6Meses').style.display = 'block';
+      verificarLineaBlancaModal();
+      imagenesActuales = prod.imagenes ? [...prod.imagenes] : [];
+      renderizarPreviews();
+      document.getElementById('modalProducto').style.display = 'flex';
+  }
+
+  function cerrarModal() { document.getElementById('modalProducto').style.display = 'none'; }
+  function agregarUrlManual() { const input = document.getElementById('inputUrlManual'); if(!input.value) return; imagenesActuales.push(input.value); input.value = ''; renderizarPreviews(); }
+ async function eliminarImagenLocal(index) {
+      const urlAEliminar = imagenesActuales[index];
+      
+      // Si la imagen ya está subida en Supabase, la borramos del bucket
+      if (urlAEliminar && urlAEliminar.includes('supabase')) {
+          try {
+              const nombreArchivo = urlAEliminar.split('/').pop();
+              const { error } = await supabaseClient.storage
+                  .from('fotos-productos')
+                  .remove([nombreArchivo]);
+              
+              if (error) console.error('Error al borrar del storage:', error);
+          } catch (e) {
+              console.error('No se pudo eliminar del servidor:', e);
+          }
+      }
+
+      // Quitamos la imagen de la lista local y actualizamos la interfaz
+      imagenesActuales.splice(index, 1);
+      renderizarPreviews();
+  }
+  
+function moverImagen(index, direccion) {
+      const nuevoIndex = index + direccion;
+      if (nuevoIndex < 0 || nuevoIndex >= imagenesActuales.length) return;
+      const temp = imagenesActuales[index];
+      imagenesActuales[index] = imagenesActuales[nuevoIndex];
+      imagenesActuales[nuevoIndex] = temp;
+      renderizarPreviews();
+  }
+
+  function renderizarPreviews() {
+      const container = document.getElementById('previewContainer');
+      container.innerHTML = imagenesActuales.map((url, index) => `
+          <div class="preview-item">
+              <div class="preview-left">
+                  <div class="preview-thumb"><img src="${url}"></div>
+                  <div class="preview-url-text">${index+1}. ${url}</div>
+              </div>
+              <div class="preview-actions">
+                  <button type="button" class="btn-img-action" onclick="moverImagen(${index}, -1)" ${index === 0 ? 'disabled' : ''}>▲</button>
+                  <button type="button" class="btn-img-action" onclick="moverImagen(${index}, 1)" ${index === imagenesActuales.length - 1 ? 'disabled' : ''}>▼</button>
+                  <button type="button" class="btn-img-action btn-img-delete" onclick="eliminarImagenLocal(${index})">❌</button>
+              </div>
+          </div>
+      `).join('');
+  }
+
+  function verificarLineaBlancaModal() { document.getElementById('grupoSubModal').classList.toggle('oculto', document.getElementById('inputCategoria').value !== 'Linea Blanca'); }
+  function configurarDragAndDrop() { const dropZone = document.querySelector('.dropzone-box'); ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(name => dropZone.addEventListener(name, (e) => e.preventDefault())); dropZone.addEventListener('drop', (e) => subirArchivosASupabase(e.dataTransfer.files)); }
+
+  async function subirArchivosASupabase(files) {
+      if (files.length === 0) return;
+      const msg = document.getElementById('msgLoader');
+      msg.textContent = 'Subiendo...';
+      for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          const ruta = `${Date.now()}_${i}.webp`;
+          await supabaseClient.storage.from('fotos-productos').upload(ruta, file);
+          const { data } = supabaseClient.storage.from('fotos-productos').getPublicUrl(ruta);
+          imagenesActuales.push(data.publicUrl);
+      }
+      renderizarPreviews();
+      msg.textContent = 'Subido.';
+  }
+
+  async function guardarProducto() {
+      const idOriginal = document.getElementById('productoIdOriginal').value;
+      const datos = {
+          titulo: document.getElementById('inputTitulo').value.trim(),
+          categoria: document.getElementById('inputCategoria').value,
+          subcategoria: document.getElementById('inputSubcategoria').value || null,
+          estado: document.getElementById('inputEstado').value,
+          descripcion: document.getElementById('inputDescripcion').value.trim(),
+          imagenes: imagenesActuales,
+          precio_contado: parseFloat(document.getElementById('inputPrecioContado').value) || 0,
+          enganche_2: parseFloat(document.getElementById('inputEnganche2').value) || 0,
+          pago_mes_2: parseFloat(document.getElementById('inputPago2').value) || 0,
+          enganche_3: parseFloat(document.getElementById('inputEnganche3').value) || 0,
+          pago_mes_3: parseFloat(document.getElementById('inputPago3').value) || 0,
+          enganche_6: parseFloat(document.getElementById('inputEnganche6').value) || 0,
+          pago_mes_6: parseFloat(document.getElementById('inputPago6').value) || 0,
+          pago_tarjeta_12: parseFloat(document.getElementById('inputTarjeta12').value) || 0
+      };
+      if (document.getElementById('inputCustomId').value) datos.id = parseInt(document.getElementById('inputCustomId').value);
+
+      let error;
+      if (idOriginal) { await supabaseClient.from('productos').update(datos).eq('id', idOriginal); }
+      else { await supabaseClient.from('productos').insert([datos]); }
+
+     cerrarModal();
+  cargarArticulos();
+}
+
+// Intervalo automático cada 30 segundos
+
+  
+
+ async function eliminarProducto(id) {
+      if (!confirm('¿Eliminar producto y todas sus imágenes asociadas?')) return;
+
+      try {
+          // 1. Obtener el producto antes de borrarlo para recuperar sus URLs
+          const { data: producto, error: fetchError } = await supabaseClient
+              .from('productos')
+              .select('imagenes')
+              .eq('id', id)
+              .single();
+
+          if (fetchError) throw fetchError;
+
+          // 2. Si tiene imágenes, extraer la ruta y borrarlas de Storage
+          if (producto && producto.imagenes && producto.imagenes.length > 0) {
+              const rutasAborrar = producto.imagenes.map(url => {
+                  // Extraer el nombre del archivo del publicUrl (ej: 123456789_0.webp)
+                  return url.split('/').pop(); 
+              });
+
+              await supabaseClient.storage
+                  .from('fotos-productos')
+                  .remove(rutasAborrar);
+          }
+
+          // 3. Borrar el registro de la tabla
+          await supabaseClient.from('productos').delete().eq('id', id);
+          
+          alert('Producto e imágenes eliminados correctamente.');
+          cargarArticulos();
+      } catch (error) {
+          console.error('Error al eliminar:', error);
+          alert('Hubo un error al intentar eliminar el producto.');
+      }
+  }
+</script>
+
+</body>
+</html>
