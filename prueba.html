@@ -1125,7 +1125,7 @@
       const selector = document.getElementById('selectorMeses').value;
       
       // Precio de contado = lista - 20% (redondeado hacia arriba)
-      const precioContado = Math.round(precioLista * 0.8 * 100) / 100;
+      const precioContado = Math.floor(precioLista * 0.8 * 100) / 100;
       document.getElementById('inputPrecioContado').value = precioContado;
 
       // 2 meses: enganche = lista / 3, pago = enganche (redondeado hacia arriba)
