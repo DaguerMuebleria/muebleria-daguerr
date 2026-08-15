@@ -17,12 +17,6 @@
 body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif}
 button,input,select{font:inherit}
 button{cursor:pointer}
-#loginScreen{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(150deg,#241b16,#17110c)}
-.login-card{width:100%;max-width:380px;background:#fff;padding:32px;border-radius:18px;box-shadow:0 25px 60px rgba(0,0,0,.35)}
-.login-card h1{margin:0 0 5px;font-size:24px}.login-card p{margin:0 0 22px;color:var(--muted)}
-.login-card input{width:100%;padding:12px;margin-top:10px;border:1px solid var(--border);border-radius:8px}
-.btn-login{width:100%;margin-top:16px;padding:12px;border:0;border-radius:8px;background:var(--accent);color:#fff;font-weight:700}
-.login-error{display:none;color:var(--red);font-size:13px;margin-top:10px}
 
 header{position:sticky;top:0;z-index:20;background:rgba(246,242,237,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
 .header-inner{max-width:1500px;margin:auto;padding:18px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
@@ -79,16 +73,7 @@ tr:hover td{background:#fffcf9}
 </head>
 <body>
 
-<div id="loginScreen">
-  <div class="login-card">
-    <h1>Inventario Daguerr</h1>
-    <p>Acceso al inventario administrativo</p>
-    <input id="userLogin" type="text" placeholder="Usuario" autocomplete="username">
-    <input id="passLogin" type="password" placeholder="Contraseña" autocomplete="current-password">
-    <button class="btn-login" onclick="intentarLogin()">Acceder</button>
-    <div id="errorLogin" class="login-error">Usuario o contraseña incorrectos.</div>
-  </div>
-</div>
+
 
 <header>
   <div class="header-inner">
@@ -98,8 +83,7 @@ tr:hover td{background:#fffcf9}
     </div>
     <div class="header-actions">
       <button class="btn" onclick="cargarArticulos()">🔄 Actualizar</button>
-      <button class="btn btn-primary" onclick="abrirModal()">＋ Nuevo artículo</button>
-      <button class="btn btn-danger" onclick="cerrarSesion()">Salir</button>
+      
     </div>
   </div>
 </header>
@@ -152,7 +136,7 @@ tr:hover td{background:#fffcf9}
 <div class="modal" id="modal">
   <div class="modal-card">
     <div class="modal-head">
-      <h2 id="modalTitle">Nuevo artículo</h2>
+      <h2 id="modalTitle">Editar artículo</h2>
       <button class="close" onclick="cerrarModal()">×</button>
     </div>
     <div class="modal-body">
@@ -201,27 +185,9 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 let productos = [];
 let editandoId = null;
 
-window.addEventListener('DOMContentLoaded', async () => {
-  const { data:{session} } = await supabaseClient.auth.getSession();
-  if(session){
-    document.getElementById('loginScreen').style.display='none';
-    cargarArticulos();
-  }
-});
-
-async function intentarLogin(){
-  const usuario=document.getElementById('userLogin').value.trim();
-  const password=document.getElementById('passLogin').value.trim();
-  if(!usuario || !password){mostrarError();return}
-  const email=`${usuario}@muebleriadaguerr.local`;
-  const {error}=await supabaseClient.auth.signInWithPassword({email,password});
-  if(error){mostrarError();return}
-  document.getElementById('errorLogin').style.display='none';
-  document.getElementById('loginScreen').style.display='none';
+window.addEventListener('DOMContentLoaded', () => {
   cargarArticulos();
-}
-function mostrarError(){document.getElementById('errorLogin').style.display='block'}
-async function cerrarSesion(){await supabaseClient.auth.signOut();location.reload()}
+});
 
 async function cargarArticulos(){
   const lista=document.getElementById('lista');
@@ -336,19 +302,12 @@ async function cambiarEstado(id){
 
 function abrirModal(id=null){
   editandoId=id;
-  document.getElementById('modalTitle').textContent=id?'Editar artículo':'Nuevo artículo';
-  if(id){
-    const p=productos.find(x=>x.id===id);if(!p)return;
-    document.getElementById('fTitulo').value=p.titulo||'';
-    document.getElementById('fStock').value=p.stock||0;
-    document.getElementById('fCategoria').value=p.categoria||'Cocinas';
-    document.getElementById('fEstado').value=p.estado||'disponible';
-  }else{
-    document.getElementById('fTitulo').value='';
-    document.getElementById('fStock').value=0;
-    document.getElementById('fCategoria').value='Cocinas';
-    document.getElementById('fEstado').value='disponible';
-  }
+  document.getElementById('modalTitle').textContent='Editar artículo';
+  const p=productos.find(x=>x.id===id);if(!p)return;
+  document.getElementById('fTitulo').value=p.titulo||'';
+  document.getElementById('fStock').value=p.stock||0;
+  document.getElementById('fCategoria').value=p.categoria||'Cocinas';
+  document.getElementById('fEstado').value=p.estado||'disponible';
   document.getElementById('modal').classList.add('open');
 }
 function editarArticulo(id){abrirModal(id)}
@@ -366,7 +325,8 @@ async function guardarArticulo(){
   if(editandoId){
     result=await supabaseClient.from('productos').update(datos).eq('id',editandoId);
   }else{
-    result=await supabaseClient.from('productos').insert([datos]);
+    alert('No se puede agregar un nuevo artículo. Solo se permite editar los existentes.');
+    return;
   }
   if(result.error){
     alert('No se pudo guardar el artículo. Verifica que la columna stock exista en Supabase.');
