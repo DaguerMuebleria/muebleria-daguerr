@@ -442,7 +442,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 11px; /* Ligeramente más compacto para que entren 6 filas */
+            font-size: 11px;
             color: var(--text-muted);
         }
 
@@ -589,7 +589,7 @@
 
         textarea { resize: vertical; height: 80px; }
 
-        /* Tarjeta agrupada de precios dentro del modal (contado / 3 / 6 / 12 meses) */
+        /* Tarjeta agrupada de precios dentro del modal */
         .precios-card-grupo {
             background: #faf6f1;
             border: 1px solid var(--border);
@@ -815,7 +815,6 @@
         <div class="search-box">
             <input type="text" id="inputBuscador" placeholder="Buscar por título o ID..." oninput="filtrarPorBusqueda()">
         </div>
-        <!-- Botón de actualizar -->
         <button onclick="cargarArticulos()" style="padding: 10px 14px; cursor: pointer; border-radius: var(--radius-sm); border: 1px solid var(--border); background: white; font-weight: 600; font-size: 13px;">🔄 Actualizar</button>
         <span class="contador-resultados" id="contadorResultados"></span>
     </div>
@@ -824,8 +823,6 @@
         <p style="text-align: center; color: var(--text-muted); padding: 40px; grid-column: 1 / -1;">Cargando artículos...</p>
     </div>
 </main>
-
-    
 
 <div class="modal-overlay" id="modalProducto">
     <div class="modal-card">
@@ -882,7 +879,7 @@
             <label>Descripción:</label>
             <textarea id="inputDescripcion" placeholder="Medidas, materiales, detalles..."></textarea>
 
-            <!-- PRECIOS AGRUPADOS: Contado / 2 meses / 3 meses / 6 meses -->
+            <!-- PRECIOS -->
             <div class="form-section-label">💲 Precios y planes de financiamiento</div>
             
             <!-- Selector de meses para cálculo automático -->
@@ -892,6 +889,7 @@
                     <option value="2">2 meses</option>
                     <option value="3" selected>3 meses</option>
                     <option value="3y6">3 y 6 meses</option>
+                    <option value="2y3y6">2, 3 y 6 meses</option>
                 </select>
                 <div style="display:flex; gap:8px; margin-top:8px;">
                     <input type="number" id="inputPrecioLista" placeholder="Precio de lista" style="flex:1; margin:0;">
@@ -901,7 +899,7 @@
 
             <div class="precios-card-grupo">
                 <label style="margin-top:0;">Precio de Contado (lista - 20%):</label>
-                <input type="number" id="inputPrecioContado" step="0.01" placeholder="0.00">
+                <input type="number" id="inputPrecioContado" step="1" placeholder="0">
 
                 <!-- 2 MESES -->
                 <div id="grupo2Meses" style="margin-top:12px; border-top:1px dashed var(--border); padding-top:10px;">
@@ -909,11 +907,11 @@
                     <div class="fila-precio">
                         <div class="campo-precio">
                             <label>Enganche 2 meses:</label>
-                            <input type="number" id="inputEnganche2" step="0.01" placeholder="0.00">
+                            <input type="number" id="inputEnganche2" step="1" placeholder="0">
                         </div>
                         <div class="campo-precio">
                             <label>Pago x mes (2 meses):</label>
-                            <input type="number" id="inputPago2" step="0.01" placeholder="0.00">
+                            <input type="number" id="inputPago2" step="1" placeholder="0">
                         </div>
                     </div>
                 </div>
@@ -924,11 +922,11 @@
                     <div class="fila-precio">
                         <div class="campo-precio">
                             <label>Enganche 3 meses:</label>
-                            <input type="number" id="inputEnganche3" step="0.01" placeholder="0.00">
+                            <input type="number" id="inputEnganche3" step="1" placeholder="0">
                         </div>
                         <div class="campo-precio">
                             <label>Pago x mes (3 meses):</label>
-                            <input type="number" id="inputPago3" step="0.01" placeholder="0.00">
+                            <input type="number" id="inputPago3" step="1" placeholder="0">
                         </div>
                     </div>
                 </div>
@@ -939,17 +937,25 @@
                     <div class="fila-precio">
                         <div class="campo-precio">
                             <label>Enganche 6 meses:</label>
-                            <input type="number" id="inputEnganche6" step="0.01" placeholder="0.00">
+                            <input type="number" id="inputEnganche6" step="1" placeholder="0">
                         </div>
                         <div class="campo-precio">
                             <label>Pago x mes (6 meses):</label>
-                            <input type="number" id="inputPago6" step="0.01" placeholder="0.00">
+                            <input type="number" id="inputPago6" step="1" placeholder="0">
                         </div>
                     </div>
                 </div>
 
-                <label style="margin-top:12px;">Pago 12 meses (Tarjeta):</label>
-                <input type="number" id="inputTarjeta12" step="0.01" placeholder="0.00">
+                <!-- 12 MESES (Tarjeta) -->
+                <div id="grupo12Meses" style="margin-top:12px; border-top:1px dashed var(--border); padding-top:10px;">
+                    <label style="font-weight:700; color:var(--terracota); font-size:12px;">12 Meses (Tarjeta)</label>
+                    <div class="fila-precio">
+                        <div class="campo-precio" style="grid-column: 1 / -1;">
+                            <label>Pago x mes (12 meses):</label>
+                            <input type="number" id="inputTarjeta12" step="1" placeholder="0">
+                        </div>
+                    </div>
+                </div>
             </div>
             <!-- FIN PRECIOS -->
 
@@ -984,6 +990,11 @@
   let productosGlobales = [];
   let categoriaActual = 'Todas';
   let imagenesActuales = [];
+
+  // Función para redondear hacia arriba (sin centavos)
+  function redondearArriba(valor) {
+      return Math.ceil(valor);
+  }
 
   window.addEventListener('DOMContentLoaded', async () => {
       const { data: { session } } = await supabaseClient.auth.getSession();
@@ -1082,16 +1093,16 @@
                   <div class="product-card-body">
                       <h3>${prod.titulo}</h3>
                       <span class="card-categoria">${prod.categoria}${prod.subcategoria ? ' · ' + prod.subcategoria : ''}</span>
-                     <div class="card-precios">
-    <div><span>Contado</span><b>$${prod.precio_contado || 0}</b></div>
-    <div><span>Enganche 2m</span><b>$${prod.enganche_2 || 0}</b></div>
-    <div><span>2 meses</span><b>$${prod.pago_mes_2 || 0}</b></div>
-    <div><span>Enganche 3m</span><b>$${prod.enganche_3 || 0}</b></div>
-    <div><span>3 meses</span><b>$${prod.pago_mes_3 || 0}</b></div>
-    <div><span>Enganche 6m</span><b>$${prod.enganche_6 || 0}</b></div>
-    <div><span>6 meses</span><b>$${prod.pago_mes_6 || 0}</b></div>
-    <div><span>12m tarj.</span><b>$${prod.pago_tarjeta_12 || 0}</b></div>
-</div>
+                      <div class="card-precios">
+                          <div><span>Contado</span><b>$${prod.precio_contado || 0}</b></div>
+                          <div><span>Enganche 2m</span><b>$${prod.enganche_2 || 0}</b></div>
+                          <div><span>2 meses</span><b>$${prod.pago_mes_2 || 0}</b></div>
+                          <div><span>Enganche 3m</span><b>$${prod.enganche_3 || 0}</b></div>
+                          <div><span>3 meses</span><b>$${prod.pago_mes_3 || 0}</b></div>
+                          <div><span>Enganche 6m</span><b>$${prod.enganche_6 || 0}</b></div>
+                          <div><span>6 meses</span><b>$${prod.pago_mes_6 || 0}</b></div>
+                          <div><span>12m tarj.</span><b>$${prod.pago_tarjeta_12 || 0}</b></div>
+                      </div>
                       <div class="card-actions">
                           <button class="btn-action btn-edit" onclick="abrirModalEditar(${prod.id})">✏️ Editar</button>
                           <button class="btn-action btn-delete" onclick="eliminarProducto(${prod.id})">🗑️ Eliminar</button>
@@ -1113,31 +1124,39 @@
 
       const selector = document.getElementById('selectorMeses').value;
       
-      // Precio de contado = lista - 20%
-      const precioContado = precioLista * 0.8;
-      document.getElementById('inputPrecioContado').value = precioContado.toFixed(2);
+      // Precio de contado = lista - 20% (redondeado hacia arriba)
+      const precioContado = redondearArriba(precioLista * 0.8);
+      document.getElementById('inputPrecioContado').value = precioContado;
 
-      // 2 meses: enganche = lista / 3, pago = enganche
-      const enganche2 = precioLista / 3;
-      document.getElementById('inputEnganche2').value = enganche2.toFixed(2);
-      document.getElementById('inputPago2').value = enganche2.toFixed(2);
+      // 2 meses: enganche = lista / 3, pago = enganche (redondeado hacia arriba)
+      const enganche2 = redondearArriba(precioLista / 3);
+      document.getElementById('inputEnganche2').value = enganche2;
+      document.getElementById('inputPago2').value = enganche2;
 
-      // 3 meses: enganche = lista / 4, pago = enganche
-      const enganche3 = precioLista / 4;
-      document.getElementById('inputEnganche3').value = enganche3.toFixed(2);
-      document.getElementById('inputPago3').value = enganche3.toFixed(2);
+      // 3 meses: enganche = lista / 4, pago = enganche (redondeado hacia arriba)
+      const enganche3 = redondearArriba(precioLista / 4);
+      document.getElementById('inputEnganche3').value = enganche3;
+      document.getElementById('inputPago3').value = enganche3;
 
       // 6 meses: enganche = enganche3 + 25%, pago = (lista + 25% - enganche6) / 6
-      const enganche6 = enganche3 * 1.25;
+      const enganche6 = redondearArriba(enganche3 * 1.25);
       const listaConRecargo = precioLista * 1.25;
-      const pago6 = (listaConRecargo - enganche6) / 6;
-      document.getElementById('inputEnganche6').value = enganche6.toFixed(2);
-      document.getElementById('inputPago6').value = pago6.toFixed(2);
+      const pago6 = redondearArriba((listaConRecargo - enganche6) / 6);
+      document.getElementById('inputEnganche6').value = enganche6;
+      document.getElementById('inputPago6').value = pago6;
+
+      // 12 meses (Tarjeta): precio de lista / 12 (redondeado hacia arriba)
+      const pago12 = redondearArriba(precioLista / 12);
+      document.getElementById('inputTarjeta12').value = pago12;
 
       // Mostrar/ocultar grupos según selección
       const grupo2 = document.getElementById('grupo2Meses');
       const grupo3 = document.getElementById('grupo3Meses');
       const grupo6 = document.getElementById('grupo6Meses');
+      const grupo12 = document.getElementById('grupo12Meses');
+
+      // Siempre mostrar 12 meses
+      grupo12.style.display = 'block';
 
       if (selector === '2') {
           grupo2.style.display = 'block';
@@ -1149,6 +1168,10 @@
           grupo6.style.display = 'none';
       } else if (selector === '3y6') {
           grupo2.style.display = 'none';
+          grupo3.style.display = 'block';
+          grupo6.style.display = 'block';
+      } else if (selector === '2y3y6') {
+          grupo2.style.display = 'block';
           grupo3.style.display = 'block';
           grupo6.style.display = 'block';
       }
@@ -1176,6 +1199,7 @@
       document.getElementById('grupo2Meses').style.display = 'block';
       document.getElementById('grupo3Meses').style.display = 'block';
       document.getElementById('grupo6Meses').style.display = 'block';
+      document.getElementById('grupo12Meses').style.display = 'block';
       imagenesActuales = [];
       renderizarPreviews();
       verificarLineaBlancaModal();
@@ -1206,6 +1230,7 @@
       document.getElementById('grupo2Meses').style.display = 'block';
       document.getElementById('grupo3Meses').style.display = 'block';
       document.getElementById('grupo6Meses').style.display = 'block';
+      document.getElementById('grupo12Meses').style.display = 'block';
       verificarLineaBlancaModal();
       imagenesActuales = prod.imagenes ? [...prod.imagenes] : [];
       renderizarPreviews();
@@ -1217,7 +1242,6 @@
  async function eliminarImagenLocal(index) {
       const urlAEliminar = imagenesActuales[index];
       
-      // Si la imagen ya está subida en Supabase, la borramos del bucket
       if (urlAEliminar && urlAEliminar.includes('supabase')) {
           try {
               const nombreArchivo = urlAEliminar.split('/').pop();
@@ -1231,7 +1255,6 @@
           }
       }
 
-      // Quitamos la imagen de la lista local y actualizamos la interfaz
       imagenesActuales.splice(index, 1);
       renderizarPreviews();
   }
@@ -1289,34 +1312,28 @@ function moverImagen(index, direccion) {
           estado: document.getElementById('inputEstado').value,
           descripcion: document.getElementById('inputDescripcion').value.trim(),
           imagenes: imagenesActuales,
-          precio_contado: parseFloat(document.getElementById('inputPrecioContado').value) || 0,
-          enganche_2: parseFloat(document.getElementById('inputEnganche2').value) || 0,
-          pago_mes_2: parseFloat(document.getElementById('inputPago2').value) || 0,
-          enganche_3: parseFloat(document.getElementById('inputEnganche3').value) || 0,
-          pago_mes_3: parseFloat(document.getElementById('inputPago3').value) || 0,
-          enganche_6: parseFloat(document.getElementById('inputEnganche6').value) || 0,
-          pago_mes_6: parseFloat(document.getElementById('inputPago6').value) || 0,
-          pago_tarjeta_12: parseFloat(document.getElementById('inputTarjeta12').value) || 0
+          precio_contado: parseInt(document.getElementById('inputPrecioContado').value) || 0,
+          enganche_2: parseInt(document.getElementById('inputEnganche2').value) || 0,
+          pago_mes_2: parseInt(document.getElementById('inputPago2').value) || 0,
+          enganche_3: parseInt(document.getElementById('inputEnganche3').value) || 0,
+          pago_mes_3: parseInt(document.getElementById('inputPago3').value) || 0,
+          enganche_6: parseInt(document.getElementById('inputEnganche6').value) || 0,
+          pago_mes_6: parseInt(document.getElementById('inputPago6').value) || 0,
+          pago_tarjeta_12: parseInt(document.getElementById('inputTarjeta12').value) || 0
       };
       if (document.getElementById('inputCustomId').value) datos.id = parseInt(document.getElementById('inputCustomId').value);
 
-      let error;
       if (idOriginal) { await supabaseClient.from('productos').update(datos).eq('id', idOriginal); }
       else { await supabaseClient.from('productos').insert([datos]); }
 
-     cerrarModal();
-  cargarArticulos();
-}
+      cerrarModal();
+      cargarArticulos();
+  }
 
-// Intervalo automático cada 30 segundos
-
-  
-
- async function eliminarProducto(id) {
+  async function eliminarProducto(id) {
       if (!confirm('¿Eliminar producto y todas sus imágenes asociadas?')) return;
 
       try {
-          // 1. Obtener el producto antes de borrarlo para recuperar sus URLs
           const { data: producto, error: fetchError } = await supabaseClient
               .from('productos')
               .select('imagenes')
@@ -1325,19 +1342,11 @@ function moverImagen(index, direccion) {
 
           if (fetchError) throw fetchError;
 
-          // 2. Si tiene imágenes, extraer la ruta y borrarlas de Storage
           if (producto && producto.imagenes && producto.imagenes.length > 0) {
-              const rutasAborrar = producto.imagenes.map(url => {
-                  // Extraer el nombre del archivo del publicUrl (ej: 123456789_0.webp)
-                  return url.split('/').pop(); 
-              });
-
-              await supabaseClient.storage
-                  .from('fotos-productos')
-                  .remove(rutasAborrar);
+              const rutasAborrar = producto.imagenes.map(url => url.split('/').pop());
+              await supabaseClient.storage.from('fotos-productos').remove(rutasAborrar);
           }
 
-          // 3. Borrar el registro de la tabla
           await supabaseClient.from('productos').delete().eq('id', id);
           
           alert('Producto e imágenes eliminados correctamente.');
