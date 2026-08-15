@@ -59,9 +59,7 @@
       --fuente-logo-sub: 'Montserrat', sans-serif;
       --fuente-cuerpo: 'Poppins', sans-serif;
       
-      /* Desktop optimizations */
       --max-width-container: 1400px;
-      --grid-gap: 30px;
     }
 
     /* MODO OSCURO */
@@ -140,7 +138,7 @@
       }
     }
 
-    /* SWITCH ESTILO MODO OSCURO / CLARO SUPERIOR IZQUIERDA */
+    /* SWITCH ESTILO MODO OSCURO / CLARO */
     .switch-modo-contenedor {
       position: absolute;
       top: 14px;
@@ -263,7 +261,7 @@
       padding-right: 16px;
     }
 
-    /* BUSCADOR DE PRODUCTOS POR NOMBRE */
+    /* BUSCADOR */
     .buscador-contenedor {
       max-width: var(--max-width-container);
       margin: 0 auto;
@@ -382,7 +380,7 @@
       border-color: var(--terracota);
     }
 
-    /* SUBMENÚ EXCLUSIVO DE LÍNEA BLANCA */
+    /* SUBMENÚ LÍNEA BLANCA */
     .submenu-linea-blanca {
       display: none;
       max-width: var(--max-width-container);
@@ -421,7 +419,7 @@
       box-shadow: 0 6px 16px rgba(194, 41, 10, 0.22);
     }
 
-    /* ===== ENCABEZADO DE SECCION CATALOGO ===== */
+    /* ===== ENCABEZADO SECCION ===== */
     .seccion-catalogo { padding-top: 8px; }
 
     .encabezado-seccion {
@@ -639,7 +637,7 @@
       box-shadow: 0 12px 28px rgba(194, 41, 10, 0.3);
     }
 
-    /* 5. VENTANA MODAL AMPLIADA Y ADAPTADA */
+    /* 5. MODAL DETALLE PRODUCTO */
     .modal-detalle {
       position: fixed;
       top: 0; left: 0;
@@ -747,7 +745,7 @@
     .btn-carrusel.prev { left: 18px; }
     .btn-carrusel.next { right: 18px; }
 
-    /* 6. MODAL PARA AMPLIAR IMAGEN (LIGHTBOX) */
+    /* 6. MODAL IMAGEN GRANDE */
     .modal-imagen-grande {
       position: fixed; top: 0; left: 0;
       width: 100%; height: 100%;
@@ -861,7 +859,7 @@
       white-space: pre-line;
     }
 
-    /* SECCIÓN DE PRECIOS Y PLANES DESPLEGABLE DENTRO DEL MODAL */
+    /* SECCIÓN DE PRECIOS Y PLANES */
     .seccion-precios-modal {
       background: var(--crema);
       border-radius: 14px;
@@ -887,10 +885,6 @@
     }
 
     @media (min-width: 480px) {
-      .grid-precios { grid-template-columns: repeat(5, 1fr); }
-    }
-
-    @media (min-width: 768px) {
       .grid-precios { grid-template-columns: repeat(5, 1fr); }
     }
 
@@ -978,101 +972,283 @@
       white-space: nowrap;
     }
 
-    /* ==========================================================
-       SECCIÓN: ENVIAR COTIZACIÓN POR WHATSAPP (AMIGABLE)
-    ========================================================== */
-    .seccion-whatsapp {
-      background: linear-gradient(145deg, #eafaf1, #d4efdf);
-      border: 2px solid #2ecc71;
-      border-radius: 16px;
-      padding: 20px;
+    /* BOTONES DE ACCIÓN EN EL MODAL */
+    .modal-acciones {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
       margin-top: 20px;
     }
 
-    body.modo-oscuro .seccion-whatsapp {
-      background: linear-gradient(145deg, #13271a, #0e1e13);
-      border-color: #27ae60;
-    }
-
-    .seccion-whatsapp h4 {
-      font-size: 1.05rem;
+    .btn-agregar-carrito {
+      background: linear-gradient(135deg, var(--oro-suave), var(--oro));
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 1rem;
       font-weight: 700;
-      color: #27ae60;
-      margin-bottom: 12px;
+      cursor: pointer;
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 8px;
+      box-shadow: 0 6px 20px rgba(184, 135, 74, 0.35);
+      transition: transform 0.25s var(--curva), box-shadow 0.25s ease;
     }
 
-    .whatsapp-controles {
+    .btn-agregar-carrito:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(184, 135, 74, 0.45);
+    }
+
+    .btn-agregar-carrito svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+    }
+
+    .btn-whatsapp-modal {
+      background: linear-gradient(135deg, #2ecc71, #27ae60);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 6px 20px rgba(39, 174, 96, 0.35);
+      transition: transform 0.25s var(--curva), box-shadow 0.25s ease;
+    }
+
+    .btn-whatsapp-modal:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(39, 174, 96, 0.45);
+    }
+
+    .btn-whatsapp-modal svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+
+    @media (max-width: 480px) {
+      .modal-acciones {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ==========================================================
+       CARRITO FLOTANTE
+    ========================================================== */
+    .btn-carrito-flotante {
+      position: fixed;
+      bottom: 30px;
+      left: 30px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: none;
+      background: linear-gradient(135deg, var(--oro-suave), var(--oro));
+      color: #ffffff;
+      box-shadow: var(--sombra-media);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 998;
+      transition: box-shadow 0.3s ease, transform 0.3s var(--curva);
+    }
+
+    .btn-carrito-flotante:hover {
+      box-shadow: 0 16px 34px rgba(184, 135, 74, 0.4);
+      transform: translateY(-3px) scale(1.05);
+    }
+
+    .btn-carrito-flotante svg {
+      width: 24px;
+      height: 24px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+    }
+
+    .carrito-contador {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      min-width: 22px;
+      height: 22px;
+      padding: 0 6px;
+      border-radius: 999px;
+      background: var(--terracota);
+      color: #fff;
+      font-family: var(--fuente-logo-sub);
+      font-size: 0.75rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transform: scale(0.7);
+      transition: opacity 0.25s var(--curva), transform 0.25s var(--curva);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+    }
+
+    .carrito-contador.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* ==========================================================
+       MODAL CARRITO
+    ========================================================== */
+    .modal-carrito {
+      max-width: 580px;
+      padding: 30px 28px 28px;
+    }
+
+    .modal-carrito .descripcion {
+      margin-bottom: 18px;
+      font-size: 0.95rem;
+    }
+
+    .lista-carrito {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
+      max-height: 40vh;
+      overflow-y: auto;
+      margin-bottom: 20px;
     }
 
-    .selector-pais-grupo {
-      display: flex;
-      gap: 8px;
+    .carrito-vacio {
+      font-size: 0.9rem;
+      color: var(--tinta-tenue);
+      text-align: center;
+      padding: 30px 10px;
     }
 
-    .btn-pais {
-      flex: 1;
-      background: var(--crema-tarjeta);
-      border: 2px solid var(--linea);
-      color: var(--tinta);
-      padding: 10px;
-      border-radius: 10px;
-      font-weight: 700;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .btn-pais.activo-pais {
-      background: #27ae60;
-      color: white;
-      border-color: #27ae60;
-      box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
-    }
-
-    .whatsapp-input-grupo {
+    .carrito-fila {
       display: flex;
       align-items: center;
-      background: var(--crema-tarjeta);
-      border: 2px solid var(--linea);
-      border-radius: 12px;
-      overflow: hidden;
-      transition: border-color 0.3s ease;
-    }
-
-    .whatsapp-input-grupo:focus-within {
-      border-color: #27ae60;
-      box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.15);
-    }
-
-    .whatsapp-prefijo-fijo {
-      padding: 12px 14px;
+      justify-content: space-between;
+      gap: 10px;
       background: var(--crema-suave);
-      font-weight: 700;
-      font-size: 1.05rem;
-      color: var(--tinta-suave);
-      border-right: 1px solid var(--linea);
+      border: 1px solid var(--linea);
+      border-radius: 12px;
+      padding: 10px 14px;
     }
 
-    #input-whatsapp-numero {
+    .carrito-fila-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
       flex: 1;
-      border: none;
-      background: transparent;
-      padding: 12px 14px;
-      font-family: var(--fuente-cuerpo);
-      font-size: 1.1rem;
-      color: var(--tinta);
-      outline: none;
     }
 
-    #input-whatsapp-numero::placeholder {
-      color: var(--tinta-tenue);
+    .carrito-fila-titulo {
+      font-weight: 600;
+      font-size: 0.92rem;
+      color: var(--tinta);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .carrito-fila-precio {
+      font-size: 0.8rem;
+      color: var(--terracota);
+      font-weight: 600;
+    }
+
+    .btn-quitar-carrito {
+      flex-shrink: 0;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(194, 41, 10, 0.1);
+      color: var(--terracota);
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.25s ease, transform 0.25s ease;
+    }
+
+    .btn-quitar-carrito:hover {
+      background: var(--terracota);
+      color: #fff;
+      transform: rotate(90deg);
+    }
+
+    .carrito-acciones {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn-vaciar-carrito {
+      flex-shrink: 0;
+      padding: 0 18px;
+      border-radius: 14px;
+      border: 1px solid var(--linea);
+      background: transparent;
+      color: var(--tinta-suave);
+      font-family: var(--fuente-cuerpo);
+      font-weight: 600;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: background 0.25s ease, color 0.25s ease;
+      min-height: 44px;
+    }
+
+    .btn-vaciar-carrito:hover {
+      background: var(--crema-suave);
+      color: var(--terracota);
+    }
+
+    .carrito-acciones .btn-enviar-wsp {
+      flex: 1;
+      min-height: 44px;
+    }
+
+    .carrito-acciones .btn-imprimir {
+      flex: 1;
+      min-height: 44px;
+      background: linear-gradient(135deg, #6c5ce7, #4834d4);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 16px;
       font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 6px 20px rgba(108, 92, 231, 0.35);
+      transition: transform 0.25s var(--curva), box-shadow 0.25s ease;
+    }
+
+    .carrito-acciones .btn-imprimir:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(108, 92, 231, 0.45);
+    }
+
+    .carrito-acciones .btn-imprimir svg {
+      width: 18px;
+      height: 18px;
     }
 
     .btn-enviar-wsp {
@@ -1080,14 +1256,14 @@
       color: white;
       border: none;
       border-radius: 12px;
-      padding: 14px;
-      font-size: 1.05rem;
+      padding: 12px 16px;
+      font-size: 0.95rem;
       font-weight: 700;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      gap: 8px;
       box-shadow: 0 6px 20px rgba(39, 174, 96, 0.35);
       transition: transform 0.25s var(--curva), box-shadow 0.25s ease;
     }
@@ -1098,9 +1274,165 @@
     }
 
     .btn-enviar-wsp svg {
-      width: 22px;
-      height: 22px;
+      width: 20px;
+      height: 20px;
       fill: currentColor;
+    }
+
+    /* ==========================================================
+       ÁREA DE IMPRESIÓN
+    ========================================================== */
+    #area-impresion-cotizacion {
+      display: none;
+    }
+
+    .hoja-cotizacion {
+      width: 8.5in;
+      min-height: 5.5in;
+      padding: 0.45in 0.55in;
+      box-sizing: border-box;
+      font-family: var(--fuente-cuerpo);
+      color: #241b16;
+    }
+
+    .cot-encabezado {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .cot-logo {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cot-brand-script {
+      font-family: var(--fuente-logo-script);
+      font-size: 2.7rem;
+      line-height: 0.8;
+      color: #c2290a;
+    }
+
+    .cot-brand-sub {
+      font-family: var(--fuente-logo-sub);
+      font-size: 0.72rem;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: #b8874a;
+      margin-top: 3px;
+    }
+
+    .cot-datos-doc {
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cot-titulo-doc {
+      font-family: var(--fuente-logo-sub);
+      font-weight: 800;
+      font-size: 1.05rem;
+      letter-spacing: 2px;
+      color: #241b16;
+    }
+
+    .cot-fecha {
+      font-size: 0.78rem;
+      color: #6b5c51;
+      margin-top: 3px;
+    }
+
+    .cot-linea-oro {
+      height: 2px;
+      background: linear-gradient(90deg, #c2290a, #b8874a);
+      margin: 12px 0 16px;
+    }
+
+    .cot-tabla-precios {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      table-layout: fixed;
+    }
+
+    .cot-tabla-precios th {
+      background: #faf6f1;
+      border: 1px solid #e3d9cd;
+      font-size: 0.66rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      line-height: 1.25;
+      padding: 6px 4px;
+      color: #6b5c51;
+    }
+
+    .cot-tabla-precios td {
+      border: 1px solid #e3d9cd;
+      text-align: center;
+      padding: 7px 4px;
+      font-weight: 700;
+      font-size: 0.86rem;
+      color: #c2290a;
+    }
+
+    .cot-col-articulo {
+      width: 34%;
+      text-align: left !important;
+      font-weight: 600 !important;
+      color: #241b16 !important;
+      font-size: 0.82rem !important;
+    }
+
+    .cot-enganche {
+      display: inline-block;
+      margin-top: 2px;
+      font-weight: 400;
+      font-size: 0.62rem;
+      color: #6b5c51;
+    }
+
+    .cot-pie {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .cot-pie p {
+      font-size: 0.7rem;
+      color: #96887d;
+    }
+
+    .cot-gracias {
+      font-family: var(--fuente-logo-sub);
+      font-weight: 700;
+      color: #8a1c06;
+      margin-top: 4px;
+    }
+
+    @media print {
+      @page {
+        size: letter;
+        margin: 0;
+      }
+
+      html, body {
+        height: auto !important;
+        overflow: visible !important;
+      }
+
+      body > *:not(#area-impresion-cotizacion) {
+        display: none !important;
+      }
+
+      #area-impresion-cotizacion {
+        display: block;
+        position: static;
+      }
+
+      .hoja-cotizacion {
+        width: 8.5in;
+        min-height: 5.5in;
+      }
     }
 
     /* BOTON VOLVER ARRIBA */
@@ -1152,7 +1484,7 @@
       transition: background-color 0.3s ease, color 0.3s ease;
     }
 
-    /* Responsive para desktop */
+    /* Responsive */
     @media (max-width: 1024px) {
       .contenedor-catalogo {
         grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -1182,6 +1514,14 @@
       .switch-modo { width: 40px; height: 22px; }
       .switch-slider:before { height: 16px; width: 16px; }
       input:checked + .switch-slider:before { transform: translateX(18px); }
+      .btn-carrito-flotante {
+        width: 48px;
+        height: 48px;
+        bottom: 20px;
+        left: 20px;
+      }
+      .btn-carrito-flotante svg { width: 20px; height: 20px; }
+      .carrito-contador { min-width: 18px; height: 18px; font-size: 0.65rem; }
     }
 
     @media (max-width: 480px) {
@@ -1208,6 +1548,10 @@
       .btn-cerrar { width: 34px; height: 34px; font-size: 1.2rem; top: 10px; right: 10px; }
       .logo-header .brand-script { font-size: 2.2rem; }
       .logo-header .brand-sub { font-size: 0.6rem; letter-spacing: 3px; }
+      .modal-carrito { padding: 20px 16px 18px; }
+      .carrito-acciones { flex-direction: column; }
+      .carrito-acciones .btn-enviar-wsp,
+      .carrito-acciones .btn-imprimir { width: 100%; }
     }
   </style>
 </head>
@@ -1220,7 +1564,7 @@
 
   <!-- CONTENEDOR SUPERIOR UNIFICADO -->
   <div class="header-contenedor" id="headerContenedor">
-    <!-- SWITCH DE MODO OSCURO / CLARO EN LA PARTE SUPERIOR IZQUIERDA -->
+    <!-- SWITCH DE MODO OSCURO / CLARO -->
     <div class="switch-modo-contenedor">
       <svg class="switch-icono" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
       <label class="switch-modo" aria-label="Alternar Modo Oscuro">
@@ -1236,7 +1580,7 @@
       </div>
     </header>
 
-    <!-- BUSCADOR DE ARTICULOS POR NOMBRE -->
+    <!-- BUSCADOR -->
     <div class="buscador-contenedor">
       <div class="buscador-caja" id="buscadorCaja">
         <svg class="buscador-icono" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
@@ -1247,7 +1591,7 @@
       </div>
     </div>
 
-    <!-- FILTROS DE CATEGORIA PRINCIPALES -->
+    <!-- FILTROS -->
     <div class="filtros" id="contenedor-filtros">
       <button class="btn-filtro activo" onclick="filtrarCategoria('Todos', this)">Todos</button>
       <button class="btn-filtro" onclick="filtrarCategoria('Cocinas', this)">Cocinas</button>
@@ -1269,7 +1613,7 @@
       </button>
     </div>
 
-    <!-- SUBMENÚ EXCLUSIVO DE LÍNEA BLANCA -->
+    <!-- SUBMENÚ LÍNEA BLANCA -->
     <div class="submenu-linea-blanca" id="submenuLineaBlanca">
       <button class="btn-subfiltro" onclick="filtrarSubcategoria('Refrigeradores', this)">Refrigeradores</button>
       <button class="btn-subfiltro" onclick="filtrarSubcategoria('Estufas', this)">Estufas</button>
@@ -1279,7 +1623,7 @@
     </div>
   </div>
 
-  <!-- CATALOGO CONTENEDOR -->
+  <!-- CATALOGO -->
   <section class="seccion-catalogo" id="catalogo">
     <div class="encabezado-seccion">
       <span class="eyebrow-seccion">Catalogo completo</span>
@@ -1288,7 +1632,7 @@
     <main class="contenedor-catalogo" id="contenedor-productos"></main>
   </section>
 
-  <!-- MODAL DE DETALLE DE PRODUCTO -->
+  <!-- MODAL DETALLE PRODUCTO -->
   <div class="modal-detalle" id="modal-producto">
     <div class="modal-contenido">
       <button class="btn-cerrar" onclick="cerrarModal()">&times;</button>
@@ -1304,7 +1648,7 @@
         <h2 id="modal-titulo"></h2>
         <p class="descripcion" id="modal-descripcion"></p>
 
-        <!-- SECCIÓN DE PRECIOS Y PLANES DESDE SUPABASE -->
+        <!-- PRECIOS -->
         <div class="seccion-precios-modal">
           <h4>
             <svg style="width:18px;height:18px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
@@ -1343,33 +1687,92 @@
           </div>
         </div>
 
-        <!-- SECCIÓN: ENVIAR COTIZACIÓN POR WHATSAPP -->
-        <div class="seccion-whatsapp">
-          <h4>
-            <svg style="width:20px;height:20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
-            Enviar Cotización por WhatsApp al Cliente
-          </h4>
-          <div class="whatsapp-controles">
-            <div class="selector-pais-grupo">
-              <button type="button" class="btn-pais activo-pais" id="btn-pais-52" onclick="seleccionarPais('52')">🇲🇽 México (+52)</button>
-              <button type="button" class="btn-pais" id="btn-pais-1" onclick="seleccionarPais('1')">🇺🇸 EE.UU. (+1)</button>
-            </div>
-            <div class="whatsapp-input-grupo">
-              <span class="whatsapp-prefijo-fijo" id="span-prefijo">+52</span>
-              <input type="tel" id="input-whatsapp-numero" placeholder="Escribe el número de celular..." autocomplete="off">
-            </div>
-            <button type="button" class="btn-enviar-wsp" onclick="enviarCotizacionWhatsApp()">
-              <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-              Enviar Cotización
-            </button>
-          </div>
+        <!-- ACCIONES: Agregar al carrito y WhatsApp -->
+        <div class="modal-acciones">
+          <button class="btn-agregar-carrito" onclick="agregarACarrito()">
+            <svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+            Agregar al Carrito
+          </button>
+          <button class="btn-whatsapp-modal" onclick="enviarWhatsAppProducto()">
+            <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+            Enviar por WhatsApp
+          </button>
         </div>
 
       </div>
     </div>
   </div>
 
-  <!-- MODAL PARA VER IMAGEN GRANDE -->
+  <!-- BOTON FLOTANTE CARRITO -->
+  <button class="btn-carrito-flotante" id="btnCarritoFlotante" aria-label="Ver carrito" onclick="abrirCarrito()">
+    <svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+    <span class="carrito-contador" id="carritoContador">0</span>
+  </button>
+
+  <!-- MODAL CARRITO -->
+  <div class="modal-detalle" id="modal-carrito">
+    <div class="modal-contenido modal-carrito">
+      <button class="btn-cerrar" onclick="cerrarCarrito()">&times;</button>
+      <div class="cuerpo-modal">
+        <h2>Carrito de Cotización</h2>
+        <p class="descripcion">Artículos seleccionados para cotizar. Puedes imprimir o enviar por WhatsApp.</p>
+
+        <div class="lista-carrito" id="listaCarrito">
+          <p class="carrito-vacio">No hay artículos en el carrito. Agrega productos desde el catálogo.</p>
+        </div>
+
+        <div class="carrito-acciones">
+          <button type="button" class="btn-vaciar-carrito" onclick="vaciarCarrito()">Vaciar</button>
+          <button type="button" class="btn-imprimir" onclick="imprimirCotizacion()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+            Imprimir
+          </button>
+          <button type="button" class="btn-enviar-wsp" onclick="enviarWhatsAppCarrito()">
+            <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+            WhatsApp
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ÁREA DE IMPRESIÓN -->
+  <div id="area-impresion-cotizacion">
+    <div class="hoja-cotizacion">
+      <div class="cot-encabezado">
+        <div class="cot-logo">
+          <span class="cot-brand-script">Daguerr</span>
+          <span class="cot-brand-sub">MUEBLERIA</span>
+        </div>
+        <div class="cot-datos-doc">
+          <span class="cot-titulo-doc">COTIZACIÓN</span>
+          <span class="cot-fecha" id="cot-fecha"></span>
+        </div>
+      </div>
+      <div class="cot-linea-oro"></div>
+
+      <table class="cot-tabla-precios">
+        <thead>
+          <tr>
+            <th class="cot-col-articulo">Artículo</th>
+            <th>Contado</th>
+            <th>2 Meses</th>
+            <th>3 Meses</th>
+            <th>6 Meses</th>
+            <th>12 Meses</th>
+          </tr>
+        </thead>
+        <tbody id="cot-tabla-cuerpo"></tbody>
+      </table>
+
+      <div class="cot-pie">
+        <p>Precios sujetos a cambio sin previo aviso. Cotización válida por 15 días.</p>
+        <p class="cot-gracias">¡Gracias por su preferencia, Mueblería Daguerr!</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL IMAGEN GRANDE -->
   <div class="modal-imagen-grande" id="modal-img-grande" onclick="cerrarImagenGrande()">
     <button class="btn-cerrar-imagen" onclick="cerrarImagenGrande()">&times;</button>
     <button class="btn-carrusel-grande prev" onclick="event.stopPropagation(); cambiarImagen(-1)">&#10094;</button>
@@ -1394,8 +1797,11 @@
     let categoriaActiva = 'Todos';
     let subcategoriaActiva = null;
     let terminoBusqueda = '';
-    let prefijoPaisSeleccionado = '52';
+    let carrito = [];
 
+    // ============================================================
+    // INICIALIZACIÓN
+    // ============================================================
     async function inicializarProductos() {
       try {
         const { data, error } = await supabaseClient
@@ -1409,10 +1815,30 @@
 
         productos = (data || []).filter(p => p.oculto !== true && p.oculto !== 'true');
         cargarCatalogo(productos);
+        actualizarContadorCarrito();
       } catch (err) {
         console.error('Excepción al conectar con Supabase:', err);
       }
     }
+
+    // ============================================================
+    // UTILIDADES
+    // ============================================================
+    function formatearPrecio(valor) {
+      if (valor === null || valor === undefined || valor === '' || valor === 0) return 'Consultar';
+      if (typeof valor === 'number') {
+        return `$${valor.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      }
+      return valor;
+    }
+
+    function escaparHtml(texto) {
+      const div = document.createElement('div');
+      div.innerText = texto == null ? '' : texto;
+      return div.innerHTML;
+    }
+
+    const normalizar = (texto) => (texto || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 
     function obtenerBadgesHTML(estado) {
       if (estado === 'disponible') {
@@ -1427,14 +1853,9 @@
       }
     }
 
-    function formatearPrecio(valor) {
-      if (valor === null || valor === undefined || valor === '' || valor === 0) return 'Consultar';
-      if (typeof valor === 'number') {
-        return `$${valor.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-      }
-      return valor;
-    }
-
+    // ============================================================
+    // CATÁLOGO
+    // ============================================================
     function cargarCatalogo(lista = productos) {
       const catalogo = document.getElementById('contenedor-productos');
       if (!catalogo) return;
@@ -1486,8 +1907,6 @@
         catalogo.appendChild(tarjeta);
       });
     }
-
-    const normalizar = (texto) => (texto || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 
     function filtrarCategoria(cat, btn) {
       document.querySelectorAll('.btn-filtro').forEach(b => b.classList.remove('activo'));
@@ -1559,6 +1978,9 @@
       filtrarCategoria('Todos', btnTodos);
     }
 
+    // ============================================================
+    // MODAL PRODUCTO
+    // ============================================================
     function abrirModal(id) {
       productoActual = productos.find(p => p.id == id);
       if (!productoActual) return;
@@ -1570,17 +1992,14 @@
       document.getElementById('modal-descripcion').innerText = productoActual.descripcion || '';
       document.getElementById('modal-estado-contenedor').innerHTML = obtenerBadgesHTML(productoActual.estado);
 
-      // Precios - 2 meses
+      // Precios
       document.getElementById('val-precio-contado').innerText = formatearPrecio(productoActual.precio_contado);
       document.getElementById('val-enganche-2').innerText = formatearPrecio(productoActual.enganche_2);
       document.getElementById('val-pago-mes-2').innerText = formatearPrecio(productoActual.pago_mes_2);
-      // 3 meses
       document.getElementById('val-enganche-3').innerText = formatearPrecio(productoActual.enganche_3);
       document.getElementById('val-pago-mes-3').innerText = formatearPrecio(productoActual.pago_mes_3);
-      // 6 meses
       document.getElementById('val-enganche-6').innerText = formatearPrecio(productoActual.enganche_6);
       document.getElementById('val-pago-mes-6').innerText = formatearPrecio(productoActual.pago_mes_6);
-      // 12 meses
       document.getElementById('val-pago-tarjeta-12').innerText = formatearPrecio(productoActual.pago_tarjeta_12);
 
       document.getElementById('modal-producto').classList.add('activo');
@@ -1638,28 +2057,109 @@
       document.body.style.overflow = '';
     }
 
-    function seleccionarPais(pais) {
-      prefijoPaisSeleccionado = pais;
-      document.getElementById('btn-pais-52').classList.remove('activo-pais');
-      document.getElementById('btn-pais-1').classList.remove('activo-pais');
-      
-      document.getElementById(`btn-pais-${pais}`).classList.add('activo-pais');
-      document.getElementById('span-prefijo').innerText = `+${pais}`;
-    }
-
-    function enviarCotizacionWhatsApp() {
+    // ============================================================
+    // CARRITO - AGREGAR
+    // ============================================================
+    function agregarACarrito() {
       if (!productoActual) return;
 
-      const inputNumero = document.getElementById('input-whatsapp-numero');
-      let numeroLimpio = inputNumero.value.replace(/\D/g, '');
-
-      if (!numeroLimpio || numeroLimpio.length < 7) {
-        alert('Por favor, escribe un número de WhatsApp válido.');
-        inputNumero.focus();
+      const yaExiste = carrito.some(p => p.id == productoActual.id);
+      if (yaExiste) {
+        alert('Este artículo ya está en el carrito.');
         return;
       }
 
-      const telefonoCompleto = `${prefijoPaisSeleccionado}${numeroLimpio}`;
+      carrito.push({
+        id: productoActual.id,
+        titulo: productoActual.titulo,
+        precio_contado: productoActual.precio_contado,
+        enganche_2: productoActual.enganche_2,
+        pago_mes_2: productoActual.pago_mes_2,
+        enganche_3: productoActual.enganche_3,
+        pago_mes_3: productoActual.pago_mes_3,
+        enganche_6: productoActual.enganche_6,
+        pago_mes_6: productoActual.pago_mes_6,
+        pago_tarjeta_12: productoActual.pago_tarjeta_12
+      });
+
+      actualizarContadorCarrito();
+      
+      const btn = document.querySelector('.btn-agregar-carrito');
+      const textoOriginal = btn.innerHTML;
+      btn.innerHTML = '✓ Agregado al carrito';
+      setTimeout(() => { btn.innerHTML = textoOriginal; }, 1500);
+    }
+
+    function actualizarContadorCarrito() {
+      const contador = document.getElementById('carritoContador');
+      if (!contador) return;
+      contador.innerText = carrito.length;
+      contador.classList.toggle('visible', carrito.length > 0);
+    }
+
+    // ============================================================
+    // CARRITO - MODAL
+    // ============================================================
+    function abrirCarrito() {
+      renderizarCarrito();
+      document.getElementById('modal-carrito').classList.add('activo');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function cerrarCarrito() {
+      document.getElementById('modal-carrito').classList.remove('activo');
+      document.body.style.overflow = '';
+    }
+
+    function renderizarCarrito() {
+      const lista = document.getElementById('listaCarrito');
+      if (!lista) return;
+
+      if (carrito.length === 0) {
+        lista.innerHTML = '<p class="carrito-vacio">No hay artículos en el carrito. Agrega productos desde el catálogo.</p>';
+        return;
+      }
+
+      lista.innerHTML = carrito.map(p => `
+        <div class="carrito-fila">
+          <div class="carrito-fila-info">
+            <span class="carrito-fila-titulo">${escaparHtml(p.titulo || 'Sin título')}</span>
+            <span class="carrito-fila-precio">${formatearPrecio(p.precio_contado)} contado</span>
+          </div>
+          <button type="button" class="btn-quitar-carrito" aria-label="Quitar artículo" onclick="quitarDelCarrito(${p.id})">&times;</button>
+        </div>
+      `).join('');
+    }
+
+    function quitarDelCarrito(id) {
+      carrito = carrito.filter(p => p.id != id);
+      actualizarContadorCarrito();
+      renderizarCarrito();
+    }
+
+    function vaciarCarrito() {
+      if (carrito.length === 0) return;
+      if (confirm('¿Vaciar el carrito por completo?')) {
+        carrito = [];
+        actualizarContadorCarrito();
+        renderizarCarrito();
+      }
+    }
+
+    // ============================================================
+    // ENVIAR WHATSAPP - PRODUCTO INDIVIDUAL
+    // ============================================================
+    function enviarWhatsAppProducto() {
+      if (!productoActual) return;
+
+      const telefono = prompt('Ingresa el número de WhatsApp del cliente (con código de país, ej: 521234567890):', '52');
+      if (!telefono) return;
+
+      const numeroLimpio = telefono.replace(/\D/g, '');
+      if (numeroLimpio.length < 10) {
+        alert('Por favor, ingresa un número válido.');
+        return;
+      }
 
       let mensaje = `*Mueblería Daguerr - Cotización*\n\n`;
       mensaje += `📦 *Artículo:* ${productoActual.titulo || 'Sin título'}\n\n`;
@@ -1686,14 +2186,91 @@
 
       mensaje += `\n_¡Gracias por su preferencia! Mueblería Daguerr._`;
 
-      const urlWhatsApp = `https://api.whatsapp.com/send?phone=${telefonoCompleto}&text=${encodeURIComponent(mensaje)}`;
+      const urlWhatsApp = `https://api.whatsapp.com/send?phone=${numeroLimpio}&text=${encodeURIComponent(mensaje)}`;
       window.open(urlWhatsApp, '_blank');
     }
 
+    // ============================================================
+    // ENVIAR WHATSAPP - CARRITO COMPLETO
+    // ============================================================
+    function enviarWhatsAppCarrito() {
+      if (carrito.length === 0) {
+        alert('El carrito está vacío. Agrega artículos primero.');
+        return;
+      }
+
+      const telefono = prompt('Ingresa el número de WhatsApp del cliente (con código de país, ej: 521234567890):', '52');
+      if (!telefono) return;
+
+      const numeroLimpio = telefono.replace(/\D/g, '');
+      if (numeroLimpio.length < 10) {
+        alert('Por favor, ingresa un número válido.');
+        return;
+      }
+
+      let mensaje = `*Mueblería Daguerr - Cotización de Múltiples Artículos*\n\n`;
+      mensaje += `📋 *Artículos seleccionados:*\n\n`;
+
+      carrito.forEach((p, index) => {
+        mensaje += `${index + 1}. *${p.titulo || 'Sin título'}*\n`;
+        mensaje += `   • Contado: ${formatearPrecio(p.precio_contado)}\n`;
+        if (p.pago_mes_2) {
+          mensaje += `   • 2 Meses: ${formatearPrecio(p.pago_mes_2)}/mes (Enganche: ${formatearPrecio(p.enganche_2)})\n`;
+        }
+        if (p.pago_mes_3) {
+          mensaje += `   • 3 Meses: ${formatearPrecio(p.pago_mes_3)}/mes (Enganche: ${formatearPrecio(p.enganche_3)})\n`;
+        }
+        if (p.pago_mes_6) {
+          mensaje += `   • 6 Meses: ${formatearPrecio(p.pago_mes_6)}/mes (Enganche: ${formatearPrecio(p.enganche_6)})\n`;
+        }
+        if (p.pago_tarjeta_12) {
+          mensaje += `   • 12 Meses (Tarjeta): ${formatearPrecio(p.pago_tarjeta_12)}\n`;
+        }
+        mensaje += `\n`;
+      });
+
+      mensaje += `_¡Gracias por su preferencia! Mueblería Daguerr._`;
+
+      const urlWhatsApp = `https://api.whatsapp.com/send?phone=${numeroLimpio}&text=${encodeURIComponent(mensaje)}`;
+      window.open(urlWhatsApp, '_blank');
+    }
+
+    // ============================================================
+    // IMPRIMIR COTIZACIÓN
+    // ============================================================
+    function imprimirCotizacion() {
+      if (carrito.length === 0) {
+        alert('El carrito está vacío. Agrega artículos para imprimir una cotización.');
+        return;
+      }
+
+      const hoy = new Date();
+      document.getElementById('cot-fecha').innerText = hoy.toLocaleDateString('es-MX', {
+        day: '2-digit', month: 'long', year: 'numeric'
+      });
+
+      const cuerpo = document.getElementById('cot-tabla-cuerpo');
+      cuerpo.innerHTML = carrito.map(p => `
+        <tr>
+          <td class="cot-col-articulo">${escaparHtml(p.titulo || 'Sin título')}</td>
+          <td>${formatearPrecio(p.precio_contado)}</td>
+          <td>${p.pago_mes_2 ? formatearPrecio(p.pago_mes_2) + '/mes' : 'N/A'}${p.enganche_2 ? `<br><span class="cot-enganche">Enganche ${formatearPrecio(p.enganche_2)}</span>` : ''}</td>
+          <td>${p.pago_mes_3 ? formatearPrecio(p.pago_mes_3) + '/mes' : 'N/A'}${p.enganche_3 ? `<br><span class="cot-enganche">Enganche ${formatearPrecio(p.enganche_3)}</span>` : ''}</td>
+          <td>${p.pago_mes_6 ? formatearPrecio(p.pago_mes_6) + '/mes' : 'N/A'}${p.enganche_6 ? `<br><span class="cot-enganche">Enganche ${formatearPrecio(p.enganche_6)}</span>` : ''}</td>
+          <td>${p.pago_tarjeta_12 ? formatearPrecio(p.pago_tarjeta_12) : 'N/A'}</td>
+        </tr>
+      `).join('');
+
+      window.print();
+    }
+
+    // ============================================================
+    // EVENTOS Y MODO OSCURO
+    // ============================================================
     document.addEventListener('keydown', (e) => {
-      const modalActivo = document.getElementById('modal-producto').classList.contains('activo');
       if (e.key === 'Escape') {
         cerrarModal();
+        cerrarCarrito();
         cerrarImagenGrande();
         return;
       }
