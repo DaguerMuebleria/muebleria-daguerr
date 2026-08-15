@@ -1787,7 +1787,7 @@
     let carrito = [];
 
     // ============================================================
-    // FUNCIÓN PARA ABRIR WHATSAPP (COMPATIBLE CON PC Y MÓVIL)
+    // FUNCIÓN PARA ABRIR WHATSAPP (VERSIÓN MEJORADA)
     // ============================================================
     function abrirWhatsApp(numero, mensaje) {
         let num = numero.replace(/\D/g, '');
@@ -1801,21 +1801,33 @@
             return false;
         }
 
-        const url = `https://wa.me/${num}?text=${encodeURIComponent(mensaje)}`;
+        // Usar api.whatsapp.com para mejor compatibilidad con WhatsApp Web
+        const url = `https://api.whatsapp.com/send?phone=${num}&text=${encodeURIComponent(mensaje)}`;
         
-        const ventana = window.open(url, '_blank');
-        
-        if (!ventana || ventana.closed || typeof ventana.closed === 'undefined') {
+        // Método 1: Crear enlace y simular clic (más confiable que window.open)
+        try {
             const enlace = document.createElement('a');
             enlace.href = url;
             enlace.target = '_blank';
             enlace.rel = 'noopener noreferrer';
+            enlace.style.display = 'none';
             document.body.appendChild(enlace);
-            enlace.click();
-            document.body.removeChild(enlace);
+            
+            // Ejecutar el clic después de un breve retraso para asegurar que el DOM esté listo
+            setTimeout(() => {
+                enlace.click();
+                setTimeout(() => {
+                    document.body.removeChild(enlace);
+                }, 500);
+            }, 100);
+            
+            return true;
+        } catch (e) {
+            // Si falla, mostrar el enlace para copiar manualmente
+            alert('❌ No se pudo abrir WhatsApp automáticamente.\n\n' +
+                  'Por favor, copia este enlace y pégalo en tu navegador:\n\n' + url);
+            return false;
         }
-        
-        return true;
     }
 
     // ============================================================
@@ -1830,8 +1842,9 @@
         const telefono = prompt(
             '📱 Ingresa el número de WhatsApp del cliente:\n\n' +
             'Ejemplo: 521234567890 (México)\n' +
-            'Ejemplo: 56987654321 (Chile)',
-            '52'
+            'Ejemplo: 56987654321 (Chile)\n' +
+            'Ejemplo: 5512345678 (Brasil)',
+            '521234567890'
         );
         
         if (!telefono) return;
@@ -1876,8 +1889,9 @@
         const telefono = prompt(
             '📱 Ingresa el número de WhatsApp del cliente:\n\n' +
             'Ejemplo: 521234567890 (México)\n' +
-            'Ejemplo: 56987654321 (Chile)',
-            '52'
+            'Ejemplo: 56987654321 (Chile)\n' +
+            'Ejemplo: 5512345678 (Brasil)',
+            '521234567890'
         );
         
         if (!telefono) return;
