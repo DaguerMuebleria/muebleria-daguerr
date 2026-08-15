@@ -1124,28 +1124,25 @@
 
       const selector = document.getElementById('selectorMeses').value;
       
-      // Precio de contado = lista - 20% (redondeado hacia arriba)
-      const precioContado = Math.floor(precioLista * 0.8 * 100) / 100;
+      // Precio de contado = lista - 20% (SIN DECIMALES, redondeo normal)
+      const precioContado = Math.round(precioLista * 0.8);
       document.getElementById('inputPrecioContado').value = precioContado;
 
-      // 2 meses: enganche = lista / 3, pago = enganche (redondeado hacia arriba)
+      // El resto de los precios se redondean hacia arriba
       const enganche2 = redondearArriba(precioLista / 3);
       document.getElementById('inputEnganche2').value = enganche2;
       document.getElementById('inputPago2').value = enganche2;
 
-      // 3 meses: enganche = lista / 4, pago = enganche (redondeado hacia arriba)
       const enganche3 = redondearArriba(precioLista / 4);
       document.getElementById('inputEnganche3').value = enganche3;
       document.getElementById('inputPago3').value = enganche3;
 
-      // 6 meses: enganche = enganche3 + 25%, pago = (lista + 25% - enganche6) / 6
       const enganche6 = redondearArriba(enganche3 * 1.25);
       const listaConRecargo = precioLista * 1.25;
       const pago6 = redondearArriba((listaConRecargo - enganche6) / 6);
       document.getElementById('inputEnganche6').value = enganche6;
       document.getElementById('inputPago6').value = pago6;
 
-      // 12 meses (Tarjeta): precio de lista / 12 (redondeado hacia arriba)
       const pago12 = redondearArriba(precioLista / 12);
       document.getElementById('inputTarjeta12').value = pago12;
 
@@ -1155,7 +1152,6 @@
       const grupo6 = document.getElementById('grupo6Meses');
       const grupo12 = document.getElementById('grupo12Meses');
 
-      // Siempre mostrar 12 meses
       grupo12.style.display = 'block';
 
       if (selector === '2') {
