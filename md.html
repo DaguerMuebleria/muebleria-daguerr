@@ -2062,36 +2062,82 @@
       });
 
       const cuerpo = document.getElementById('cot-tabla-cuerpo');
-      cuerpo.innerHTML = carrito.map(p => {
-        // Cada columna debe tener SOLO su información correspondiente
-        const contado = formatearPrecio(p.precio_contado);
+      
+      // Limpiar el cuerpo antes de agregar nuevas filas
+      cuerpo.innerHTML = '';
+      
+      carrito.forEach((p) => {
+        // Crear una fila para cada producto
+        const fila = document.createElement('tr');
         
-        // Columna 2 Meses: solo el pago mensual y el engache como texto pequeño
-        const mes2 = p.pago_mes_2 ? formatearPrecio(p.pago_mes_2) + '/mes' : '<span class="cot-no-disponible">N/A</span>';
-        const enganche2 = p.enganche_2 ? `<span class="cot-enganche-texto">Enganche ${formatearPrecio(p.enganche_2)}</span>` : '';
+        // Columna 1: Artículo
+        const tdArticulo = document.createElement('td');
+        tdArticulo.className = 'cot-col-articulo';
+        tdArticulo.textContent = p.titulo || 'Sin título';
+        fila.appendChild(tdArticulo);
         
-        // Columna 3 Meses: solo el pago mensual y el engache como texto pequeño
-        const mes3 = p.pago_mes_3 ? formatearPrecio(p.pago_mes_3) + '/mes' : '<span class="cot-no-disponible">N/A</span>';
-        const enganche3 = p.enganche_3 ? `<span class="cot-enganche-texto">Enganche ${formatearPrecio(p.enganche_3)}</span>` : '';
+        // Columna 2: Contado
+        const tdContado = document.createElement('td');
+        tdContado.className = 'cot-col-contado';
+        tdContado.textContent = formatearPrecio(p.precio_contado);
+        fila.appendChild(tdContado);
         
-        // Columna 6 Meses: solo el pago mensual y el engache como texto pequeño
-        const mes6 = p.pago_mes_6 ? formatearPrecio(p.pago_mes_6) + '/mes' : '<span class="cot-no-disponible">N/A</span>';
-        const enganche6 = p.enganche_6 ? `<span class="cot-enganche-texto">Enganche ${formatearPrecio(p.enganche_6)}</span>` : '';
+        // Columna 3: 2 Meses
+        const td2M = document.createElement('td');
+        td2M.className = 'cot-col-2m';
+        if (p.pago_mes_2) {
+          td2M.textContent = formatearPrecio(p.pago_mes_2) + '/mes';
+          if (p.enganche_2) {
+            const spanEnganche = document.createElement('span');
+            spanEnganche.className = 'cot-enganche-texto';
+            spanEnganche.textContent = 'Enganche ' + formatearPrecio(p.enganche_2);
+            td2M.appendChild(spanEnganche);
+          }
+        } else {
+          td2M.innerHTML = '<span class="cot-no-disponible">N/A</span>';
+        }
+        fila.appendChild(td2M);
         
-        // Columna 12 Meses: solo el precio de tarjeta
-        const mes12 = formatearPrecio(p.pago_tarjeta_12);
-
-        return `
-          <tr>
-            <td class="cot-col-articulo">${escaparHtml(p.titulo || 'Sin título')}</td>
-            <td class="cot-col-contado">${contado}</td>
-            <td class="cot-col-2m">${mes2}${enganche2}</td>
-            <td class="cot-col-3m">${mes3}${enganche3}</td>
-            <td class="cot-col-6m">${mes6}${enganche6}</td>
-            <td class="cot-col-12m">${mes12}</td>
-          </tr>
-        `;
-      }).join('');
+        // Columna 4: 3 Meses
+        const td3M = document.createElement('td');
+        td3M.className = 'cot-col-3m';
+        if (p.pago_mes_3) {
+          td3M.textContent = formatearPrecio(p.pago_mes_3) + '/mes';
+          if (p.enganche_3) {
+            const spanEnganche = document.createElement('span');
+            spanEnganche.className = 'cot-enganche-texto';
+            spanEnganche.textContent = 'Enganche ' + formatearPrecio(p.enganche_3);
+            td3M.appendChild(spanEnganche);
+          }
+        } else {
+          td3M.innerHTML = '<span class="cot-no-disponible">N/A</span>';
+        }
+        fila.appendChild(td3M);
+        
+        // Columna 5: 6 Meses
+        const td6M = document.createElement('td');
+        td6M.className = 'cot-col-6m';
+        if (p.pago_mes_6) {
+          td6M.textContent = formatearPrecio(p.pago_mes_6) + '/mes';
+          if (p.enganche_6) {
+            const spanEnganche = document.createElement('span');
+            spanEnganche.className = 'cot-enganche-texto';
+            spanEnganche.textContent = 'Enganche ' + formatearPrecio(p.enganche_6);
+            td6M.appendChild(spanEnganche);
+          }
+        } else {
+          td6M.innerHTML = '<span class="cot-no-disponible">N/A</span>';
+        }
+        fila.appendChild(td6M);
+        
+        // Columna 6: 12 Meses
+        const td12M = document.createElement('td');
+        td12M.className = 'cot-col-12m';
+        td12M.textContent = formatearPrecio(p.pago_tarjeta_12);
+        fila.appendChild(td12M);
+        
+        cuerpo.appendChild(fila);
+      });
 
       setTimeout(() => {
         window.print();
