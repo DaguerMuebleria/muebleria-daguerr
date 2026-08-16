@@ -1,3 +1,5 @@
+[file name]: !DOCTYPE html.txt
+[file content begin]
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -1280,6 +1282,7 @@
       box-sizing: border-box;
       font-family: var(--fuente-cuerpo);
       color: #241b16;
+      background: #ffffff;
     }
 
     .cot-encabezado {
@@ -1341,6 +1344,7 @@
       border-collapse: collapse;
       margin-top: 20px;
       table-layout: fixed;
+      font-size: 0.82rem;
     }
 
     .cot-tabla-precios th {
@@ -1349,34 +1353,47 @@
       font-size: 0.66rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      line-height: 1.25;
-      padding: 6px 4px;
+      padding: 8px 6px;
       color: #6b5c51;
+      text-align: center;
     }
 
     .cot-tabla-precios td {
       border: 1px solid #e3d9cd;
       text-align: center;
-      padding: 7px 4px;
+      padding: 8px 6px;
       font-weight: 700;
       font-size: 0.86rem;
       color: #c2290a;
+      vertical-align: middle;
     }
 
     .cot-col-articulo {
-      width: 34%;
+      width: 30%;
       text-align: left !important;
       font-weight: 600 !important;
       color: #241b16 !important;
       font-size: 0.82rem !important;
     }
 
-    .cot-enganche {
-      display: inline-block;
-      margin-top: 2px;
+    .cot-col-contado { width: 14%; }
+    .cot-col-2m { width: 14%; }
+    .cot-col-3m { width: 14%; }
+    .cot-col-6m { width: 14%; }
+    .cot-col-12m { width: 14%; }
+
+    .cot-enganche-texto {
+      display: block;
       font-weight: 400;
-      font-size: 0.62rem;
+      font-size: 0.6rem;
       color: #6b5c51;
+      margin-top: 2px;
+    }
+
+    .cot-no-disponible {
+      color: #96887d;
+      font-weight: 400;
+      font-size: 0.75rem;
     }
 
     .cot-pie {
@@ -1405,6 +1422,7 @@
       html, body {
         height: auto !important;
         overflow: visible !important;
+        background: #ffffff !important;
       }
 
       body > *:not(#area-impresion-cotizacion) {
@@ -1412,13 +1430,17 @@
       }
 
       #area-impresion-cotizacion {
-        display: block;
-        position: static;
+        display: block !important;
+        position: static !important;
+        background: #ffffff !important;
       }
 
       .hoja-cotizacion {
         width: 8.5in;
         min-height: 5.5in;
+        padding: 0.45in 0.55in;
+        margin: 0 auto;
+        background: #ffffff !important;
       }
     }
 
@@ -1742,11 +1764,11 @@
         <thead>
           <tr>
             <th class="cot-col-articulo">Artículo</th>
-            <th>Contado</th>
-            <th>2 Meses</th>
-            <th>3 Meses</th>
-            <th>6 Meses</th>
-            <th>12 Meses</th>
+            <th class="cot-col-contado">Contado</th>
+            <th class="cot-col-2m">2 Meses</th>
+            <th class="cot-col-3m">3 Meses</th>
+            <th class="cot-col-6m">6 Meses</th>
+            <th class="cot-col-12m">12 Meses</th>
           </tr>
         </thead>
         <tbody id="cot-tabla-cuerpo"></tbody>
@@ -1790,25 +1812,16 @@
     // FUNCIÓN PARA LIMPIAR MENSAJE DE CARACTERES ESPECIALES Y URLs
     // ============================================================
     function limpiarMensajeWhatsApp(mensaje) {
-        // Eliminar asteriscos (negritas)
         mensaje = mensaje.replace(/\*/g, '');
-        // Eliminar guiones bajos
         mensaje = mensaje.replace(/_/g, '');
-        // Eliminar backticks
         mensaje = mensaje.replace(/`/g, '');
-        // Eliminar pipes
         mensaje = mensaje.replace(/\|/g, '');
-        // Eliminar corchetes
         mensaje = mensaje.replace(/\[/g, '');
         mensaje = mensaje.replace(/\]/g, '');
-        // Eliminar llaves
         mensaje = mensaje.replace(/\{/g, '');
         mensaje = mensaje.replace(/\}/g, '');
-        // Eliminar URLs de imágenes (http, https)
         mensaje = mensaje.replace(/https?:\/\/[^\s]+/g, '');
-        // Eliminar múltiples saltos de línea
         mensaje = mensaje.replace(/\n{3,}/g, '\n\n');
-        // Eliminar espacios al inicio y final
         mensaje = mensaje.trim();
         return mensaje;
     }
@@ -1828,7 +1841,6 @@
             return false;
         }
 
-        // Limpiar el mensaje de caracteres especiales y URLs
         mensaje = limpiarMensajeWhatsApp(mensaje);
 
         const url = `https://wa.me/${num}?text=${encodeURIComponent(mensaje)}`;
@@ -2301,7 +2313,7 @@
     }
 
     // ============================================================
-    // IMPRIMIR COTIZACIÓN
+    // IMPRIMIR COTIZACIÓN - CORREGIDO
     // ============================================================
     function imprimirCotizacion() {
       if (carrito.length === 0) {
@@ -2315,18 +2327,45 @@
       });
 
       const cuerpo = document.getElementById('cot-tabla-cuerpo');
-      cuerpo.innerHTML = carrito.map(p => `
-        <tr>
-          <td class="cot-col-articulo">${escaparHtml(p.titulo || 'Sin título')}</td>
-          <td>${formatearPrecio(p.precio_contado)}</td>
-          <td>${p.pago_mes_2 ? formatearPrecio(p.pago_mes_2) + '/mes' : 'N/A'}${p.enganche_2 ? `<br><span class="cot-enganche">Enganche ${formatearPrecio(p.enganche_2)}</span>` : ''}</td>
-          <td>${p.pago_mes_3 ? formatearPrecio(p.pago_mes_3) + '/mes' : 'N/A'}${p.enganche_3 ? `<br><span class="cot-enganche">Enganche ${formatearPrecio(p.enganche_3)}</span>` : ''}</td>
-          <td>${p.pago_mes_6 ? formatearPrecio(p.pago_mes_6) + '/mes' : 'N/A'}${p.enganche_6 ? `<br><span class="cot-enganche">Enganche ${formatearPrecio(p.enganche_6)}</span>` : ''}</td>
-          <td>${p.pago_tarjeta_12 ? formatearPrecio(p.pago_tarjeta_12) : 'N/A'}</td>
-        </tr>
-      `).join('');
+      cuerpo.innerHTML = carrito.map(p => {
+        // Función para formatear cada celda correctamente
+        const formatearCelda = (valor, esMes = false) => {
+          if (valor === null || valor === undefined || valor === '' || valor === 0) {
+            return '<span class="cot-no-disponible">N/A</span>';
+          }
+          return formatearPrecio(valor);
+        };
 
-      window.print();
+        // Formatear cada columna correctamente
+        const contado = formatearCelda(p.precio_contado);
+        
+        const mes2 = p.pago_mes_2 ? formatearPrecio(p.pago_mes_2) + '/mes' : '<span class="cot-no-disponible">N/A</span>';
+        const enganche2 = p.enganche_2 ? `<span class="cot-enganche-texto">Enganche ${formatearPrecio(p.enganche_2)}</span>` : '';
+        
+        const mes3 = p.pago_mes_3 ? formatearPrecio(p.pago_mes_3) + '/mes' : '<span class="cot-no-disponible">N/A</span>';
+        const enganche3 = p.enganche_3 ? `<span class="cot-enganche-texto">Enganche ${formatearPrecio(p.enganche_3)}</span>` : '';
+        
+        const mes6 = p.pago_mes_6 ? formatearPrecio(p.pago_mes_6) + '/mes' : '<span class="cot-no-disponible">N/A</span>';
+        const enganche6 = p.enganche_6 ? `<span class="cot-enganche-texto">Enganche ${formatearPrecio(p.enganche_6)}</span>` : '';
+        
+        const mes12 = formatearCelda(p.pago_tarjeta_12);
+
+        return `
+          <tr>
+            <td class="cot-col-articulo">${escaparHtml(p.titulo || 'Sin título')}</td>
+            <td class="cot-col-contado">${contado}</td>
+            <td class="cot-col-2m">${mes2}${enganche2}</td>
+            <td class="cot-col-3m">${mes3}${enganche3}</td>
+            <td class="cot-col-6m">${mes6}${enganche6}</td>
+            <td class="cot-col-12m">${mes12}</td>
+          </tr>
+        `;
+      }).join('');
+
+      // Asegurar que la impresión se haga correctamente
+      setTimeout(() => {
+        window.print();
+      }, 200);
     }
 
     // ============================================================
@@ -2368,3 +2407,4 @@
   </script>
 </body>
 </html>
+[file content end]
