@@ -1185,6 +1185,7 @@
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
+      margin-bottom: 12px;
     }
 
     .cot-logo { display: flex; flex-direction: column; }
@@ -1223,69 +1224,85 @@
     .cot-linea-oro {
       height: 2px;
       background: linear-gradient(90deg, #c2290a, #b8874a);
-      margin: 12px 0 16px;
+      margin: 0 0 16px 0;
     }
 
-   .cot-tabla-precios {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-  table-layout: fixed;
-  font-size: 0.72rem;
-}
+    /* Estilos para cada producto en la cotización */
+    .cot-producto {
+      margin-bottom: 28px;
+      page-break-inside: avoid;
+    }
 
-.cot-tabla-precios th {
-  background: #faf6f1;
-  border: 1px solid #e3d9cd;
-  font-size: 0.6rem;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-  padding: 6px 4px;
-  color: #6b5c51;
-  text-align: center;
-}
+    .cot-producto:last-child {
+      margin-bottom: 0;
+    }
 
-.cot-tabla-precios td {
-  border: 1px solid #e3d9cd;
-  text-align: center;
-  padding: 6px 4px;
-  font-weight: 700;
-  font-size: 0.72rem;
-  color: #c2290a;
-  vertical-align: middle;
-  word-break: break-word;
-}
+    .cot-producto-titulo {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #241b16;
+      margin-bottom: 6px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid #e3d9cd;
+    }
 
-.cot-col-articulo {
-  width: 34%;
-  text-align: left !important;
-  font-weight: 600 !important;
-  color: #241b16 !important;
-  font-size: 0.72rem !important;
-}
+    .cot-tabla-precios {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      font-size: 0.9rem;
+    }
 
-.cot-col-contado { width: 13%; }
-.cot-col-2m { width: 13%; }
-.cot-col-3m { width: 13%; }
-.cot-col-6m { width: 13%; }
-.cot-col-12m { width: 14%; }
+    .cot-tabla-precios th {
+      background: #faf6f1;
+      border: 1px solid #e3d9cd;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 8px 4px;
+      color: #6b5c51;
+      text-align: center;
+      font-weight: 700;
+    }
 
-.cot-enganche-texto {
-  display: block;
-  font-weight: 400;
-  font-size: 0.5rem;
-  color: #6b5c51;
-  margin-top: 1px;
-  line-height: 1.2;
-}
+    .cot-tabla-precios td {
+      border: 1px solid #e3d9cd;
+      text-align: center;
+      padding: 10px 6px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: #c2290a;
+      vertical-align: middle;
+      word-break: break-word;
+    }
 
-.cot-no-disponible {
-  color: #96887d;
-  font-weight: 400;
-  font-size: 0.65rem;
-}
+    .cot-col-contado { width: 20%; }
+    .cot-col-2m { width: 20%; }
+    .cot-col-3m { width: 20%; }
+    .cot-col-6m { width: 20%; }
+    .cot-col-12m { width: 20%; }
 
-    .cot-pie { margin-top: 20px; text-align: center; }
+    .cot-enganche-texto {
+      display: block;
+      font-weight: 400;
+      font-size: 0.65rem;
+      color: #6b5c51;
+      margin-top: 2px;
+      line-height: 1.3;
+    }
+
+    .cot-no-disponible {
+      color: #96887d;
+      font-weight: 400;
+      font-size: 0.8rem;
+    }
+
+    .cot-pie { 
+      margin-top: 24px; 
+      text-align: center; 
+      border-top: 1px solid #e3d9cd;
+      padding-top: 16px;
+    }
     .cot-pie p { font-size: 0.7rem; color: #96887d; }
     .cot-gracias {
       font-family: var(--fuente-logo-sub);
@@ -1294,7 +1311,7 @@
       margin-top: 4px;
     }
     .cot-sitio-web {
-      margin-top: 8px;
+      margin-top: 6px;
       font-size: 0.75rem;
       color: #b8874a;
       font-weight: 600;
@@ -1571,9 +1588,9 @@
               <div class="plan-enganche">Enganche<span id="val-enganche-6">Consultar</span></div>
             </div>
             <div class="plan-card">
-              <div class="plan-header">12 Meses</div>
+              <div class="plan-header">12 Meses (Tarjetas de Crédito)</div>
               <div class="plan-precio-principal" id="val-pago-tarjeta-12">Consultar</div>
-              <div class="plan-detalle">con Tarjetas de Crédito</div>
+              <div class="plan-detalle">pago mensual</div>
             </div>
           </div>
         </div>
@@ -1621,36 +1638,8 @@
   </div>
 
   <div id="area-impresion-cotizacion">
-    <div class="hoja-cotizacion">
-      <div class="cot-encabezado">
-        <div class="cot-logo">
-          <span class="cot-brand-script">Daguerr</span>
-          <span class="cot-brand-sub">MUEBLERIA</span>
-        </div>
-        <div class="cot-datos-doc">
-          <span class="cot-titulo-doc">COTIZACIÓN</span>
-          <span class="cot-fecha" id="cot-fecha"></span>
-        </div>
-      </div>
-      <div class="cot-linea-oro"></div>
-      <table class="cot-tabla-precios">
-        <thead>
-          <tr>
-            <th class="cot-col-articulo">Artículo</th>
-            <th class="cot-col-contado">Contado</th>
-            <th class="cot-col-2m">2 Meses</th>
-            <th class="cot-col-3m">3 Meses</th>
-            <th class="cot-col-6m">6 Meses</th>
-            <th class="cot-col-12m">12 Meses</th>
-          </tr>
-        </thead>
-        <tbody id="cot-tabla-cuerpo"></tbody>
-      </table>
-      <div class="cot-pie">
-        <p>Precios sujetos a cambio sin previo aviso. Cotización válida por 15 días.</p>
-        <p class="cot-gracias">¡Gracias por su preferencia, Mueblería Daguerr!</p>
-        <p class="cot-sitio-web">Visita nuestro catálogo completo en: www.muebleriadaguerr.com</p>
-      </div>
+    <div class="hoja-cotizacion" id="hojaCotizacion">
+      <!-- El contenido se genera dinámicamente con JavaScript -->
     </div>
   </div>
 
@@ -1755,7 +1744,7 @@
             mensaje += '6 Meses: ' + formatearPrecioWhatsApp(productoActual.pago_mes_6) + ' /mes (Enganche: ' + formatearPrecioWhatsApp(productoActual.enganche_6) + ')\n';
         }
         if (productoActual.pago_tarjeta_12) {
-            mensaje += '12 Meses (Tarjeta de Crédito): ' + formatearPrecioWhatsApp(productoActual.pago_tarjeta_12) + '\n';
+            mensaje += '12 Meses (Tarjetas de Crédito): ' + formatearPrecioWhatsApp(productoActual.pago_tarjeta_12) + '\n';
         }
         mensaje += '\nGracias por su preferencia! Mueblería Daguerr.';
         mensaje += '\nVisite nuestro catálogo completo en: www.muebleriadaguerr.com';
@@ -1781,7 +1770,7 @@
                 mensaje += '   6 Meses: ' + formatearPrecioWhatsApp(p.pago_mes_6) + '/mes (Enganche: ' + formatearPrecioWhatsApp(p.enganche_6) + ')\n';
             }
             if (p.pago_tarjeta_12) {
-                mensaje += '   12 Meses (Tarjeta de Crédito): ' + formatearPrecioWhatsApp(p.pago_tarjeta_12) + '\n';
+                mensaje += '   12 Meses (Tarjetas de Crédito): ' + formatearPrecioWhatsApp(p.pago_tarjeta_12) + '\n';
             }
             mensaje += '\n';
         });
@@ -2084,79 +2073,75 @@
       }
 
       const hoy = new Date();
-      document.getElementById('cot-fecha').innerText = hoy.toLocaleDateString('es-MX', {
+      const fechaStr = hoy.toLocaleDateString('es-MX', {
         day: '2-digit', month: 'long', year: 'numeric'
       });
 
-      const cuerpo = document.getElementById('cot-tabla-cuerpo');
+      const hoja = document.getElementById('hojaCotizacion');
       
-      cuerpo.innerHTML = '';
-      
-      carrito.forEach((p) => {
-        const fila = document.createElement('tr');
-        
-        const tdArticulo = document.createElement('td');
-        tdArticulo.className = 'cot-col-articulo';
-        tdArticulo.textContent = p.titulo || 'Sin título';
-        fila.appendChild(tdArticulo);
-        
-        const tdContado = document.createElement('td');
-        tdContado.className = 'cot-col-contado';
-        tdContado.textContent = formatearPrecio(p.precio_contado);
-        fila.appendChild(tdContado);
-        
-        const td2M = document.createElement('td');
-        td2M.className = 'cot-col-2m';
-        if (p.pago_mes_2) {
-          td2M.textContent = formatearPrecio(p.pago_mes_2) + '/mes';
-          if (p.enganche_2) {
-            const spanEnganche = document.createElement('span');
-            spanEnganche.className = 'cot-enganche-texto';
-            spanEnganche.textContent = 'Enganche ' + formatearPrecio(p.enganche_2);
-            td2M.appendChild(spanEnganche);
-          }
-        } else {
-          td2M.innerHTML = '<span class="cot-no-disponible">N/A</span>';
-        }
-        fila.appendChild(td2M);
-        
-        const td3M = document.createElement('td');
-        td3M.className = 'cot-col-3m';
-        if (p.pago_mes_3) {
-          td3M.textContent = formatearPrecio(p.pago_mes_3) + '/mes';
-          if (p.enganche_3) {
-            const spanEnganche = document.createElement('span');
-            spanEnganche.className = 'cot-enganche-texto';
-            spanEnganche.textContent = 'Enganche ' + formatearPrecio(p.enganche_3);
-            td3M.appendChild(spanEnganche);
-          }
-        } else {
-          td3M.innerHTML = '<span class="cot-no-disponible">N/A</span>';
-        }
-        fila.appendChild(td3M);
-        
-        const td6M = document.createElement('td');
-        td6M.className = 'cot-col-6m';
-        if (p.pago_mes_6) {
-          td6M.textContent = formatearPrecio(p.pago_mes_6) + '/mes';
-          if (p.enganche_6) {
-            const spanEnganche = document.createElement('span');
-            spanEnganche.className = 'cot-enganche-texto';
-            spanEnganche.textContent = 'Enganche ' + formatearPrecio(p.enganche_6);
-            td6M.appendChild(spanEnganche);
-          }
-        } else {
-          td6M.innerHTML = '<span class="cot-no-disponible">N/A</span>';
-        }
-        fila.appendChild(td6M);
-        
-        const td12M = document.createElement('td');
-        td12M.className = 'cot-col-12m';
-        td12M.textContent = formatearPrecio(p.pago_tarjeta_12);
-        fila.appendChild(td12M);
-        
-        cuerpo.appendChild(fila);
+      // Construir el HTML de la cotización
+      let html = `
+        <div class="cot-encabezado">
+          <div class="cot-logo">
+            <span class="cot-brand-script">Daguerr</span>
+            <span class="cot-brand-sub">MUEBLERIA</span>
+          </div>
+          <div class="cot-datos-doc">
+            <span class="cot-titulo-doc">COTIZACIÓN</span>
+            <span class="cot-fecha">${fechaStr}</span>
+          </div>
+        </div>
+        <div class="cot-linea-oro"></div>
+      `;
+
+      // Generar una tabla por cada producto
+      carrito.forEach((p, index) => {
+        html += `
+          <div class="cot-producto">
+            <div class="cot-producto-titulo">${index + 1}. ${escaparHtml(p.titulo || 'Sin título')}</div>
+            <table class="cot-tabla-precios">
+              <thead>
+                <tr>
+                  <th class="cot-col-contado">Contado</th>
+                  <th class="cot-col-2m">2 Meses</th>
+                  <th class="cot-col-3m">3 Meses</th>
+                  <th class="cot-col-6m">6 Meses</th>
+                  <th class="cot-col-12m">12 Meses (Tarjetas de Crédito)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="cot-col-contado">${formatearPrecio(p.precio_contado)}</td>
+                  <td class="cot-col-2m">
+                    ${p.pago_mes_2 ? formatearPrecio(p.pago_mes_2) + '/mes' : '<span class="cot-no-disponible">N/A</span>'}
+                    ${p.enganche_2 ? `<span class="cot-enganche-texto">Enganche ${formatearPrecio(p.enganche_2)}</span>` : ''}
+                  </td>
+                  <td class="cot-col-3m">
+                    ${p.pago_mes_3 ? formatearPrecio(p.pago_mes_3) + '/mes' : '<span class="cot-no-disponible">N/A</span>'}
+                    ${p.enganche_3 ? `<span class="cot-enganche-texto">Enganche ${formatearPrecio(p.enganche_3)}</span>` : ''}
+                  </td>
+                  <td class="cot-col-6m">
+                    ${p.pago_mes_6 ? formatearPrecio(p.pago_mes_6) + '/mes' : '<span class="cot-no-disponible">N/A</span>'}
+                    ${p.enganche_6 ? `<span class="cot-enganche-texto">Enganche ${formatearPrecio(p.enganche_6)}</span>` : ''}
+                  </td>
+                  <td class="cot-col-12m">${formatearPrecio(p.pago_tarjeta_12)}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        `;
       });
+
+      // Pie de página
+      html += `
+        <div class="cot-pie">
+          <p>Precios sujetos a cambio sin previo aviso. Cotización válida por 15 días.</p>
+          <p class="cot-gracias">¡Gracias por su preferencia, Mueblería Daguerr!</p>
+          <p class="cot-sitio-web">Visita nuestro catálogo completo en: www.muebleriadaguerr.com</p>
+        </div>
+      `;
+
+      hoja.innerHTML = html;
 
       setTimeout(() => {
         window.print();
