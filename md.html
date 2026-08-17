@@ -1417,23 +1417,6 @@
         align-items: flex-end;
         margin-bottom: 12px;
       }
-      .cot-contacto {
-        margin-top: 16px;
-        padding-top: 14px;
-        border-top: 1px solid #e3d9cd;
-        font-size: 0.7rem;
-        color: #6b5c51;
-        line-height: 1.6;
-      }
-
-      .cot-contacto strong {
-        color: #241b16;
-        font-weight: 700;
-      }
-
-      .cot-contacto p {
-        margin: 2px 0;
-      }
 
       .cot-logo {
         display: flex;
@@ -1459,6 +1442,7 @@
         padding-left: 76px;
         text-align: left;
       }
+
       .cot-datos-doc {
         text-align: right;
         display: flex;
@@ -1564,6 +1548,15 @@
         font-size: 0.8rem;
       }
 
+      /* 🔽 NUEVO: estilo para "/mes" en línea aparte */
+      .mes-texto {
+        font-size: 0.65rem;
+        font-weight: 400;
+        color: #6b5c51;
+        display: block;
+        margin-top: 1px;
+      }
+
       .cot-pie {
         margin-top: 24px;
         text-align: center;
@@ -1585,6 +1578,24 @@
         font-size: 0.75rem;
         color: #b8874a;
         font-weight: 600;
+      }
+
+      .cot-contacto {
+        margin-top: 16px;
+        padding-top: 14px;
+        border-top: 1px solid #e3d9cd;
+        font-size: 0.7rem;
+        color: #6b5c51;
+        line-height: 1.6;
+      }
+
+      .cot-contacto strong {
+        color: #241b16;
+        font-weight: 700;
+      }
+
+      .cot-contacto p {
+        margin: 2px 0;
       }
 
       @media print {
@@ -2961,15 +2972,15 @@
                 <tr>
                   <td class="cot-col-contado">${formatearPrecio(p.precio_contado)}</td>
                   <td class="cot-col-2m">
-                    ${p.pago_mes_2 ? formatearPrecio(p.pago_mes_2) + "/mes" : '<span class="cot-no-disponible">N/A</span>'}
+                    ${p.pago_mes_2 ? formatearPrecio(p.pago_mes_2) + '<br><span class="mes-texto">/mes</span>' : '<span class="cot-no-disponible">N/A</span>'}
                     ${p.enganche_2 ? `<span class="cot-enganche-texto">Enganche ${formatearPrecio(p.enganche_2)}</span>` : ""}
                   </td>
                   <td class="cot-col-3m">
-                    ${p.pago_mes_3 ? formatearPrecio(p.pago_mes_3) + "/mes" : '<span class="cot-no-disponible">N/A</span>'}
+                    ${p.pago_mes_3 ? formatearPrecio(p.pago_mes_3) + '<br><span class="mes-texto">/mes</span>' : '<span class="cot-no-disponible">N/A</span>'}
                     ${p.enganche_3 ? `<span class="cot-enganche-texto">Enganche ${formatearPrecio(p.enganche_3)}</span>` : ""}
                   </td>
                   <td class="cot-col-6m">
-                    ${p.pago_mes_6 ? formatearPrecio(p.pago_mes_6) + "/mes" : '<span class="cot-no-disponible">N/A</span>'}
+                    ${p.pago_mes_6 ? formatearPrecio(p.pago_mes_6) + '<br><span class="mes-texto">/mes</span>' : '<span class="cot-no-disponible">N/A</span>'}
                     ${p.enganche_6 ? `<span class="cot-enganche-texto">Enganche ${formatearPrecio(p.enganche_6)}</span>` : ""}
                   </td>
                   <td class="cot-col-12m">${formatearPrecio(p.pago_tarjeta_12)}</td>
