@@ -1,2092 +1,2934 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="google-site-verification" content="QpEtGqhVy4j8vrfr504r205jVhasmnNbbDrQMiHrvis" />
-  <meta name="theme-color" content="#c2290a">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Daguerr">
-  <meta name="description" content="Catalogo de Muebleria Daguerr: cocinas, recamaras, salas, linea blanca y mas, con precios y planes de financiamiento.">
-  <title>Muebleria Daguerr - Catalogo</title>
-
-  <link rel="preload" href="ITCEDSCR.TTF" as="font" type="font/ttf" crossorigin>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <style>
-    @font-face {
-      font-family: 'Edwardian Script Local';
-      src: url('ITCEDSCR.TTF') format('truetype');
-      font-weight: normal;
-      font-style: normal;
-    }
-
-    :root {
-      --terracota: #c2290a;
-      --terracota-profundo: #8a1c06;
-      --terracota-claro: #e0602f;
-      --oro: #b8874a;
-      --oro-suave: #dcb27c;
-      --crema: #faf6f1;
-      --crema-tarjeta: #fffdfb;
-      --crema-suave: #f3ece3;
-      --tinta: #241b16;
-      --tinta-suave: #6b5c51;
-      --tinta-tenue: #96887d;
-      --blanco: #ffffff;
-      --linea: rgba(36, 27, 22, 0.09);
-      --sombra-suave: 0 10px 30px rgba(36, 27, 22, 0.07);
-      --sombra-media: 0 18px 45px rgba(36, 27, 22, 0.14);
-      --sombra-terracota: 0 14px 34px rgba(194, 41, 10, 0.22);
-      --curva: cubic-bezier(.22, 1, .36, 1);
-      --curva-rebote: cubic-bezier(.34, 1.56, .64, 1);
-      --fuente-logo-script: 'Edwardian Script Local', 'Edwardian Script ITC', cursive;
-      --fuente-logo-sub: 'Montserrat', sans-serif;
-      --fuente-cuerpo: 'Poppins', sans-serif;
-      --max-width-container: 1400px;
-    }
-
-    body.modo-oscuro {
-      --crema: #12100e;
-      --crema-tarjeta: #1a1613;
-      --crema-suave: #221d18;
-      --tinta: #f4ece6;
-      --tinta-suave: #b8a89e;
-      --tinta-tenue: #8a7a70;
-      --blanco: #1a1613;
-      --linea: rgba(244, 236, 230, 0.1);
-      --sombra-suave: 0 10px 30px rgba(0, 0, 0, 0.3);
-      --sombra-media: 0 18px 45px rgba(0, 0, 0, 0.5);
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { height: 100%; scroll-behavior: smooth; }
-
-    body {
-      font-family: var(--fuente-cuerpo);
-      background-color: var(--crema);
-      color: var(--tinta);
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-      min-height: 100dvh;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      overflow-x: hidden;
-      transition: background-color 0.3s ease, color 0.3s ease;
-    }
-
-    a { color: inherit; }
-    :focus-visible { outline: 2px solid var(--terracota); outline-offset: 3px; border-radius: 4px; }
-
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(28px) scale(0.98); filter: blur(3px); }
-      to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
-    }
-
-    @keyframes modalScaleIn {
-      from { opacity: 0; transform: scale(0.92) translateY(12px); }
-      to { opacity: 1; transform: scale(1) translateY(0); }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: 0.001ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.001ms !important;
-        scroll-behavior: auto !important;
-      }
-    }
-
-    .switch-modo-contenedor {
-      position: absolute;
-      top: 14px;
-      left: 24px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      z-index: 1001;
-    }
-
-    .switch-modo {
-      position: relative;
-      display: inline-block;
-      width: 48px;
-      height: 26px;
-    }
-
-    .switch-modo input { opacity: 0; width: 0; height: 0; }
-
-    .switch-slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-color: var(--tinta-tenue);
-      transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      border-radius: 26px;
-      border: 1px solid var(--linea);
-    }
-
-    .switch-slider:before {
-      position: absolute;
-      content: "";
-      height: 20px;
-      width: 20px;
-      left: 2px;
-      bottom: 2px;
-      background-color: white;
-      transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      border-radius: 50%;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-    }
-
-    input:checked + .switch-slider { background-color: var(--terracota); }
-    input:checked + .switch-slider:before { transform: translateX(22px); }
-    .switch-icono { width: 16px; height: 16px; color: var(--tinta-suave); }
-
-    .header-contenedor {
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      background-color: rgba(255, 253, 251, 0.92);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      box-shadow: var(--sombra-suave);
-      border-bottom: 1px solid var(--linea);
-      animation: fadeInUp 0.6s var(--curva);
-      transition: box-shadow 0.4s ease, background-color 0.4s ease;
-    }
-
-    .header-contenedor::after {
-      content: "";
-      display: block;
-      height: 3px;
-      width: 100%;
-      background: linear-gradient(90deg, var(--terracota-profundo), var(--terracota) 45%, var(--oro));
-    }
-
-    header {
-      max-width: var(--max-width-container);
-      margin: 0 auto;
-      padding: 16px 40px 8px 40px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: relative;
-    }
-
-    .logo-header {
-      display: flex;
-      flex-direction: column;
-      text-decoration: none;
-      width: 100%;
-      max-width: 320px;
-    }
-
-    .logo-header .brand-script {
-      display: block;
-      font-family: var(--fuente-logo-script);
-      font-size: clamp(3rem, 5vw, 4rem);
-      color: var(--terracota);
-      line-height: 0.85;
-      text-align: center;
-    }
-
-    .logo-header .brand-sub {
-      display: block;
-      font-family: var(--fuente-logo-sub);
-      font-size: clamp(0.8rem, 1.5vw, 1rem);
-      letter-spacing: 6px;
-      text-transform: uppercase;
-      font-weight: 800;
-      color: var(--tinta-suave);
-      text-align: right;
-      margin-top: 4px;
-      padding-right: 16px;
-    }
-
-    .buscador-contenedor {
-      max-width: var(--max-width-container);
-      margin: 0 auto;
-      padding: 6px 40px 16px 40px;
-    }
-
-    .buscador-caja {
-      position: relative;
-      max-width: 600px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-    }
-
-    .buscador-icono {
-      position: absolute;
-      left: 18px;
-      width: 18px;
-      height: 18px;
-      color: var(--tinta-tenue);
-      pointer-events: none;
-    }
-
-    #campoBusqueda {
-      width: 100%;
-      font-family: var(--fuente-cuerpo);
-      font-size: 1rem;
-      color: var(--tinta);
-      background-color: var(--crema-tarjeta);
-      border: 1px solid var(--linea);
-      border-radius: 30px;
-      padding: 14px 44px 14px 46px;
-      transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
-    }
-
-    #campoBusqueda::placeholder { color: var(--tinta-tenue); }
-    #campoBusqueda:focus {
-      outline: none;
-      border-color: var(--terracota);
-      box-shadow: 0 0 0 3px rgba(194, 41, 10, 0.12);
-    }
-
-    .buscador-limpiar {
-      position: absolute;
-      right: 10px;
-      width: 28px;
-      height: 28px;
-      border: none;
-      border-radius: 50%;
-      background: var(--crema-suave);
-      color: var(--tinta-suave);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: background-color 0.25s ease, color 0.25s ease;
-    }
-
-    .buscador-limpiar svg { width: 14px; height: 14px; }
-    .buscador-limpiar:hover { background: var(--terracota); color: #fff; }
-    .buscador-caja.tiene-texto .buscador-limpiar { display: flex; }
-
-    .filtros {
-      max-width: var(--max-width-container);
-      margin: 0 auto;
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 12px;
-      padding: 8px 40px 20px 40px;
-    }
-
-    .btn-filtro {
-      position: relative;
-      background-color: var(--crema-tarjeta);
-      border: 1px solid var(--linea);
-      padding: 12px 28px;
-      border-radius: 30px;
-      font-size: 0.95rem;
-      font-family: var(--fuente-cuerpo);
-      font-weight: 500;
-      color: var(--tinta-suave);
-      cursor: pointer;
-      transition: transform 0.35s var(--curva), box-shadow 0.35s var(--curva),
-                  background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-    }
-
-    .btn-filtro:hover {
-      transform: translateY(-2px);
-      border-color: var(--terracota);
-      color: var(--terracota);
-    }
-
-    .btn-filtro.activo {
-      background: linear-gradient(135deg, var(--terracota-claro), var(--terracota));
-      color: #ffffff;
-      border-color: transparent;
-      box-shadow: var(--sombra-terracota);
-      transform: translateY(-1px);
-    }
-
-    .btn-limpiar-filtros {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      color: var(--tinta-tenue);
-      border-style: dashed;
-    }
-
-    .btn-limpiar-filtros svg { width: 14px; height: 14px; }
-    .btn-limpiar-filtros:hover { color: var(--terracota); border-color: var(--terracota); }
-
-    .submenu-linea-blanca {
-      display: none;
-      max-width: var(--max-width-container);
-      margin: 0 auto;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 10px;
-      padding: 12px 40px 18px 40px;
-      background-color: var(--crema-suave);
-      border-top: 1px dashed var(--linea);
-      border-bottom: 1px dashed var(--linea);
-    }
-
-    .submenu-linea-blanca.activo { display: flex; animation: fadeInUp 0.35s var(--curva); }
-
-    .btn-subfiltro {
-      background-color: var(--crema-tarjeta);
-      border: 1px solid var(--linea);
-      padding: 8px 22px;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      font-family: var(--fuente-cuerpo);
-      color: var(--terracota-claro);
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-weight: 600;
-    }
-
-    .btn-subfiltro:hover, .btn-subfiltro.activo {
-      background-color: var(--terracota);
-      color: #ffffff;
-      border-color: var(--terracota);
-      box-shadow: 0 6px 16px rgba(194, 41, 10, 0.22);
-    }
-
-    .contenedor-catalogo {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 30px;
-      padding: 20px 40px 50px;
-      max-width: var(--max-width-container);
-      margin: 0 auto;
-      width: 100%;
-      flex-grow: 1;
-      position: relative;
-      z-index: 1;
-    }
-
-    .mensaje-vacio {
-      grid-column: 1 / -1;
-      text-align: center;
-      padding: 80px 20px;
-      color: var(--tinta-tenue);
-      font-size: 1.1rem;
-    }
-
-    .tarjeta-mueble {
-      background: var(--crema-tarjeta);
-      border-radius: 18px;
-      overflow: hidden;
-      box-shadow: var(--sombra-suave);
-      transition: transform 0.45s var(--curva), box-shadow 0.45s var(--curva), background-color 0.3s ease;
-      display: flex;
-      flex-direction: column;
-      border: 1px solid var(--linea);
-      cursor: pointer;
-      animation: fadeInUp 0.7s var(--curva) both;
-      will-change: transform;
-    }
-
-    .tarjeta-mueble:hover {
-      transform: translateY(-8px);
-      box-shadow: var(--sombra-media);
-    }
-
-    .contenedor-imagen-tarjeta {
-      width: 100%;
-      height: 240px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      position: relative;
-      background-color: var(--crema-suave);
-    }
-
-    .badge-fotos-contador {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      background: rgba(36, 27, 22, 0.65);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-      color: #ffffff;
-      font-size: 0.75rem;
-      font-weight: 600;
-      padding: 4px 10px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      z-index: 3;
-      pointer-events: none;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-    }
-
-    .badge-fotos-contador svg { width: 13px; height: 13px; }
-
-    .imagen-mueble {
-      width: 100%;
-      height: 240px;
-      object-fit: contain;
-      background-color: var(--crema-suave);
-      transition: transform 0.6s var(--curva);
-    }
-
-    .tarjeta-mueble:hover .imagen-mueble { transform: scale(1.05); }
-
-    .info-mueble {
-      padding: 22px 24px 24px;
-      display: flex;
-      flex-direction: column;
-      flex-grow: 1;
-      background: var(--crema-tarjeta);
-      position: relative;
-      z-index: 2;
-      transition: background-color 0.3s ease;
-    }
-
-    .info-mueble h3 {
-      font-size: 1.25rem;
-      font-weight: 600;
-      margin-bottom: 6px;
-      color: var(--tinta);
-    }
-
-    .info-mueble p {
-      font-size: 0.92rem;
-      color: var(--tinta-suave);
-      margin-bottom: 16px;
-      flex-grow: 1;
-      white-space: pre-line;
-      line-height: 1.6;
-    }
-
-    .precio-tarjeta {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      background: var(--crema-suave);
-      border: 1px solid var(--linea);
-      border-radius: 12px;
-      padding: 12px 16px;
-      margin-bottom: 14px;
-    }
-
-    .precio-tarjeta-etiqueta {
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--tinta-tenue);
-    }
-
-    .precio-tarjeta-valor {
-      font-size: 1.25rem;
-      font-weight: 800;
-      color: var(--terracota-profundo);
-    }
-
-    body.modo-oscuro .precio-tarjeta-valor { color: var(--terracota-claro); }
-
-    .precio-tarjeta.precio-tarjeta-consultar { justify-content: center; }
-    .precio-tarjeta.precio-tarjeta-consultar .precio-tarjeta-valor {
-      font-size: 0.95rem;
-      color: var(--tinta-tenue);
-    }
-
-    .contenedor-badges { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
-
-    .badge-estado {
-      display: inline-block;
-      padding: 5px 14px;
-      border-radius: 12px;
-      font-size: 0.8rem;
-      font-weight: 700;
-      width: fit-content;
-      letter-spacing: 0.2px;
-    }
-
-    .disponible { background-color: #e6f4ea; color: #137333; }
-    .agotado { background-color: #fce8e6; color: #c5221f; }
-    .pedido { background-color: #fef3d9; color: #96660a; }
-
-    body.modo-oscuro .disponible { background-color: rgba(19, 115, 51, 0.25); color: #81c995; }
-    body.modo-oscuro .agotado { background-color: rgba(197, 34, 31, 0.25); color: #f28b82; }
-    body.modo-oscuro .pedido { background-color: rgba(150, 102, 10, 0.25); color: #fdd663; }
-
-    .btn-precios {
-      display: block;
-      text-align: center;
-      background: linear-gradient(135deg, var(--terracota-claro), var(--terracota));
-      color: white;
-      text-decoration: none;
-      padding: 14px;
-      border-radius: 12px;
-      font-weight: 600;
-      font-size: 1rem;
-      transition: transform 0.3s var(--curva), box-shadow 0.3s ease;
-      box-shadow: var(--sombra-terracota);
-      border: none;
-      cursor: pointer;
-      width: 100%;
-    }
-
-    .btn-precios:hover {
-      transform: translateY(-2px) scale(1.01);
-      box-shadow: 0 12px 28px rgba(194, 41, 10, 0.3);
-    }
-
-    .modal-detalle {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(10, 8, 6, 0.85);
-      z-index: 10000;
-      display: none;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
-    }
-
-    .modal-detalle.activo { display: flex; }
-
-    .modal-contenido {
-      background: var(--crema-tarjeta);
-      color: var(--tinta);
-      width: 100%;
-      max-width: 820px;
-      max-height: 92vh;
-      border-radius: 24px;
-      overflow-y: auto;
-      position: relative;
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
-      display: flex;
-      flex-direction: column;
-      animation: modalScaleIn 0.4s var(--curva-rebote);
-      border: 1px solid var(--linea);
-    }
-
-    .modal-contenido::-webkit-scrollbar { width: 6px; }
-    .modal-contenido::-webkit-scrollbar-track { background: var(--crema-suave); border-radius: 0 0 12px 0; }
-    .modal-contenido::-webkit-scrollbar-thumb { background: var(--terracota); border-radius: 10px; }
-
-    .btn-cerrar {
-      position: absolute;
-      top: 16px; right: 16px;
-      background: rgba(0, 0, 0, 0.55);
-      color: white;
-      border: none;
-      width: 44px; height: 44px;
-      border-radius: 50%;
-      font-size: 1.5rem;
-      cursor: pointer;
-      z-index: 20;
-      transition: background 0.3s, transform 0.3s var(--curva);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    }
-
-    .btn-cerrar:hover { background: var(--terracota); transform: rotate(90deg); }
-
-    .carrusel-contenedor {
-      position: relative;
-      width: 100%;
-      height: 420px;
-      background: var(--crema-suave);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      flex-shrink: 0;
-    }
-
-    .carrusel-img {
-      max-width: 100%; max-height: 100%;
-      width: auto; height: auto;
-      object-fit: contain;
-      cursor: zoom-in;
-      transition: opacity 0.35s ease, transform 0.35s var(--curva);
-    }
-
-    .carrusel-img:hover { transform: scale(1.02); }
-
-    .btn-carrusel {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(24, 17, 13, 0.6);
-      color: #ffffff;
-      border: 1px solid rgba(255, 255, 255, 0.35);
-      width: 48px; height: 48px;
-      cursor: pointer;
-      border-radius: 50%;
-      font-size: 1.2rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 10;
-      transition: all 0.3s var(--curva);
-      backdrop-filter: blur(4px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    }
-
-    .btn-carrusel:hover {
-      background: var(--terracota);
-      border-color: var(--terracota);
-      transform: translateY(-50%) scale(1.1);
-    }
-
-    .btn-carrusel.prev { left: 18px; }
-    .btn-carrusel.next { right: 18px; }
-
-    .modal-imagen-grande {
-      position: fixed; top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(10, 8, 6, 0.92);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-      z-index: 11000;
-      display: none;
-      justify-content: center;
-      align-items: center;
-      padding: 30px;
-    }
-
-    .modal-imagen-grande.activo { display: flex; animation: modalScaleIn 0.35s var(--curva); }
-
-    .modal-imagen-grande img {
-      max-width: min(92vw, 1200px);
-      max-height: min(90vh, 1200px);
-      object-fit: contain;
-      border-radius: 12px;
-      background: var(--crema-tarjeta);
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-    }
-
-    .btn-carrusel-grande {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(255, 255, 255, 0.18);
-      color: #ffffff;
-      border: 1px solid rgba(255, 255, 255, 0.35);
-      width: 54px; height: 54px;
-      cursor: pointer;
-      border-radius: 50%;
-      font-size: 1.4rem;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 12000;
-      transition: all 0.3s var(--curva);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
-    }
-
-    .btn-carrusel-grande:hover {
-      background: var(--terracota);
-      border-color: var(--terracota);
-      transform: translateY(-50%) scale(1.08);
-    }
-
-    .btn-carrusel-grande.prev { left: 24px; }
-    .btn-carrusel-grande.next { right: 24px; }
-
-    .contador-imagen-grande {
-      position: absolute;
-      bottom: 28px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(255, 255, 255, 0.16);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-      color: #ffffff;
-      font-family: var(--fuente-cuerpo);
-      font-size: 0.85rem;
-      font-weight: 600;
-      padding: 6px 16px;
-      border-radius: 20px;
-      display: none;
-      z-index: 12000;
-      pointer-events: none;
-    }
-
-    .btn-cerrar-imagen {
-      position: absolute;
-      top: 24px; right: 24px;
-      background: rgba(255, 255, 255, 0.22);
-      color: white;
-      border: none;
-      width: 50px; height: 50px;
-      border-radius: 50%;
-      font-size: 2rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.3s, transform 0.3s var(--curva);
-      z-index: 12000;
-    }
-
-    .btn-cerrar-imagen:hover { background: var(--terracota); transform: rotate(90deg); }
-
-    .cuerpo-modal { 
-      padding: 30px 32px 32px; 
-      background: var(--crema-tarjeta);
-    }
-
-    .cuerpo-modal h2 {
-      font-size: 1.6rem;
-      font-weight: 600;
-      margin-bottom: 10px;
-      color: var(--tinta);
-      line-height: 1.3;
-    }
-
-    .cuerpo-modal .descripcion {
-      color: var(--tinta-suave);
-      font-size: 1rem;
-      margin-bottom: 22px;
-      line-height: 1.6;
-      white-space: pre-line;
-    }
-
-    .seccion-precios-modal {
-      background: var(--crema);
-      border-radius: 14px;
-      padding: 18px;
-      margin-top: 15px;
-      border: 1px solid var(--linea);
-    }
-
-    .seccion-precios-modal h4 {
-      font-size: 1rem;
-      font-weight: 700;
-      margin-bottom: 14px;
-      color: var(--terracota);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .grid-precios {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-    }
-
-    @media (min-width: 480px) {
-      .grid-precios { grid-template-columns: repeat(5, 1fr); }
-    }
-
-    .plan-card {
-      position: relative;
-      background: var(--crema-tarjeta);
-      padding: 16px 10px 14px;
-      border-radius: 12px;
-      border: 1px solid var(--linea);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      gap: 4px;
-      transition: transform 0.25s var(--curva), box-shadow 0.25s var(--curva), border-color 0.25s var(--curva);
-    }
-
-    .plan-card:hover {
-      transform: translateY(-3px);
-      box-shadow: var(--sombra-suave);
-      border-color: var(--oro-suave);
-    }
-
-    .plan-card .plan-header {
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-      color: var(--tinta-tenue);
-    }
-
-    .plan-card .plan-precio-principal {
-      font-size: 1.25rem;
-      font-weight: 800;
-      color: var(--tinta);
-      line-height: 1.2;
-    }
-
-    .plan-card .plan-detalle {
-      font-size: 0.72rem;
-      color: var(--tinta-tenue);
-    }
-
-    .plan-card .plan-enganche {
-      margin-top: 6px;
-      padding-top: 6px;
-      border-top: 1px dashed var(--linea);
-      width: 100%;
-      font-size: 0.68rem;
-      color: var(--tinta-suave);
-    }
-
-    .plan-card .plan-enganche span {
-      display: block;
-      font-weight: 700;
-      color: var(--tinta);
-      font-size: 0.8rem;
-      margin-top: 1px;
-    }
-
-    .plan-card.plan-contado {
-      background: linear-gradient(160deg, var(--crema-tarjeta), var(--crema-suave));
-      border: 1.5px solid var(--terracota);
-    }
-
-    .plan-card.plan-contado .plan-header,
-    .plan-card.plan-contado .plan-precio-principal {
-      color: var(--terracota-profundo);
-    }
-
-    .plan-card .plan-etiqueta {
-      position: absolute;
-      top: -9px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--terracota);
-      color: #fff;
-      font-size: 0.6rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.4px;
-      padding: 2px 8px;
-      border-radius: 20px;
-      box-shadow: var(--sombra-terracota);
-      white-space: nowrap;
-    }
-
-    .modal-acciones {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-top: 20px;
-    }
-
-    .btn-agregar-carrito {
-      background: linear-gradient(135deg, var(--oro-suave), var(--oro));
-      color: white;
-      border: none;
-      border-radius: 12px;
-      padding: 14px;
-      font-size: 1rem;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      box-shadow: 0 6px 20px rgba(184, 135, 74, 0.35);
-      transition: transform 0.25s var(--curva), box-shadow 0.25s ease;
-    }
-
-    .btn-agregar-carrito:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 25px rgba(184, 135, 74, 0.45);
-    }
-
-    .btn-agregar-carrito svg {
-      width: 20px;
-      height: 20px;
-      fill: none;
-      stroke: currentColor;
-      stroke-width: 2;
-    }
-
-    .btn-whatsapp-modal {
-      background: linear-gradient(135deg, #2ecc71, #27ae60);
-      color: white;
-      border: none;
-      border-radius: 12px;
-      padding: 14px;
-      font-size: 1rem;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      box-shadow: 0 6px 20px rgba(39, 174, 96, 0.35);
-      transition: transform 0.25s var(--curva), box-shadow 0.25s ease;
-    }
-
-    .btn-whatsapp-modal:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 25px rgba(39, 174, 96, 0.45);
-    }
-
-    .btn-whatsapp-modal svg {
-      width: 20px;
-      height: 20px;
-      fill: currentColor;
-    }
-
-    @media (max-width: 480px) {
-      .modal-acciones { grid-template-columns: 1fr; }
-    }
-
-    .btn-carrito-flotante {
-      position: fixed;
-      bottom: 30px;
-      left: 30px;
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      border: none;
-      background: linear-gradient(135deg, var(--oro-suave), var(--oro));
-      color: #ffffff;
-      box-shadow: var(--sombra-media);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      z-index: 998;
-      transition: box-shadow 0.3s ease, transform 0.3s var(--curva);
-    }
-
-    .btn-carrito-flotante:hover {
-      box-shadow: 0 16px 34px rgba(184, 135, 74, 0.4);
-      transform: translateY(-3px) scale(1.05);
-    }
-
-    .btn-carrito-flotante svg {
-      width: 24px;
-      height: 24px;
-      fill: none;
-      stroke: currentColor;
-      stroke-width: 2;
-    }
-
-    .carrito-contador {
-      position: absolute;
-      top: -4px;
-      right: -4px;
-      min-width: 22px;
-      height: 22px;
-      padding: 0 6px;
-      border-radius: 999px;
-      background: var(--terracota);
-      color: #fff;
-      font-family: var(--fuente-logo-sub);
-      font-size: 0.75rem;
-      font-weight: 800;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      transform: scale(0.7);
-      transition: opacity 0.25s var(--curva), transform 0.25s var(--curva);
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
-    }
-
-    .carrito-contador.visible {
-      opacity: 1;
-      transform: scale(1);
-    }
-
-    .modal-carrito {
-      max-width: 580px;
-      padding: 30px 28px 28px;
-    }
-
-    .modal-carrito .descripcion {
-      margin-bottom: 18px;
-      font-size: 0.95rem;
-    }
-
-    .lista-carrito {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      max-height: 40vh;
-      overflow-y: auto;
-      margin-bottom: 20px;
-    }
-
-    .carrito-vacio {
-      font-size: 0.9rem;
-      color: var(--tinta-tenue);
-      text-align: center;
-      padding: 30px 10px;
-    }
-
-    .carrito-fila {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      background: var(--crema-suave);
-      border: 1px solid var(--linea);
-      border-radius: 12px;
-      padding: 10px 14px;
-    }
-
-    .carrito-fila-info {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      min-width: 0;
-      flex: 1;
-    }
-
-    .carrito-fila-titulo {
-      font-weight: 600;
-      font-size: 0.92rem;
-      color: var(--tinta);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .carrito-fila-precio {
-      font-size: 0.8rem;
-      color: var(--terracota);
-      font-weight: 600;
-    }
-
-    .btn-quitar-carrito {
-      flex-shrink: 0;
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      border: none;
-      background: rgba(194, 41, 10, 0.1);
-      color: var(--terracota);
-      font-size: 1.2rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.25s ease, transform 0.25s ease;
-    }
-
-    .btn-quitar-carrito:hover {
-      background: var(--terracota);
-      color: #fff;
-      transform: rotate(90deg);
-    }
-
-    .carrito-acciones {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .btn-vaciar-carrito {
-      flex-shrink: 0;
-      padding: 0 18px;
-      border-radius: 14px;
-      border: 1px solid var(--linea);
-      background: transparent;
-      color: var(--tinta-suave);
-      font-family: var(--fuente-cuerpo);
-      font-weight: 600;
-      font-size: 0.88rem;
-      cursor: pointer;
-      transition: background 0.25s ease, color 0.25s ease;
-      min-height: 44px;
-    }
-
-    .btn-vaciar-carrito:hover {
-      background: var(--crema-suave);
-      color: var(--terracota);
-    }
-
-    .carrito-acciones .btn-enviar-wsp { flex: 1; min-height: 44px; }
-
-    .carrito-acciones .btn-imprimir {
-      flex: 1;
-      min-height: 44px;
-      background: linear-gradient(135deg, #6c5ce7, #4834d4);
-      color: white;
-      border: none;
-      border-radius: 12px;
-      padding: 12px 16px;
-      font-size: 0.95rem;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      box-shadow: 0 6px 20px rgba(108, 92, 231, 0.35);
-      transition: transform 0.25s var(--curva), box-shadow 0.25s ease;
-    }
-
-    .carrito-acciones .btn-imprimir:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 25px rgba(108, 92, 231, 0.45);
-    }
-
-    .carrito-acciones .btn-imprimir svg {
-      width: 18px;
-      height: 18px;
-    }
-
-    .btn-enviar-wsp {
-      background: linear-gradient(135deg, #2ecc71, #27ae60);
-      color: white;
-      border: none;
-      border-radius: 12px;
-      padding: 12px 16px;
-      font-size: 0.95rem;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      box-shadow: 0 6px 20px rgba(39, 174, 96, 0.35);
-      transition: transform 0.25s var(--curva), box-shadow 0.25s ease;
-    }
-
-    .btn-enviar-wsp:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 25px rgba(39, 174, 96, 0.45);
-    }
-
-    .btn-enviar-wsp svg {
-      width: 20px;
-      height: 20px;
-      fill: currentColor;
-    }
-
-    #area-impresion-cotizacion { display: none; }
-
-    .hoja-cotizacion {
-      width: 8.5in;
-      min-height: 5.5in;
-      padding: 0.45in 0.55in;
-      box-sizing: border-box;
-      font-family: var(--fuente-cuerpo);
-      color: #241b16;
-      background: #ffffff;
-    }
-
-    .cot-encabezado {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      margin-bottom: 12px;
-    }
-
-.cot-logo { 
-  display: flex; 
-  flex-direction: column; 
-  align-items: flex-start;
-}
-.cot-brand-script {
-  font-family: var(--fuente-logo-script);
-  font-size: 2.7rem;
-  line-height: 0.8;
-  color: #c2290a;
-  text-align: left;
-}
-
-.cot-brand-sub {
-  font-family: var(--fuente-logo-sub);
-  font-size: 0.72rem;
-  letter-spacing: 5px;
-  text-transform: uppercase;
-  font-weight: 800;
-  color: #b8874a;
-  margin-top: 3px;
-  padding-left: 89px;
-  text-align: left;
-}
-    .cot-datos-doc { text-align: right; display: flex; flex-direction: column; }
-    .cot-titulo-doc {
-      font-family: var(--fuente-logo-sub);
-      font-weight: 800;
-      font-size: 1.05rem;
-      letter-spacing: 2px;
-      color: #241b16;
-    }
-
-    .cot-fecha {
-      font-size: 0.78rem;
-      color: #6b5c51;
-      margin-top: 3px;
-    }
-
-    .cot-linea-oro {
-      height: 2px;
-      background: linear-gradient(90deg, #c2290a, #b8874a);
-      margin: 0 0 16px 0;
-    }
-
-    /* Estilos para cada producto en la cotización */
-    .cot-producto {
-      margin-bottom: 28px;
-      page-break-inside: avoid;
-    }
-
-    .cot-producto:last-child {
-      margin-bottom: 0;
-    }
-
-    .cot-producto-titulo {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: #241b16;
-      margin-bottom: 6px;
-      padding-bottom: 4px;
-      border-bottom: 1px solid #e3d9cd;
-    }
-
-    .cot-tabla-precios {
-      width: 100%;
-      border-collapse: collapse;
-      table-layout: fixed;
-      font-size: 0.9rem;
-    }
-
-    .cot-tabla-precios th {
-      background: #faf6f1;
-      border: 1px solid #e3d9cd;
-      font-size: 0.65rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      padding: 8px 4px;
-      color: #6b5c51;
-      text-align: center;
-      font-weight: 700;
-    }
-
-    .cot-tabla-precios td {
-      border: 1px solid #e3d9cd;
-      text-align: center;
-      padding: 10px 6px;
-      font-weight: 700;
-      font-size: 1.1rem;
-      color: #c2290a;
-      vertical-align: middle;
-      word-break: break-word;
-    }
-
-    .cot-col-contado { width: 20%; }
-    .cot-col-2m { width: 20%; }
-    .cot-col-3m { width: 20%; }
-    .cot-col-6m { width: 20%; }
-    .cot-col-12m { width: 20%; }
-
-    .cot-enganche-texto {
-      display: block;
-      font-weight: 400;
-      font-size: 0.65rem;
-      color: #6b5c51;
-      margin-top: 2px;
-      line-height: 1.3;
-    }
-
-    .cot-no-disponible {
-      color: #96887d;
-      font-weight: 400;
-      font-size: 0.8rem;
-    }
-
-    .cot-pie { 
-      margin-top: 24px; 
-      text-align: center; 
-      border-top: 1px solid #e3d9cd;
-      padding-top: 16px;
-    }
-    .cot-pie p { font-size: 0.7rem; color: #96887d; }
-    .cot-gracias {
-      font-family: var(--fuente-logo-sub);
-      font-weight: 700;
-      color: #8a1c06;
-      margin-top: 4px;
-    }
-    .cot-sitio-web {
-      margin-top: 6px;
-      font-size: 0.75rem;
-      color: #b8874a;
-      font-weight: 600;
-    }
-
-    @media print {
-      @page { size: letter; margin: 0; }
-
-      html, body {
-        height: auto !important;
-        overflow: visible !important;
-        background: #ffffff !important;
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <meta
+      name="google-site-verification"
+      content="QpEtGqhVy4j8vrfr504r205jVhasmnNbbDrQMiHrvis"
+    />
+    <meta name="theme-color" content="#c2290a" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="apple-mobile-web-app-title" content="Daguerr" />
+    <meta
+      name="description"
+      content="Catalogo de Muebleria Daguerr: cocinas, recamaras, salas, linea blanca y mas, con precios y planes de financiamiento."
+    />
+    <title>Muebleria Daguerr - Catalogo</title>
+
+    <link
+      rel="preload"
+      href="ITCEDSCR.TTF"
+      as="font"
+      type="font/ttf"
+      crossorigin
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+      @font-face {
+        font-family: "Edwardian Script Local";
+        src: url("ITCEDSCR.TTF") format("truetype");
+        font-weight: normal;
+        font-style: normal;
       }
 
-      body > *:not(#area-impresion-cotizacion) {
-        display: none !important;
+      :root {
+        --terracota: #c2290a;
+        --terracota-profundo: #8a1c06;
+        --terracota-claro: #e0602f;
+        --oro: #b8874a;
+        --oro-suave: #dcb27c;
+        --crema: #faf6f1;
+        --crema-tarjeta: #fffdfb;
+        --crema-suave: #f3ece3;
+        --tinta: #241b16;
+        --tinta-suave: #6b5c51;
+        --tinta-tenue: #96887d;
+        --blanco: #ffffff;
+        --linea: rgba(36, 27, 22, 0.09);
+        --sombra-suave: 0 10px 30px rgba(36, 27, 22, 0.07);
+        --sombra-media: 0 18px 45px rgba(36, 27, 22, 0.14);
+        --sombra-terracota: 0 14px 34px rgba(194, 41, 10, 0.22);
+        --curva: cubic-bezier(0.22, 1, 0.36, 1);
+        --curva-rebote: cubic-bezier(0.34, 1.56, 0.64, 1);
+        --fuente-logo-script:
+          "Edwardian Script Local", "Edwardian Script ITC", cursive;
+        --fuente-logo-sub: "Montserrat", sans-serif;
+        --fuente-cuerpo: "Poppins", sans-serif;
+        --max-width-container: 1400px;
+      }
+
+      body.modo-oscuro {
+        --crema: #12100e;
+        --crema-tarjeta: #1a1613;
+        --crema-suave: #221d18;
+        --tinta: #f4ece6;
+        --tinta-suave: #b8a89e;
+        --tinta-tenue: #8a7a70;
+        --blanco: #1a1613;
+        --linea: rgba(244, 236, 230, 0.1);
+        --sombra-suave: 0 10px 30px rgba(0, 0, 0, 0.3);
+        --sombra-media: 0 18px 45px rgba(0, 0, 0, 0.5);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        height: 100%;
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: var(--fuente-cuerpo);
+        background-color: var(--crema);
+        color: var(--tinta);
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        min-height: 100dvh;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        overflow-x: hidden;
+        transition:
+          background-color 0.3s ease,
+          color 0.3s ease;
+      }
+
+      a {
+        color: inherit;
+      }
+      :focus-visible {
+        outline: 2px solid var(--terracota);
+        outline-offset: 3px;
+        border-radius: 4px;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(28px) scale(0.98);
+          filter: blur(3px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+          filter: blur(0);
+        }
+      }
+
+      @keyframes modalScaleIn {
+        from {
+          opacity: 0;
+          transform: scale(0.92) translateY(12px);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1) translateY(0);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.001ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.001ms !important;
+          scroll-behavior: auto !important;
+        }
+      }
+
+      .switch-modo-contenedor {
+        position: absolute;
+        top: 14px;
+        left: 24px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        z-index: 1001;
+      }
+
+      .switch-modo {
+        position: relative;
+        display: inline-block;
+        width: 48px;
+        height: 26px;
+      }
+
+      .switch-modo input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .switch-slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: var(--tinta-tenue);
+        transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 26px;
+        border: 1px solid var(--linea);
+      }
+
+      .switch-slider:before {
+        position: absolute;
+        content: "";
+        height: 20px;
+        width: 20px;
+        left: 2px;
+        bottom: 2px;
+        background-color: white;
+        transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 50%;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+      }
+
+      input:checked + .switch-slider {
+        background-color: var(--terracota);
+      }
+      input:checked + .switch-slider:before {
+        transform: translateX(22px);
+      }
+      .switch-icono {
+        width: 16px;
+        height: 16px;
+        color: var(--tinta-suave);
+      }
+
+      .header-contenedor {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background-color: rgba(255, 253, 251, 0.92);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        box-shadow: var(--sombra-suave);
+        border-bottom: 1px solid var(--linea);
+        animation: fadeInUp 0.6s var(--curva);
+        transition:
+          box-shadow 0.4s ease,
+          background-color 0.4s ease;
+      }
+
+      .header-contenedor::after {
+        content: "";
+        display: block;
+        height: 3px;
+        width: 100%;
+        background: linear-gradient(
+          90deg,
+          var(--terracota-profundo),
+          var(--terracota) 45%,
+          var(--oro)
+        );
+      }
+
+      header {
+        max-width: var(--max-width-container);
+        margin: 0 auto;
+        padding: 16px 40px 8px 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+      }
+
+      .logo-header {
+        display: flex;
+        flex-direction: column;
+        text-decoration: none;
+        width: 100%;
+        max-width: 320px;
+      }
+
+      .logo-header .brand-script {
+        display: block;
+        font-family: var(--fuente-logo-script);
+        font-size: clamp(3rem, 5vw, 4rem);
+        color: var(--terracota);
+        line-height: 0.85;
+        text-align: center;
+      }
+
+      .logo-header .brand-sub {
+        display: block;
+        font-family: var(--fuente-logo-sub);
+        font-size: clamp(0.8rem, 1.5vw, 1rem);
+        letter-spacing: 6px;
+        text-transform: uppercase;
+        font-weight: 800;
+        color: var(--tinta-suave);
+        text-align: right;
+        margin-top: 4px;
+        padding-right: 16px;
+      }
+
+      .buscador-contenedor {
+        max-width: var(--max-width-container);
+        margin: 0 auto;
+        padding: 6px 40px 16px 40px;
+      }
+
+      .buscador-caja {
+        position: relative;
+        max-width: 600px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+      }
+
+      .buscador-icono {
+        position: absolute;
+        left: 18px;
+        width: 18px;
+        height: 18px;
+        color: var(--tinta-tenue);
+        pointer-events: none;
+      }
+
+      #campoBusqueda {
+        width: 100%;
+        font-family: var(--fuente-cuerpo);
+        font-size: 1rem;
+        color: var(--tinta);
+        background-color: var(--crema-tarjeta);
+        border: 1px solid var(--linea);
+        border-radius: 30px;
+        padding: 14px 44px 14px 46px;
+        transition:
+          border-color 0.3s ease,
+          box-shadow 0.3s ease,
+          background-color 0.3s ease;
+      }
+
+      #campoBusqueda::placeholder {
+        color: var(--tinta-tenue);
+      }
+      #campoBusqueda:focus {
+        outline: none;
+        border-color: var(--terracota);
+        box-shadow: 0 0 0 3px rgba(194, 41, 10, 0.12);
+      }
+
+      .buscador-limpiar {
+        position: absolute;
+        right: 10px;
+        width: 28px;
+        height: 28px;
+        border: none;
+        border-radius: 50%;
+        background: var(--crema-suave);
+        color: var(--tinta-suave);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition:
+          background-color 0.25s ease,
+          color 0.25s ease;
+      }
+
+      .buscador-limpiar svg {
+        width: 14px;
+        height: 14px;
+      }
+      .buscador-limpiar:hover {
+        background: var(--terracota);
+        color: #fff;
+      }
+      .buscador-caja.tiene-texto .buscador-limpiar {
+        display: flex;
+      }
+
+      .filtros {
+        max-width: var(--max-width-container);
+        margin: 0 auto;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        padding: 8px 40px 20px 40px;
+      }
+
+      .btn-filtro {
+        position: relative;
+        background-color: var(--crema-tarjeta);
+        border: 1px solid var(--linea);
+        padding: 12px 28px;
+        border-radius: 30px;
+        font-size: 0.95rem;
+        font-family: var(--fuente-cuerpo);
+        font-weight: 500;
+        color: var(--tinta-suave);
+        cursor: pointer;
+        transition:
+          transform 0.35s var(--curva),
+          box-shadow 0.35s var(--curva),
+          background-color 0.3s ease,
+          color 0.3s ease,
+          border-color 0.3s ease;
+      }
+
+      .btn-filtro:hover {
+        transform: translateY(-2px);
+        border-color: var(--terracota);
+        color: var(--terracota);
+      }
+
+      .btn-filtro.activo {
+        background: linear-gradient(
+          135deg,
+          var(--terracota-claro),
+          var(--terracota)
+        );
+        color: #ffffff;
+        border-color: transparent;
+        box-shadow: var(--sombra-terracota);
+        transform: translateY(-1px);
+      }
+
+      .btn-limpiar-filtros {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--tinta-tenue);
+        border-style: dashed;
+      }
+
+      .btn-limpiar-filtros svg {
+        width: 14px;
+        height: 14px;
+      }
+      .btn-limpiar-filtros:hover {
+        color: var(--terracota);
+        border-color: var(--terracota);
+      }
+
+      .submenu-linea-blanca {
+        display: none;
+        max-width: var(--max-width-container);
+        margin: 0 auto;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 12px 40px 18px 40px;
+        background-color: var(--crema-suave);
+        border-top: 1px dashed var(--linea);
+        border-bottom: 1px dashed var(--linea);
+      }
+
+      .submenu-linea-blanca.activo {
+        display: flex;
+        animation: fadeInUp 0.35s var(--curva);
+      }
+
+      .btn-subfiltro {
+        background-color: var(--crema-tarjeta);
+        border: 1px solid var(--linea);
+        padding: 8px 22px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-family: var(--fuente-cuerpo);
+        color: var(--terracota-claro);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 600;
+      }
+
+      .btn-subfiltro:hover,
+      .btn-subfiltro.activo {
+        background-color: var(--terracota);
+        color: #ffffff;
+        border-color: var(--terracota);
+        box-shadow: 0 6px 16px rgba(194, 41, 10, 0.22);
+      }
+
+      .contenedor-catalogo {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 30px;
+        padding: 20px 40px 50px;
+        max-width: var(--max-width-container);
+        margin: 0 auto;
+        width: 100%;
+        flex-grow: 1;
+        position: relative;
+        z-index: 1;
+      }
+
+      .mensaje-vacio {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 80px 20px;
+        color: var(--tinta-tenue);
+        font-size: 1.1rem;
+      }
+
+      .tarjeta-mueble {
+        background: var(--crema-tarjeta);
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: var(--sombra-suave);
+        transition:
+          transform 0.45s var(--curva),
+          box-shadow 0.45s var(--curva),
+          background-color 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        border: 1px solid var(--linea);
+        cursor: pointer;
+        animation: fadeInUp 0.7s var(--curva) both;
+        will-change: transform;
+      }
+
+      .tarjeta-mueble:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--sombra-media);
+      }
+
+      .contenedor-imagen-tarjeta {
+        width: 100%;
+        height: 240px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        position: relative;
+        background-color: var(--crema-suave);
+      }
+
+      .badge-fotos-contador {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: rgba(36, 27, 22, 0.65);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        color: #ffffff;
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 4px 10px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        z-index: 3;
+        pointer-events: none;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      }
+
+      .badge-fotos-contador svg {
+        width: 13px;
+        height: 13px;
+      }
+
+      .imagen-mueble {
+        width: 100%;
+        height: 240px;
+        object-fit: contain;
+        background-color: var(--crema-suave);
+        transition: transform 0.6s var(--curva);
+      }
+
+      .tarjeta-mueble:hover .imagen-mueble {
+        transform: scale(1.05);
+      }
+
+      .info-mueble {
+        padding: 22px 24px 24px;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        background: var(--crema-tarjeta);
+        position: relative;
+        z-index: 2;
+        transition: background-color 0.3s ease;
+      }
+
+      .info-mueble h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 6px;
+        color: var(--tinta);
+      }
+
+      .info-mueble p {
+        font-size: 0.92rem;
+        color: var(--tinta-suave);
+        margin-bottom: 16px;
+        flex-grow: 1;
+        white-space: pre-line;
+        line-height: 1.6;
+      }
+
+      .precio-tarjeta {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        background: var(--crema-suave);
+        border: 1px solid var(--linea);
+        border-radius: 12px;
+        padding: 12px 16px;
+        margin-bottom: 14px;
+      }
+
+      .precio-tarjeta-etiqueta {
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--tinta-tenue);
+      }
+
+      .precio-tarjeta-valor {
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: var(--terracota-profundo);
+      }
+
+      body.modo-oscuro .precio-tarjeta-valor {
+        color: var(--terracota-claro);
+      }
+
+      .precio-tarjeta.precio-tarjeta-consultar {
+        justify-content: center;
+      }
+      .precio-tarjeta.precio-tarjeta-consultar .precio-tarjeta-valor {
+        font-size: 0.95rem;
+        color: var(--tinta-tenue);
+      }
+
+      .contenedor-badges {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 10px;
+        flex-wrap: wrap;
+      }
+
+      .badge-estado {
+        display: inline-block;
+        padding: 5px 14px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        width: fit-content;
+        letter-spacing: 0.2px;
+      }
+
+      .disponible {
+        background-color: #e6f4ea;
+        color: #137333;
+      }
+      .agotado {
+        background-color: #fce8e6;
+        color: #c5221f;
+      }
+      .pedido {
+        background-color: #fef3d9;
+        color: #96660a;
+      }
+
+      body.modo-oscuro .disponible {
+        background-color: rgba(19, 115, 51, 0.25);
+        color: #81c995;
+      }
+      body.modo-oscuro .agotado {
+        background-color: rgba(197, 34, 31, 0.25);
+        color: #f28b82;
+      }
+      body.modo-oscuro .pedido {
+        background-color: rgba(150, 102, 10, 0.25);
+        color: #fdd663;
+      }
+
+      .btn-precios {
+        display: block;
+        text-align: center;
+        background: linear-gradient(
+          135deg,
+          var(--terracota-claro),
+          var(--terracota)
+        );
+        color: white;
+        text-decoration: none;
+        padding: 14px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1rem;
+        transition:
+          transform 0.3s var(--curva),
+          box-shadow 0.3s ease;
+        box-shadow: var(--sombra-terracota);
+        border: none;
+        cursor: pointer;
+        width: 100%;
+      }
+
+      .btn-precios:hover {
+        transform: translateY(-2px) scale(1.01);
+        box-shadow: 0 12px 28px rgba(194, 41, 10, 0.3);
+      }
+
+      .modal-detalle {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(10, 8, 6, 0.85);
+        z-index: 10000;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+      }
+
+      .modal-detalle.activo {
+        display: flex;
+      }
+
+      .modal-contenido {
+        background: var(--crema-tarjeta);
+        color: var(--tinta);
+        width: 100%;
+        max-width: 820px;
+        max-height: 92vh;
+        border-radius: 24px;
+        overflow-y: auto;
+        position: relative;
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+        display: flex;
+        flex-direction: column;
+        animation: modalScaleIn 0.4s var(--curva-rebote);
+        border: 1px solid var(--linea);
+      }
+
+      .modal-contenido::-webkit-scrollbar {
+        width: 6px;
+      }
+      .modal-contenido::-webkit-scrollbar-track {
+        background: var(--crema-suave);
+        border-radius: 0 0 12px 0;
+      }
+      .modal-contenido::-webkit-scrollbar-thumb {
+        background: var(--terracota);
+        border-radius: 10px;
+      }
+
+      .btn-cerrar {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        background: rgba(0, 0, 0, 0.55);
+        color: white;
+        border: none;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        font-size: 1.5rem;
+        cursor: pointer;
+        z-index: 20;
+        transition:
+          background 0.3s,
+          transform 0.3s var(--curva);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      }
+
+      .btn-cerrar:hover {
+        background: var(--terracota);
+        transform: rotate(90deg);
+      }
+
+      .carrusel-contenedor {
+        position: relative;
+        width: 100%;
+        height: 420px;
+        background: var(--crema-suave);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        flex-shrink: 0;
+      }
+
+      .carrusel-img {
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        cursor: zoom-in;
+        transition:
+          opacity 0.35s ease,
+          transform 0.35s var(--curva);
+      }
+
+      .carrusel-img:hover {
+        transform: scale(1.02);
+      }
+
+      .btn-carrusel {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(24, 17, 13, 0.6);
+        color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        width: 48px;
+        height: 48px;
+        cursor: pointer;
+        border-radius: 50%;
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+        transition: all 0.3s var(--curva);
+        backdrop-filter: blur(4px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      }
+
+      .btn-carrusel:hover {
+        background: var(--terracota);
+        border-color: var(--terracota);
+        transform: translateY(-50%) scale(1.1);
+      }
+
+      .btn-carrusel.prev {
+        left: 18px;
+      }
+      .btn-carrusel.next {
+        right: 18px;
+      }
+
+      .modal-imagen-grande {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(10, 8, 6, 0.92);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        z-index: 11000;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        padding: 30px;
+      }
+
+      .modal-imagen-grande.activo {
+        display: flex;
+        animation: modalScaleIn 0.35s var(--curva);
+      }
+
+      .modal-imagen-grande img {
+        max-width: min(92vw, 1200px);
+        max-height: min(90vh, 1200px);
+        object-fit: contain;
+        border-radius: 12px;
+        background: var(--crema-tarjeta);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      }
+
+      .btn-carrusel-grande {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255, 255, 255, 0.18);
+        color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        width: 54px;
+        height: 54px;
+        cursor: pointer;
+        border-radius: 50%;
+        font-size: 1.4rem;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 12000;
+        transition: all 0.3s var(--curva);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+      }
+
+      .btn-carrusel-grande:hover {
+        background: var(--terracota);
+        border-color: var(--terracota);
+        transform: translateY(-50%) scale(1.08);
+      }
+
+      .btn-carrusel-grande.prev {
+        left: 24px;
+      }
+      .btn-carrusel-grande.next {
+        right: 24px;
+      }
+
+      .contador-imagen-grande {
+        position: absolute;
+        bottom: 28px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(255, 255, 255, 0.16);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        color: #ffffff;
+        font-family: var(--fuente-cuerpo);
+        font-size: 0.85rem;
+        font-weight: 600;
+        padding: 6px 16px;
+        border-radius: 20px;
+        display: none;
+        z-index: 12000;
+        pointer-events: none;
+      }
+
+      .btn-cerrar-imagen {
+        position: absolute;
+        top: 24px;
+        right: 24px;
+        background: rgba(255, 255, 255, 0.22);
+        color: white;
+        border: none;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        font-size: 2rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition:
+          background 0.3s,
+          transform 0.3s var(--curva);
+        z-index: 12000;
+      }
+
+      .btn-cerrar-imagen:hover {
+        background: var(--terracota);
+        transform: rotate(90deg);
+      }
+
+      .cuerpo-modal {
+        padding: 30px 32px 32px;
+        background: var(--crema-tarjeta);
+      }
+
+      .cuerpo-modal h2 {
+        font-size: 1.6rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: var(--tinta);
+        line-height: 1.3;
+      }
+
+      .cuerpo-modal .descripcion {
+        color: var(--tinta-suave);
+        font-size: 1rem;
+        margin-bottom: 22px;
+        line-height: 1.6;
+        white-space: pre-line;
+      }
+
+      .seccion-precios-modal {
+        background: var(--crema);
+        border-radius: 14px;
+        padding: 18px;
+        margin-top: 15px;
+        border: 1px solid var(--linea);
+      }
+
+      .seccion-precios-modal h4 {
+        font-size: 1rem;
+        font-weight: 700;
+        margin-bottom: 14px;
+        color: var(--terracota);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .grid-precios {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+
+      @media (min-width: 480px) {
+        .grid-precios {
+          grid-template-columns: repeat(5, 1fr);
+        }
+      }
+
+      .plan-card {
+        position: relative;
+        background: var(--crema-tarjeta);
+        padding: 16px 10px 14px;
+        border-radius: 12px;
+        border: 1px solid var(--linea);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 4px;
+        transition:
+          transform 0.25s var(--curva),
+          box-shadow 0.25s var(--curva),
+          border-color 0.25s var(--curva);
+      }
+
+      .plan-card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--sombra-suave);
+        border-color: var(--oro-suave);
+      }
+
+      .plan-card .plan-header {
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        color: var(--tinta-tenue);
+      }
+
+      .plan-card .plan-precio-principal {
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: var(--tinta);
+        line-height: 1.2;
+      }
+
+      .plan-card .plan-detalle {
+        font-size: 0.72rem;
+        color: var(--tinta-tenue);
+      }
+
+      .plan-card .plan-enganche {
+        margin-top: 6px;
+        padding-top: 6px;
+        border-top: 1px dashed var(--linea);
+        width: 100%;
+        font-size: 0.68rem;
+        color: var(--tinta-suave);
+      }
+
+      .plan-card .plan-enganche span {
+        display: block;
+        font-weight: 700;
+        color: var(--tinta);
+        font-size: 0.8rem;
+        margin-top: 1px;
+      }
+
+      .plan-card.plan-contado {
+        background: linear-gradient(
+          160deg,
+          var(--crema-tarjeta),
+          var(--crema-suave)
+        );
+        border: 1.5px solid var(--terracota);
+      }
+
+      .plan-card.plan-contado .plan-header,
+      .plan-card.plan-contado .plan-precio-principal {
+        color: var(--terracota-profundo);
+      }
+
+      .plan-card .plan-etiqueta {
+        position: absolute;
+        top: -9px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--terracota);
+        color: #fff;
+        font-size: 0.6rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        padding: 2px 8px;
+        border-radius: 20px;
+        box-shadow: var(--sombra-terracota);
+        white-space: nowrap;
+      }
+
+      .modal-acciones {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-top: 20px;
+      }
+
+      .btn-agregar-carrito {
+        background: linear-gradient(135deg, var(--oro-suave), var(--oro));
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 14px;
+        font-size: 1rem;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        box-shadow: 0 6px 20px rgba(184, 135, 74, 0.35);
+        transition:
+          transform 0.25s var(--curva),
+          box-shadow 0.25s ease;
+      }
+
+      .btn-agregar-carrito:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(184, 135, 74, 0.45);
+      }
+
+      .btn-agregar-carrito svg {
+        width: 20px;
+        height: 20px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+      }
+
+      .btn-whatsapp-modal {
+        background: linear-gradient(135deg, #2ecc71, #27ae60);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 14px;
+        font-size: 1rem;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        box-shadow: 0 6px 20px rgba(39, 174, 96, 0.35);
+        transition:
+          transform 0.25s var(--curva),
+          box-shadow 0.25s ease;
+      }
+
+      .btn-whatsapp-modal:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(39, 174, 96, 0.45);
+      }
+
+      .btn-whatsapp-modal svg {
+        width: 20px;
+        height: 20px;
+        fill: currentColor;
+      }
+
+      @media (max-width: 480px) {
+        .modal-acciones {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .btn-carrito-flotante {
+        position: fixed;
+        bottom: 30px;
+        left: 30px;
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        border: none;
+        background: linear-gradient(135deg, var(--oro-suave), var(--oro));
+        color: #ffffff;
+        box-shadow: var(--sombra-media);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 998;
+        transition:
+          box-shadow 0.3s ease,
+          transform 0.3s var(--curva);
+      }
+
+      .btn-carrito-flotante:hover {
+        box-shadow: 0 16px 34px rgba(184, 135, 74, 0.4);
+        transform: translateY(-3px) scale(1.05);
+      }
+
+      .btn-carrito-flotante svg {
+        width: 24px;
+        height: 24px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+      }
+
+      .carrito-contador {
+        position: absolute;
+        top: -4px;
+        right: -4px;
+        min-width: 22px;
+        height: 22px;
+        padding: 0 6px;
+        border-radius: 999px;
+        background: var(--terracota);
+        color: #fff;
+        font-family: var(--fuente-logo-sub);
+        font-size: 0.75rem;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transform: scale(0.7);
+        transition:
+          opacity 0.25s var(--curva),
+          transform 0.25s var(--curva);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+      }
+
+      .carrito-contador.visible {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      .modal-carrito {
+        max-width: 580px;
+        padding: 30px 28px 28px;
+      }
+
+      .modal-carrito .descripcion {
+        margin-bottom: 18px;
+        font-size: 0.95rem;
+      }
+
+      .lista-carrito {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-height: 40vh;
+        overflow-y: auto;
+        margin-bottom: 20px;
+      }
+
+      .carrito-vacio {
+        font-size: 0.9rem;
+        color: var(--tinta-tenue);
+        text-align: center;
+        padding: 30px 10px;
+      }
+
+      .carrito-fila {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        background: var(--crema-suave);
+        border: 1px solid var(--linea);
+        border-radius: 12px;
+        padding: 10px 14px;
+      }
+
+      .carrito-fila-info {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+        flex: 1;
+      }
+
+      .carrito-fila-titulo {
+        font-weight: 600;
+        font-size: 0.92rem;
+        color: var(--tinta);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .carrito-fila-precio {
+        font-size: 0.8rem;
+        color: var(--terracota);
+        font-weight: 600;
+      }
+
+      .btn-quitar-carrito {
+        flex-shrink: 0;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        border: none;
+        background: rgba(194, 41, 10, 0.1);
+        color: var(--terracota);
+        font-size: 1.2rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition:
+          background 0.25s ease,
+          transform 0.25s ease;
+      }
+
+      .btn-quitar-carrito:hover {
+        background: var(--terracota);
+        color: #fff;
+        transform: rotate(90deg);
+      }
+
+      .carrito-acciones {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .btn-vaciar-carrito {
+        flex-shrink: 0;
+        padding: 0 18px;
+        border-radius: 14px;
+        border: 1px solid var(--linea);
+        background: transparent;
+        color: var(--tinta-suave);
+        font-family: var(--fuente-cuerpo);
+        font-weight: 600;
+        font-size: 0.88rem;
+        cursor: pointer;
+        transition:
+          background 0.25s ease,
+          color 0.25s ease;
+        min-height: 44px;
+      }
+
+      .btn-vaciar-carrito:hover {
+        background: var(--crema-suave);
+        color: var(--terracota);
+      }
+
+      .carrito-acciones .btn-enviar-wsp {
+        flex: 1;
+        min-height: 44px;
+      }
+
+      .carrito-acciones .btn-imprimir {
+        flex: 1;
+        min-height: 44px;
+        background: linear-gradient(135deg, #6c5ce7, #4834d4);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 12px 16px;
+        font-size: 0.95rem;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        box-shadow: 0 6px 20px rgba(108, 92, 231, 0.35);
+        transition:
+          transform 0.25s var(--curva),
+          box-shadow 0.25s ease;
+      }
+
+      .carrito-acciones .btn-imprimir:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(108, 92, 231, 0.45);
+      }
+
+      .carrito-acciones .btn-imprimir svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      .btn-enviar-wsp {
+        background: linear-gradient(135deg, #2ecc71, #27ae60);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 12px 16px;
+        font-size: 0.95rem;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        box-shadow: 0 6px 20px rgba(39, 174, 96, 0.35);
+        transition:
+          transform 0.25s var(--curva),
+          box-shadow 0.25s ease;
+      }
+
+      .btn-enviar-wsp:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(39, 174, 96, 0.45);
+      }
+
+      .btn-enviar-wsp svg {
+        width: 20px;
+        height: 20px;
+        fill: currentColor;
       }
 
       #area-impresion-cotizacion {
-        display: block !important;
-        position: static !important;
-        background: #ffffff !important;
+        display: none;
       }
 
       .hoja-cotizacion {
         width: 8.5in;
         min-height: 5.5in;
         padding: 0.45in 0.55in;
-        margin: 0 auto;
-        background: #ffffff !important;
+        box-sizing: border-box;
+        font-family: var(--fuente-cuerpo);
+        color: #241b16;
+        background: #ffffff;
       }
-    }
 
-    .btn-volver-arriba {
-      position: fixed;
-      bottom: 25px;
-      right: 25px;
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      border: none;
-      background: linear-gradient(135deg, var(--terracota-claro), var(--terracota));
-      color: #ffffff;
-      box-shadow: var(--sombra-terracota);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      z-index: 997;
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(16px) scale(0.85);
-      transition: opacity 0.35s var(--curva), transform 0.35s var(--curva),
-                  visibility 0.35s var(--curva), box-shadow 0.3s ease;
-    }
-
-    .btn-volver-arriba svg { width: 20px; height: 20px; }
-    .btn-volver-arriba.visible {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0) scale(1);
-    }
-
-    .btn-volver-arriba:hover {
-      box-shadow: 0 16px 34px rgba(194, 41, 10, 0.36);
-      transform: translateY(-3px) scale(1.05);
-    }
-
-    footer {
-      text-align: center;
-      padding: 28px;
-      background-color: var(--crema-suave);
-      color: var(--tinta-suave);
-      margin-top: auto;
-      font-size: 0.82rem;
-      width: 100%;
-      border-top: 1px solid var(--linea);
-      transition: background-color 0.3s ease, color 0.3s ease;
-    }
-
-    footer .footer-link {
-      margin-top: 6px;
-      font-size: 0.75rem;
-    }
-
-    footer .footer-link a {
-      color: var(--terracota);
-      text-decoration: none;
-      font-weight: 600;
-      transition: color 0.3s ease;
-    }
-
-    footer .footer-link a:hover {
-      color: var(--terracota-claro);
-      text-decoration: underline;
-    }
-
-    @media (max-width: 1024px) {
-      .contenedor-catalogo {
-        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-        gap: 24px;
-        padding: 20px 30px 40px;
+      .cot-encabezado {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 12px;
       }
-      .carrusel-contenedor { height: 360px; }
-    }
-
-    @media (max-width: 768px) {
-      header { padding: 12px 16px 4px; }
-      .buscador-contenedor { padding: 4px 16px 10px; }
-      .filtros { padding: 4px 16px 12px; gap: 8px; }
-      .btn-filtro { padding: 10px 18px; font-size: 0.85rem; }
-      .contenedor-catalogo {
-        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-        gap: 16px;
-        padding: 16px 16px 30px;
+      .cot-contacto {
+        margin-top: 16px;
+        padding-top: 14px;
+        border-top: 1px solid #e3d9cd;
+        font-size: 0.7rem;
+        color: #6b5c51;
+        line-height: 1.6;
       }
-      .contenedor-imagen-tarjeta,
-      .imagen-mueble { height: 160px; }
-      .cuerpo-modal { padding: 18px 16px 20px; }
-      .grid-precios { grid-template-columns: repeat(2, 1fr); }
-      .carrusel-contenedor { height: 260px; }
-      .modal-contenido { max-width: 100%; margin: 10px; border-radius: 16px; }
-      .switch-modo-contenedor { left: 12px; top: 10px; }
-      .switch-modo { width: 40px; height: 22px; }
-      .switch-slider:before { height: 16px; width: 16px; }
-      input:checked + .switch-slider:before { transform: translateX(18px); }
-      .btn-carrito-flotante {
+
+      .cot-contacto strong {
+        color: #241b16;
+        font-weight: 700;
+      }
+
+      .cot-contacto p {
+        margin: 2px 0;
+      }
+
+      .cot-logo {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .cot-brand-script {
+        font-family: var(--fuente-logo-script);
+        font-size: 2.7rem;
+        line-height: 0.8;
+        color: #c2290a;
+        text-align: left;
+      }
+
+      .cot-brand-sub {
+        font-family: var(--fuente-logo-sub);
+        font-size: 0.72rem;
+        letter-spacing: 5px;
+        text-transform: uppercase;
+        font-weight: 800;
+        color: #b8874a;
+        margin-top: 3px;
+        padding-left: 76px;
+        text-align: left;
+      }
+      .cot-datos-doc {
+        text-align: right;
+        display: flex;
+        flex-direction: column;
+      }
+      .cot-titulo-doc {
+        font-family: var(--fuente-logo-sub);
+        font-weight: 800;
+        font-size: 1.05rem;
+        letter-spacing: 2px;
+        color: #241b16;
+      }
+
+      .cot-fecha {
+        font-size: 0.78rem;
+        color: #6b5c51;
+        margin-top: 3px;
+      }
+
+      .cot-linea-oro {
+        height: 2px;
+        background: linear-gradient(90deg, #c2290a, #b8874a);
+        margin: 0 0 16px 0;
+      }
+
+      /* Estilos para cada producto en la cotización */
+      .cot-producto {
+        margin-bottom: 28px;
+        page-break-inside: avoid;
+      }
+
+      .cot-producto:last-child {
+        margin-bottom: 0;
+      }
+
+      .cot-producto-titulo {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #241b16;
+        margin-bottom: 6px;
+        padding-bottom: 4px;
+        border-bottom: 1px solid #e3d9cd;
+      }
+
+      .cot-tabla-precios {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+        font-size: 0.9rem;
+      }
+
+      .cot-tabla-precios th {
+        background: #faf6f1;
+        border: 1px solid #e3d9cd;
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 8px 4px;
+        color: #6b5c51;
+        text-align: center;
+        font-weight: 700;
+      }
+
+      .cot-tabla-precios td {
+        border: 1px solid #e3d9cd;
+        text-align: center;
+        padding: 10px 6px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: #c2290a;
+        vertical-align: middle;
+        word-break: break-word;
+      }
+
+      .cot-col-contado {
+        width: 20%;
+      }
+      .cot-col-2m {
+        width: 20%;
+      }
+      .cot-col-3m {
+        width: 20%;
+      }
+      .cot-col-6m {
+        width: 20%;
+      }
+      .cot-col-12m {
+        width: 20%;
+      }
+
+      .cot-enganche-texto {
+        display: block;
+        font-weight: 400;
+        font-size: 0.65rem;
+        color: #6b5c51;
+        margin-top: 2px;
+        line-height: 1.3;
+      }
+
+      .cot-no-disponible {
+        color: #96887d;
+        font-weight: 400;
+        font-size: 0.8rem;
+      }
+
+      .cot-pie {
+        margin-top: 24px;
+        text-align: center;
+        border-top: 1px solid #e3d9cd;
+        padding-top: 16px;
+      }
+      .cot-pie p {
+        font-size: 0.7rem;
+        color: #96887d;
+      }
+      .cot-gracias {
+        font-family: var(--fuente-logo-sub);
+        font-weight: 700;
+        color: #8a1c06;
+        margin-top: 4px;
+      }
+      .cot-sitio-web {
+        margin-top: 6px;
+        font-size: 0.75rem;
+        color: #b8874a;
+        font-weight: 600;
+      }
+
+      @media print {
+        @page {
+          size: letter;
+          margin: 0;
+        }
+
+        html,
+        body {
+          height: auto !important;
+          overflow: visible !important;
+          background: #ffffff !important;
+        }
+
+        body > *:not(#area-impresion-cotizacion) {
+          display: none !important;
+        }
+
+        #area-impresion-cotizacion {
+          display: block !important;
+          position: static !important;
+          background: #ffffff !important;
+        }
+
+        .hoja-cotizacion {
+          width: 8.5in;
+          min-height: 5.5in;
+          padding: 0.45in 0.55in;
+          margin: 0 auto;
+          background: #ffffff !important;
+        }
+      }
+
+      .btn-volver-arriba {
+        position: fixed;
+        bottom: 25px;
+        right: 25px;
         width: 48px;
         height: 48px;
-        bottom: 20px;
-        left: 20px;
+        border-radius: 50%;
+        border: none;
+        background: linear-gradient(
+          135deg,
+          var(--terracota-claro),
+          var(--terracota)
+        );
+        color: #ffffff;
+        box-shadow: var(--sombra-terracota);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 997;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(16px) scale(0.85);
+        transition:
+          opacity 0.35s var(--curva),
+          transform 0.35s var(--curva),
+          visibility 0.35s var(--curva),
+          box-shadow 0.3s ease;
       }
-      .btn-carrito-flotante svg { width: 20px; height: 20px; }
-      .carrito-contador { min-width: 18px; height: 18px; font-size: 0.65rem; }
-    }
 
-    @media (max-width: 480px) {
-      .contenedor-catalogo {
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-        padding: 12px 10px 24px;
+      .btn-volver-arriba svg {
+        width: 20px;
+        height: 20px;
       }
-      .contenedor-imagen-tarjeta,
-      .imagen-mueble { height: 130px; }
-      .info-mueble { padding: 12px 14px 14px; }
-      .info-mueble h3 { font-size: 0.95rem; }
-      .info-mueble p { font-size: 0.75rem; }
-      .precio-tarjeta-valor { font-size: 1rem; }
-      .btn-precios { font-size: 0.8rem; padding: 10px; }
-      .cuerpo-modal h2 { font-size: 1.2rem; }
-      .grid-precios { grid-template-columns: 1fr 1fr; gap: 6px; }
-      .plan-card { padding: 10px 6px 10px; }
-      .plan-card .plan-precio-principal { font-size: 1rem; }
-      .carrusel-contenedor { height: 200px; }
-      .btn-carrusel { width: 32px; height: 32px; font-size: 0.85rem; }
-      .btn-carrusel.prev { left: 6px; }
-      .btn-carrusel.next { right: 6px; }
-      .btn-cerrar { width: 34px; height: 34px; font-size: 1.2rem; top: 10px; right: 10px; }
-      .logo-header .brand-script { font-size: 2.2rem; }
-      .logo-header .brand-sub { font-size: 0.6rem; letter-spacing: 3px; }
-      .modal-carrito { padding: 20px 16px 18px; }
-      .carrito-acciones { flex-direction: column; }
-      .carrito-acciones .btn-enviar-wsp,
-      .carrito-acciones .btn-imprimir { width: 100%; }
-    }
-  </style>
-</head>
-<body>
+      .btn-volver-arriba.visible {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0) scale(1);
+      }
 
-  <button class="btn-volver-arriba" id="btnVolverArriba" aria-label="Volver arriba" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
-  </button>
+      .btn-volver-arriba:hover {
+        box-shadow: 0 16px 34px rgba(194, 41, 10, 0.36);
+        transform: translateY(-3px) scale(1.05);
+      }
 
-  <div class="header-contenedor" id="headerContenedor">
-    <div class="switch-modo-contenedor">
-      <svg class="switch-icono" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-      <label class="switch-modo" aria-label="Alternar Modo Oscuro">
-        <input type="checkbox" id="switchModoOscuro" onchange="alternarModoOscuro()">
-        <span class="switch-slider"></span>
-      </label>
-    </div>
+      footer {
+        text-align: center;
+        padding: 28px;
+        background-color: var(--crema-suave);
+        color: var(--tinta-suave);
+        margin-top: auto;
+        font-size: 0.82rem;
+        width: 100%;
+        border-top: 1px solid var(--linea);
+        transition:
+          background-color 0.3s ease,
+          color 0.3s ease;
+      }
 
-    <header>
-      <div class="logo-header">
-        <span class="brand-script">Daguerr</span>
-        <span class="brand-sub">MUEBLERIA</span>
+      footer .footer-link {
+        margin-top: 6px;
+        font-size: 0.75rem;
+      }
+
+      footer .footer-link a {
+        color: var(--terracota);
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.3s ease;
+      }
+
+      footer .footer-link a:hover {
+        color: var(--terracota-claro);
+        text-decoration: underline;
+      }
+
+      @media (max-width: 1024px) {
+        .contenedor-catalogo {
+          grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+          gap: 24px;
+          padding: 20px 30px 40px;
+        }
+        .carrusel-contenedor {
+          height: 360px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        header {
+          padding: 12px 16px 4px;
+        }
+        .buscador-contenedor {
+          padding: 4px 16px 10px;
+        }
+        .filtros {
+          padding: 4px 16px 12px;
+          gap: 8px;
+        }
+        .btn-filtro {
+          padding: 10px 18px;
+          font-size: 0.85rem;
+        }
+        .contenedor-catalogo {
+          grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+          gap: 16px;
+          padding: 16px 16px 30px;
+        }
+        .contenedor-imagen-tarjeta,
+        .imagen-mueble {
+          height: 160px;
+        }
+        .cuerpo-modal {
+          padding: 18px 16px 20px;
+        }
+        .grid-precios {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .carrusel-contenedor {
+          height: 260px;
+        }
+        .modal-contenido {
+          max-width: 100%;
+          margin: 10px;
+          border-radius: 16px;
+        }
+        .switch-modo-contenedor {
+          left: 12px;
+          top: 10px;
+        }
+        .switch-modo {
+          width: 40px;
+          height: 22px;
+        }
+        .switch-slider:before {
+          height: 16px;
+          width: 16px;
+        }
+        input:checked + .switch-slider:before {
+          transform: translateX(18px);
+        }
+        .btn-carrito-flotante {
+          width: 48px;
+          height: 48px;
+          bottom: 20px;
+          left: 20px;
+        }
+        .btn-carrito-flotante svg {
+          width: 20px;
+          height: 20px;
+        }
+        .carrito-contador {
+          min-width: 18px;
+          height: 18px;
+          font-size: 0.65rem;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .contenedor-catalogo {
+          grid-template-columns: 1fr 1fr;
+          gap: 12px;
+          padding: 12px 10px 24px;
+        }
+        .contenedor-imagen-tarjeta,
+        .imagen-mueble {
+          height: 130px;
+        }
+        .info-mueble {
+          padding: 12px 14px 14px;
+        }
+        .info-mueble h3 {
+          font-size: 0.95rem;
+        }
+        .info-mueble p {
+          font-size: 0.75rem;
+        }
+        .precio-tarjeta-valor {
+          font-size: 1rem;
+        }
+        .btn-precios {
+          font-size: 0.8rem;
+          padding: 10px;
+        }
+        .cuerpo-modal h2 {
+          font-size: 1.2rem;
+        }
+        .grid-precios {
+          grid-template-columns: 1fr 1fr;
+          gap: 6px;
+        }
+        .plan-card {
+          padding: 10px 6px 10px;
+        }
+        .plan-card .plan-precio-principal {
+          font-size: 1rem;
+        }
+        .carrusel-contenedor {
+          height: 200px;
+        }
+        .btn-carrusel {
+          width: 32px;
+          height: 32px;
+          font-size: 0.85rem;
+        }
+        .btn-carrusel.prev {
+          left: 6px;
+        }
+        .btn-carrusel.next {
+          right: 6px;
+        }
+        .btn-cerrar {
+          width: 34px;
+          height: 34px;
+          font-size: 1.2rem;
+          top: 10px;
+          right: 10px;
+        }
+        .logo-header .brand-script {
+          font-size: 2.2rem;
+        }
+        .logo-header .brand-sub {
+          font-size: 0.6rem;
+          letter-spacing: 3px;
+        }
+        .modal-carrito {
+          padding: 20px 16px 18px;
+        }
+        .carrito-acciones {
+          flex-direction: column;
+        }
+        .carrito-acciones .btn-enviar-wsp,
+        .carrito-acciones .btn-imprimir {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <button
+      class="btn-volver-arriba"
+      id="btnVolverArriba"
+      aria-label="Volver arriba"
+      onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
+    >
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <line x1="12" y1="19" x2="12" y2="5"></line>
+        <polyline points="5 12 12 5 19 12"></polyline>
+      </svg>
+    </button>
+
+    <div class="header-contenedor" id="headerContenedor">
+      <div class="switch-modo-contenedor">
+        <svg
+          class="switch-icono"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+        <label class="switch-modo" aria-label="Alternar Modo Oscuro">
+          <input
+            type="checkbox"
+            id="switchModoOscuro"
+            onchange="alternarModoOscuro()"
+          />
+          <span class="switch-slider"></span>
+        </label>
       </div>
-    </header>
 
-    <div class="buscador-contenedor">
-      <div class="buscador-caja" id="buscadorCaja">
-        <svg class="buscador-icono" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-        <input type="text" id="campoBusqueda" placeholder="Buscar articulo por nombre..." oninput="buscarProductos(this.value)" autocomplete="off" aria-label="Buscar articulo por nombre">
-        <button type="button" class="buscador-limpiar" aria-label="Limpiar busqueda" onclick="limpiarBusqueda()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      <header>
+        <div class="logo-header">
+          <span class="brand-script">Daguerr</span>
+          <span class="brand-sub">MUEBLERIA</span>
+        </div>
+      </header>
+
+      <div class="buscador-contenedor">
+        <div class="buscador-caja" id="buscadorCaja">
+          <svg
+            class="buscador-icono"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input
+            type="text"
+            id="campoBusqueda"
+            placeholder="Buscar articulo por nombre..."
+            oninput="buscarProductos(this.value)"
+            autocomplete="off"
+            aria-label="Buscar articulo por nombre"
+          />
+          <button
+            type="button"
+            class="buscador-limpiar"
+            aria-label="Limpiar busqueda"
+            onclick="limpiarBusqueda()"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="filtros" id="contenedor-filtros">
+        <button
+          class="btn-filtro activo"
+          onclick="filtrarCategoria('Todos', this)"
+        >
+          Todos
+        </button>
+        <button class="btn-filtro" onclick="filtrarCategoria('Cocinas', this)">
+          Cocinas
+        </button>
+        <button
+          class="btn-filtro"
+          onclick="filtrarCategoria('Linea Blanca', this)"
+        >
+          Linea Blanca
+        </button>
+        <button
+          class="btn-filtro"
+          onclick="filtrarCategoria('Electronica', this)"
+        >
+          Electronica
+        </button>
+        <button
+          class="btn-filtro"
+          onclick="filtrarCategoria('Comedores', this)"
+        >
+          Comedores
+        </button>
+        <button
+          class="btn-filtro"
+          onclick="filtrarCategoria('Tubulares', this)"
+        >
+          Tubulares
+        </button>
+        <button class="btn-filtro" onclick="filtrarCategoria('Salas', this)">
+          Salas
+        </button>
+        <button
+          class="btn-filtro"
+          onclick="filtrarCategoria('Recamaras', this)"
+        >
+          Recamaras
+        </button>
+        <button class="btn-filtro" onclick="filtrarCategoria('Closet', this)">
+          Closet
+        </button>
+        <button
+          class="btn-filtro"
+          onclick="filtrarCategoria('Colchoneria', this)"
+        >
+          Colchoneria
+        </button>
+        <button
+          class="btn-filtro"
+          onclick="filtrarCategoria('Deportivos', this)"
+        >
+          Deportivos
+        </button>
+        <button class="btn-filtro" onclick="filtrarCategoria('Descanso', this)">
+          Descanso
+        </button>
+        <button class="btn-filtro" onclick="filtrarCategoria('Hogar', this)">
+          Hogar
+        </button>
+        <button
+          class="btn-filtro"
+          onclick="filtrarCategoria('Ropa y Calzado', this)"
+        >
+          Ropa y Calzado
+        </button>
+        <button
+          class="btn-filtro btn-limpiar-filtros"
+          onclick="limpiarFiltros()"
+          title="Quitar filtros y busqueda"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m3 0-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"
+            ></path>
+          </svg>
+          Limpiar
+        </button>
+      </div>
+
+      <div class="submenu-linea-blanca" id="submenuLineaBlanca">
+        <button
+          class="btn-subfiltro"
+          onclick="filtrarSubcategoria('Refrigeradores', this)"
+        >
+          Refrigeradores
+        </button>
+        <button
+          class="btn-subfiltro"
+          onclick="filtrarSubcategoria('Estufas', this)"
+        >
+          Estufas
+        </button>
+        <button
+          class="btn-subfiltro"
+          onclick="filtrarSubcategoria('Lavadoras', this)"
+        >
+          Lavadoras
+        </button>
+        <button
+          class="btn-subfiltro"
+          onclick="filtrarSubcategoria('Boilers', this)"
+        >
+          Boilers
+        </button>
+        <button
+          class="btn-subfiltro"
+          onclick="filtrarSubcategoria('Abanicos/AC', this)"
+        >
+          Abanicos/AC
         </button>
       </div>
     </div>
 
-    <div class="filtros" id="contenedor-filtros">
-      <button class="btn-filtro activo" onclick="filtrarCategoria('Todos', this)">Todos</button>
-      <button class="btn-filtro" onclick="filtrarCategoria('Cocinas', this)">Cocinas</button>
-      <button class="btn-filtro" onclick="filtrarCategoria('Linea Blanca', this)">Linea Blanca</button>
-      <button class="btn-filtro" onclick="filtrarCategoria('Electronica', this)">Electronica</button>
-      <button class="btn-filtro" onclick="filtrarCategoria('Comedores', this)">Comedores</button>
-      <button class="btn-filtro" onclick="filtrarCategoria('Tubulares', this)">Tubulares</button>
-      <button class="btn-filtro" onclick="filtrarCategoria('Salas', this)">Salas</button>
-      <button class="btn-filtro" onclick="filtrarCategoria('Recamaras', this)">Recamaras</button>
-      <button class="btn-filtro" onclick="filtrarCategoria('Closet', this)">Closet</button>
-      <button class="btn-filtro" onclick="filtrarCategoria('Colchoneria', this)">Colchoneria</button>
-      <button class="btn-filtro" onclick="filtrarCategoria('Deportivos', this)">Deportivos</button>
-      <button class="btn-filtro" onclick="filtrarCategoria('Descanso', this)">Descanso</button>
-      <button class="btn-filtro" onclick="filtrarCategoria('Hogar', this)">Hogar</button>
-      <button class="btn-filtro" onclick="filtrarCategoria('Ropa y Calzado', this)">Ropa y Calzado</button>
-      <button class="btn-filtro btn-limpiar-filtros" onclick="limpiarFiltros()" title="Quitar filtros y busqueda">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m3 0-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path></svg>
-        Limpiar
-      </button>
-    </div>
+    <section class="seccion-catalogo" id="catalogo">
+      <main class="contenedor-catalogo" id="contenedor-productos"></main>
+    </section>
 
-    <div class="submenu-linea-blanca" id="submenuLineaBlanca">
-      <button class="btn-subfiltro" onclick="filtrarSubcategoria('Refrigeradores', this)">Refrigeradores</button>
-      <button class="btn-subfiltro" onclick="filtrarSubcategoria('Estufas', this)">Estufas</button>
-      <button class="btn-subfiltro" onclick="filtrarSubcategoria('Lavadoras', this)">Lavadoras</button>
-      <button class="btn-subfiltro" onclick="filtrarSubcategoria('Boilers', this)">Boilers</button>
-      <button class="btn-subfiltro" onclick="filtrarSubcategoria('Abanicos/AC', this)">Abanicos/AC</button>
-    </div>
-  </div>
-
-  <section class="seccion-catalogo" id="catalogo">
-    <main class="contenedor-catalogo" id="contenedor-productos"></main>
-  </section>
-
-  <div class="modal-detalle" id="modal-producto">
-    <div class="modal-contenido">
-      <button class="btn-cerrar" onclick="cerrarModal()">&times;</button>
-      <div class="carrusel-contenedor">
-        <button class="btn-carrusel prev" onclick="cambiarImagen(-1)">&#10094;</button>
-        <img id="modal-img" class="carrusel-img" src="" alt="Producto" onclick="abrirImagenGrande()">
-        <button class="btn-carrusel next" onclick="cambiarImagen(1)">&#10095;</button>
-      </div>
-      <div class="cuerpo-modal">
-        <div class="contenedor-badges" id="modal-estado-contenedor"></div>
-        <h2 id="modal-titulo"></h2>
-        <p class="descripcion" id="modal-descripcion"></p>
-        <div class="seccion-precios-modal">
-          <h4>
-            <svg style="width:18px;height:18px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-            Precios y Planes de Financiamiento
-          </h4>
-          <div class="grid-precios">
-            <div class="plan-card plan-contado">
-              <span class="plan-etiqueta">Mejor Precio</span>
-              <div class="plan-header">Contado</div>
-              <div class="plan-precio-principal" id="val-precio-contado">Consultar</div>
-              <div class="plan-detalle">Pago único</div>
-            </div>
-            <div class="plan-card">
-              <div class="plan-header">2 Meses</div>
-              <div class="plan-precio-principal" id="val-pago-mes-2">Consultar</div>
-              <div class="plan-detalle">pago mensual</div>
-              <div class="plan-enganche">Enganche<span id="val-enganche-2">Consultar</span></div>
-            </div>
-            <div class="plan-card">
-              <div class="plan-header">3 Meses</div>
-              <div class="plan-precio-principal" id="val-pago-mes-3">Consultar</div>
-              <div class="plan-detalle">pago mensual</div>
-              <div class="plan-enganche">Enganche<span id="val-enganche-3">Consultar</span></div>
-            </div>
-            <div class="plan-card">
-              <div class="plan-header">6 Meses</div>
-              <div class="plan-precio-principal" id="val-pago-mes-6">Consultar</div>
-              <div class="plan-detalle">pago mensual</div>
-              <div class="plan-enganche">Enganche<span id="val-enganche-6">Consultar</span></div>
-            </div>
-            <div class="plan-card">
-              <div class="plan-header">12 Meses (Tarjetas de Crédito)</div>
-              <div class="plan-precio-principal" id="val-pago-tarjeta-12">Consultar</div>
-              <div class="plan-detalle">pago mensual</div>
+    <div class="modal-detalle" id="modal-producto">
+      <div class="modal-contenido">
+        <button class="btn-cerrar" onclick="cerrarModal()">&times;</button>
+        <div class="carrusel-contenedor">
+          <button class="btn-carrusel prev" onclick="cambiarImagen(-1)">
+            &#10094;
+          </button>
+          <img
+            id="modal-img"
+            class="carrusel-img"
+            src=""
+            alt="Producto"
+            onclick="abrirImagenGrande()"
+          />
+          <button class="btn-carrusel next" onclick="cambiarImagen(1)">
+            &#10095;
+          </button>
+        </div>
+        <div class="cuerpo-modal">
+          <div class="contenedor-badges" id="modal-estado-contenedor"></div>
+          <h2 id="modal-titulo"></h2>
+          <p class="descripcion" id="modal-descripcion"></p>
+          <div class="seccion-precios-modal">
+            <h4>
+              <svg
+                style="width: 18px; height: 18px"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="12" y1="1" x2="12" y2="23"></line>
+                <path
+                  d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"
+                ></path>
+              </svg>
+              Precios y Planes de Financiamiento
+            </h4>
+            <div class="grid-precios">
+              <div class="plan-card plan-contado">
+                <span class="plan-etiqueta">Mejor Precio</span>
+                <div class="plan-header">Contado</div>
+                <div class="plan-precio-principal" id="val-precio-contado">
+                  Consultar
+                </div>
+                <div class="plan-detalle">Pago único</div>
+              </div>
+              <div class="plan-card">
+                <div class="plan-header">2 Meses</div>
+                <div class="plan-precio-principal" id="val-pago-mes-2">
+                  Consultar
+                </div>
+                <div class="plan-detalle">pago mensual</div>
+                <div class="plan-enganche">
+                  Enganche<span id="val-enganche-2">Consultar</span>
+                </div>
+              </div>
+              <div class="plan-card">
+                <div class="plan-header">3 Meses</div>
+                <div class="plan-precio-principal" id="val-pago-mes-3">
+                  Consultar
+                </div>
+                <div class="plan-detalle">pago mensual</div>
+                <div class="plan-enganche">
+                  Enganche<span id="val-enganche-3">Consultar</span>
+                </div>
+              </div>
+              <div class="plan-card">
+                <div class="plan-header">6 Meses</div>
+                <div class="plan-precio-principal" id="val-pago-mes-6">
+                  Consultar
+                </div>
+                <div class="plan-detalle">pago mensual</div>
+                <div class="plan-enganche">
+                  Enganche<span id="val-enganche-6">Consultar</span>
+                </div>
+              </div>
+              <div class="plan-card">
+                <div class="plan-header">12 Meses (Tarjetas de Crédito)</div>
+                <div class="plan-precio-principal" id="val-pago-tarjeta-12">
+                  Consultar
+                </div>
+                <div class="plan-detalle">pago mensual</div>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="modal-acciones">
-          <button class="btn-agregar-carrito" onclick="agregarACarrito()">
-            <svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-            Agregar al Carrito
-          </button>
-          <button class="btn-whatsapp-modal" onclick="enviarWhatsAppProducto()">
-            <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-            Enviar por WhatsApp
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <button class="btn-carrito-flotante" id="btnCarritoFlotante" aria-label="Ver carrito" onclick="abrirCarrito()">
-    <svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-    <span class="carrito-contador" id="carritoContador">0</span>
-  </button>
-
-  <div class="modal-detalle" id="modal-carrito">
-    <div class="modal-contenido modal-carrito">
-      <button class="btn-cerrar" onclick="cerrarCarrito()">&times;</button>
-      <div class="cuerpo-modal">
-        <h2>Carrito de Cotización</h2>
-        <p class="descripcion">Artículos seleccionados para cotizar. Puedes imprimir o enviar por WhatsApp.</p>
-        <div class="lista-carrito" id="listaCarrito">
-          <p class="carrito-vacio">No hay artículos en el carrito. Agrega productos desde el catálogo.</p>
-        </div>
-        <div class="carrito-acciones">
-          <button type="button" class="btn-vaciar-carrito" onclick="vaciarCarrito()">Vaciar</button>
-          <button type="button" class="btn-imprimir" onclick="imprimirCotizacion()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
-            Imprimir
-          </button>
-          <button type="button" class="btn-enviar-wsp" onclick="enviarWhatsAppCarrito()">
-            <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-            WhatsApp
-          </button>
+          <div class="modal-acciones">
+            <button class="btn-agregar-carrito" onclick="agregarACarrito()">
+              <svg viewBox="0 0 24 24">
+                <circle cx="9" cy="21" r="1"></circle>
+                <circle cx="20" cy="21" r="1"></circle>
+                <path
+                  d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"
+                ></path>
+              </svg>
+              Agregar al Carrito
+            </button>
+            <button
+              class="btn-whatsapp-modal"
+              onclick="enviarWhatsAppProducto()"
+            >
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"
+                />
+              </svg>
+              Enviar por WhatsApp
+            </button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div id="area-impresion-cotizacion">
-    <div class="hoja-cotizacion" id="hojaCotizacion">
-      <!-- El contenido se genera dinámicamente con JavaScript -->
+    <button
+      class="btn-carrito-flotante"
+      id="btnCarritoFlotante"
+      aria-label="Ver carrito"
+      onclick="abrirCarrito()"
+    >
+      <svg viewBox="0 0 24 24">
+        <circle cx="9" cy="21" r="1"></circle>
+        <circle cx="20" cy="21" r="1"></circle>
+        <path
+          d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"
+        ></path>
+      </svg>
+      <span class="carrito-contador" id="carritoContador">0</span>
+    </button>
+
+    <div class="modal-detalle" id="modal-carrito">
+      <div class="modal-contenido modal-carrito">
+        <button class="btn-cerrar" onclick="cerrarCarrito()">&times;</button>
+        <div class="cuerpo-modal">
+          <h2>Carrito de Cotización</h2>
+          <p class="descripcion">
+            Artículos seleccionados para cotizar. Puedes imprimir o enviar por
+            WhatsApp.
+          </p>
+          <div class="lista-carrito" id="listaCarrito">
+            <p class="carrito-vacio">
+              No hay artículos en el carrito. Agrega productos desde el
+              catálogo.
+            </p>
+          </div>
+          <div class="carrito-acciones">
+            <button
+              type="button"
+              class="btn-vaciar-carrito"
+              onclick="vaciarCarrito()"
+            >
+              Vaciar
+            </button>
+            <button
+              type="button"
+              class="btn-imprimir"
+              onclick="imprimirCotizacion()"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                <path
+                  d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"
+                ></path>
+                <rect x="6" y="14" width="12" height="8"></rect>
+              </svg>
+              Imprimir
+            </button>
+            <button
+              type="button"
+              class="btn-enviar-wsp"
+              onclick="enviarWhatsAppCarrito()"
+            >
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"
+                />
+              </svg>
+              WhatsApp
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
 
-  <div class="modal-imagen-grande" id="modal-img-grande" onclick="cerrarImagenGrande()">
-    <button class="btn-cerrar-imagen" onclick="cerrarImagenGrande()">&times;</button>
-    <button class="btn-carrusel-grande prev" onclick="event.stopPropagation(); cambiarImagen(-1)">&#10094;</button>
-    <img id="img-ampliada" src="" alt="Imagen Ampliada" onclick="event.stopPropagation()">
-    <button class="btn-carrusel-grande next" onclick="event.stopPropagation(); cambiarImagen(1)">&#10095;</button>
-    <span class="contador-imagen-grande" id="contador-imagen-grande"></span>
-  </div>
+    <div id="area-impresion-cotizacion">
+      <div class="hoja-cotizacion" id="hojaCotizacion">
+        <!-- El contenido se genera dinámicamente con JavaScript -->
+      </div>
+    </div>
 
-  <footer>
-    <p>&copy; Muebleria Daguerr - Calidad y tradicion para tu hogar.</p>
-    <p class="footer-link">
-      <a href="https://www.muebleriadaguerr.com" target="_blank" rel="noopener noreferrer">www.muebleriadaguerr.com</a>
-    </p>
-  </footer>
+    <div
+      class="modal-imagen-grande"
+      id="modal-img-grande"
+      onclick="cerrarImagenGrande()"
+    >
+      <button class="btn-cerrar-imagen" onclick="cerrarImagenGrande()">
+        &times;
+      </button>
+      <button
+        class="btn-carrusel-grande prev"
+        onclick="
+          event.stopPropagation();
+          cambiarImagen(-1);
+        "
+      >
+        &#10094;
+      </button>
+      <img
+        id="img-ampliada"
+        src=""
+        alt="Imagen Ampliada"
+        onclick="event.stopPropagation()"
+      />
+      <button
+        class="btn-carrusel-grande next"
+        onclick="
+          event.stopPropagation();
+          cambiarImagen(1);
+        "
+      >
+        &#10095;
+      </button>
+      <span class="contador-imagen-grande" id="contador-imagen-grande"></span>
+    </div>
 
-  <script>
-    const SUPABASE_URL = 'https://sbuwwydygabgweegvzoi.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNidXd3eWR5Z2FiZ3dlZWd2em9pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3ODgxOTksImV4cCI6MjEwMTM2NDE5OX0.D3iSUhyNx4CpB5xTqsfn4R5CFvyghpfzVvi_CxdnXPI';
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    <footer>
+      <p>&copy; Muebleria Daguerr - Calidad y tradicion para tu hogar.</p>
+      <p class="footer-link">
+        <a
+          href="https://www.muebleriadaguerr.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          >www.muebleriadaguerr.com</a
+        >
+      </p>
+    </footer>
 
-    let productos = [];
-    let productoActual = null;
-    let indiceImagenActual = 0;
-    let categoriaActiva = 'Todos';
-    let subcategoriaActiva = null;
-    let terminoBusqueda = '';
-    let carrito = [];
+    <script>
+      const SUPABASE_URL = "https://sbuwwydygabgweegvzoi.supabase.co";
+      const SUPABASE_ANON_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNidXd3eWR5Z2FiZ3dlZWd2em9pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3ODgxOTksImV4cCI6MjEwMTM2NDE5OX0.D3iSUhyNx4CpB5xTqsfn4R5CFvyghpfzVvi_CxdnXPI";
+      const supabaseClient = supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY,
+      );
 
-    function limpiarMensajeWhatsApp(mensaje) {
-        mensaje = mensaje.replace(/\*/g, '');
-        mensaje = mensaje.replace(/_/g, '');
-        mensaje = mensaje.replace(/`/g, '');
-        mensaje = mensaje.replace(/\|/g, '');
-        mensaje = mensaje.replace(/\[/g, '');
-        mensaje = mensaje.replace(/\]/g, '');
-        mensaje = mensaje.replace(/\{/g, '');
-        mensaje = mensaje.replace(/\}/g, '');
-        mensaje = mensaje.replace(/https?:\/\/[^\s]+/g, '');
-        mensaje = mensaje.replace(/\n{3,}/g, '\n\n');
+      let productos = [];
+      let productoActual = null;
+      let indiceImagenActual = 0;
+      let categoriaActiva = "Todos";
+      let subcategoriaActiva = null;
+      let terminoBusqueda = "";
+      let carrito = [];
+
+      function limpiarMensajeWhatsApp(mensaje) {
+        mensaje = mensaje.replace(/\*/g, "");
+        mensaje = mensaje.replace(/_/g, "");
+        mensaje = mensaje.replace(/`/g, "");
+        mensaje = mensaje.replace(/\|/g, "");
+        mensaje = mensaje.replace(/\[/g, "");
+        mensaje = mensaje.replace(/\]/g, "");
+        mensaje = mensaje.replace(/\{/g, "");
+        mensaje = mensaje.replace(/\}/g, "");
+        mensaje = mensaje.replace(/https?:\/\/[^\s]+/g, "");
+        mensaje = mensaje.replace(/\n{3,}/g, "\n\n");
         mensaje = mensaje.trim();
         return mensaje;
-    }
+      }
 
-    function abrirWhatsApp(numero, mensaje) {
-        let num = numero.replace(/\D/g, '');
-        if (num.length === 10) { num = '52' + num; }
+      function abrirWhatsApp(numero, mensaje) {
+        let num = numero.replace(/\D/g, "");
+        if (num.length === 10) {
+          num = "52" + num;
+        }
         if (num.length < 10) {
-            alert('❌ El número debe tener al menos 10 dígitos. Ejemplo: 521234567890');
-            return false;
+          alert(
+            "❌ El número debe tener al menos 10 dígitos. Ejemplo: 521234567890",
+          );
+          return false;
         }
         mensaje = limpiarMensajeWhatsApp(mensaje);
         const url = `https://wa.me/${num}?text=${encodeURIComponent(mensaje)}`;
         try {
-            const ventana = window.open(url, '_blank');
-            if (!ventana || ventana.closed || typeof ventana.closed === 'undefined') {
-                const enlace = document.createElement('a');
-                enlace.href = url;
-                enlace.target = '_blank';
-                enlace.rel = 'noopener noreferrer';
-                enlace.style.display = 'none';
-                document.body.appendChild(enlace);
-                enlace.click();
-                document.body.removeChild(enlace);
-            }
-            return true;
+          const ventana = window.open(url, "_blank");
+          if (
+            !ventana ||
+            ventana.closed ||
+            typeof ventana.closed === "undefined"
+          ) {
+            const enlace = document.createElement("a");
+            enlace.href = url;
+            enlace.target = "_blank";
+            enlace.rel = "noopener noreferrer";
+            enlace.style.display = "none";
+            document.body.appendChild(enlace);
+            enlace.click();
+            document.body.removeChild(enlace);
+          }
+          return true;
         } catch (e) {
-            alert('❌ No se pudo abrir WhatsApp automáticamente.\n\n' +
-                  'Por favor, copia este enlace y pégalo en tu navegador:\n\n' + url);
-            return false;
+          alert(
+            "❌ No se pudo abrir WhatsApp automáticamente.\n\n" +
+              "Por favor, copia este enlace y pégalo en tu navegador:\n\n" +
+              url,
+          );
+          return false;
         }
-    }
+      }
 
-    function formatearPrecioWhatsApp(valor) {
-        if (valor === null || valor === undefined || valor === '' || valor === 0) return 'Consultar';
-        if (typeof valor === 'number') {
-            return '$' + valor.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      function formatearPrecioWhatsApp(valor) {
+        if (
+          valor === null ||
+          valor === undefined ||
+          valor === "" ||
+          valor === 0
+        )
+          return "Consultar";
+        if (typeof valor === "number") {
+          return (
+            "$" +
+            valor.toLocaleString("es-MX", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })
+          );
         }
         return valor;
-    }
+      }
 
-    function enviarWhatsAppProducto() {
-        if (!productoActual) { alert('No hay producto seleccionado.'); return; }
-        const telefono = prompt('📱 Ingresa el número de WhatsApp del cliente:\n\nEjemplo: 521234567890 (México)', '521234567890');
-        if (!telefono) return;
-        let mensaje = 'Mueblería Daguerr - Cotización\n\n';
-        mensaje += 'Articulo: ' + (productoActual.titulo || 'Sin título') + '\n\n';
-        if (productoActual.descripcion) {
-            mensaje += 'Caracteristicas:\n' + productoActual.descripcion + '\n\n';
+      function enviarWhatsAppProducto() {
+        if (!productoActual) {
+          alert("No hay producto seleccionado.");
+          return;
         }
-        mensaje += 'Precios y Planes:\n';
-        mensaje += 'Contado: ' + formatearPrecioWhatsApp(productoActual.precio_contado) + '\n';
+        const telefono = prompt(
+          "📱 Ingresa el número de WhatsApp del cliente:\n\nEjemplo: 521234567890 (México)",
+          "521234567890",
+        );
+        if (!telefono) return;
+        let mensaje = "Mueblería Daguerr - Cotización\n\n";
+        mensaje +=
+          "Articulo: " + (productoActual.titulo || "Sin título") + "\n\n";
+        if (productoActual.descripcion) {
+          mensaje += "Caracteristicas:\n" + productoActual.descripcion + "\n\n";
+        }
+        mensaje += "Precios y Planes:\n";
+        mensaje +=
+          "Contado: " +
+          formatearPrecioWhatsApp(productoActual.precio_contado) +
+          "\n";
         if (productoActual.pago_mes_2) {
-            mensaje += '2 Meses: ' + formatearPrecioWhatsApp(productoActual.pago_mes_2) + ' /mes (Enganche: ' + formatearPrecioWhatsApp(productoActual.enganche_2) + ')\n';
+          mensaje +=
+            "2 Meses: " +
+            formatearPrecioWhatsApp(productoActual.pago_mes_2) +
+            " /mes (Enganche: " +
+            formatearPrecioWhatsApp(productoActual.enganche_2) +
+            ")\n";
         }
         if (productoActual.pago_mes_3) {
-            mensaje += '3 Meses: ' + formatearPrecioWhatsApp(productoActual.pago_mes_3) + ' /mes (Enganche: ' + formatearPrecioWhatsApp(productoActual.enganche_3) + ')\n';
+          mensaje +=
+            "3 Meses: " +
+            formatearPrecioWhatsApp(productoActual.pago_mes_3) +
+            " /mes (Enganche: " +
+            formatearPrecioWhatsApp(productoActual.enganche_3) +
+            ")\n";
         }
         if (productoActual.pago_mes_6) {
-            mensaje += '6 Meses: ' + formatearPrecioWhatsApp(productoActual.pago_mes_6) + ' /mes (Enganche: ' + formatearPrecioWhatsApp(productoActual.enganche_6) + ')\n';
+          mensaje +=
+            "6 Meses: " +
+            formatearPrecioWhatsApp(productoActual.pago_mes_6) +
+            " /mes (Enganche: " +
+            formatearPrecioWhatsApp(productoActual.enganche_6) +
+            ")\n";
         }
         if (productoActual.pago_tarjeta_12) {
-            mensaje += '12 Meses (Tarjetas de Crédito): ' + formatearPrecioWhatsApp(productoActual.pago_tarjeta_12) + '\n';
+          mensaje +=
+            "12 Meses (Tarjetas de Crédito): " +
+            formatearPrecioWhatsApp(productoActual.pago_tarjeta_12) +
+            "\n";
         }
-        mensaje += '\nGracias por su preferencia! Mueblería Daguerr.';
-        mensaje += '\nVisite nuestro catálogo completo en: www.muebleriadaguerr.com';
+        mensaje += "\nGracias por su preferencia! Mueblería Daguerr.";
+        mensaje +=
+          "\nVisite nuestro catálogo completo en: www.muebleriadaguerr.com";
         abrirWhatsApp(telefono, mensaje);
-    }
+      }
 
-    function enviarWhatsAppCarrito() {
-        if (carrito.length === 0) { alert('🛒 El carrito está vacío. Agrega artículos primero.'); return; }
-        const telefono = prompt('📱 Ingresa el número de WhatsApp del cliente:\n\nEjemplo: 521234567890 (México)', '521234567890');
+      function enviarWhatsAppCarrito() {
+        if (carrito.length === 0) {
+          alert("🛒 El carrito está vacío. Agrega artículos primero.");
+          return;
+        }
+        const telefono = prompt(
+          "📱 Ingresa el número de WhatsApp del cliente:\n\nEjemplo: 521234567890 (México)",
+          "521234567890",
+        );
         if (!telefono) return;
-        let mensaje = 'Mueblería Daguerr - Cotización de Múltiples Artículos\n\n';
-        mensaje += 'Artículos seleccionados:\n\n';
+        let mensaje =
+          "Mueblería Daguerr - Cotización de Múltiples Artículos\n\n";
+        mensaje += "Artículos seleccionados:\n\n";
         carrito.forEach((p, index) => {
-            mensaje += (index + 1) + '. ' + (p.titulo || 'Sin título') + '\n';
-            mensaje += '   Contado: ' + formatearPrecioWhatsApp(p.precio_contado) + '\n';
-            if (p.pago_mes_2) {
-                mensaje += '   2 Meses: ' + formatearPrecioWhatsApp(p.pago_mes_2) + '/mes (Enganche: ' + formatearPrecioWhatsApp(p.enganche_2) + ')\n';
-            }
-            if (p.pago_mes_3) {
-                mensaje += '   3 Meses: ' + formatearPrecioWhatsApp(p.pago_mes_3) + '/mes (Enganche: ' + formatearPrecioWhatsApp(p.enganche_3) + ')\n';
-            }
-            if (p.pago_mes_6) {
-                mensaje += '   6 Meses: ' + formatearPrecioWhatsApp(p.pago_mes_6) + '/mes (Enganche: ' + formatearPrecioWhatsApp(p.enganche_6) + ')\n';
-            }
-            if (p.pago_tarjeta_12) {
-                mensaje += '   12 Meses (Tarjetas de Crédito): ' + formatearPrecioWhatsApp(p.pago_tarjeta_12) + '\n';
-            }
-            mensaje += '\n';
+          mensaje += index + 1 + ". " + (p.titulo || "Sin título") + "\n";
+          mensaje +=
+            "   Contado: " + formatearPrecioWhatsApp(p.precio_contado) + "\n";
+          if (p.pago_mes_2) {
+            mensaje +=
+              "   2 Meses: " +
+              formatearPrecioWhatsApp(p.pago_mes_2) +
+              "/mes (Enganche: " +
+              formatearPrecioWhatsApp(p.enganche_2) +
+              ")\n";
+          }
+          if (p.pago_mes_3) {
+            mensaje +=
+              "   3 Meses: " +
+              formatearPrecioWhatsApp(p.pago_mes_3) +
+              "/mes (Enganche: " +
+              formatearPrecioWhatsApp(p.enganche_3) +
+              ")\n";
+          }
+          if (p.pago_mes_6) {
+            mensaje +=
+              "   6 Meses: " +
+              formatearPrecioWhatsApp(p.pago_mes_6) +
+              "/mes (Enganche: " +
+              formatearPrecioWhatsApp(p.enganche_6) +
+              ")\n";
+          }
+          if (p.pago_tarjeta_12) {
+            mensaje +=
+              "   12 Meses (Tarjetas de Crédito): " +
+              formatearPrecioWhatsApp(p.pago_tarjeta_12) +
+              "\n";
+          }
+          mensaje += "\n";
         });
-        mensaje += 'Gracias por su preferencia! Mueblería Daguerr.';
-        mensaje += '\nVisite nuestro catálogo completo en: www.muebleriadaguerr.com';
+        mensaje += "Gracias por su preferencia! Mueblería Daguerr.";
+        mensaje +=
+          "\nVisite nuestro catálogo completo en: www.muebleriadaguerr.com";
         abrirWhatsApp(telefono, mensaje);
-    }
-
-    async function inicializarProductos() {
-      try {
-        const { data, error } = await supabaseClient.from('productos').select('*');
-        if (error) { console.error('Error al cargar desde Supabase:', error); return; }
-        productos = (data || []).filter(p => p.oculto !== true && p.oculto !== 'true');
-        cargarCatalogo(productos);
-        actualizarContadorCarrito();
-      } catch (err) { console.error('Excepción al conectar con Supabase:', err); }
-    }
-
-    function formatearPrecio(valor) {
-      if (valor === null || valor === undefined || valor === '' || valor === 0) return 'Consultar';
-      if (typeof valor === 'number') {
-        return `$${valor.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
       }
-      return valor;
-    }
 
-    function escaparHtml(texto) {
-      const div = document.createElement('div');
-      div.innerText = texto == null ? '' : texto;
-      return div.innerHTML;
-    }
-
-    const normalizar = (texto) => (texto || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-
-    function obtenerBadgesHTML(estado) {
-      if (estado === 'disponible') {
-        return `<span class="badge-estado disponible">Disponible</span>`;
-      } else if (estado === 'pedido') {
-        return `<span class="badge-estado agotado">No disponible</span><span class="badge-estado pedido">Por Pedido</span>`;
-      } else {
-        return `<span class="badge-estado agotado">No disponible</span>`;
+      async function inicializarProductos() {
+        try {
+          const { data, error } = await supabaseClient
+            .from("productos")
+            .select("*");
+          if (error) {
+            console.error("Error al cargar desde Supabase:", error);
+            return;
+          }
+          productos = (data || []).filter(
+            (p) => p.oculto !== true && p.oculto !== "true",
+          );
+          cargarCatalogo(productos);
+          actualizarContadorCarrito();
+        } catch (err) {
+          console.error("Excepción al conectar con Supabase:", err);
+        }
       }
-    }
 
-    function cargarCatalogo(lista = productos) {
-      const catalogo = document.getElementById('contenedor-productos');
-      if (!catalogo) return;
-      catalogo.innerHTML = '';
-      if (!lista || lista.length === 0) {
-        const mensaje = terminoBusqueda
-          ? `No encontramos articulos que coincidan con "${terminoBusqueda}". Intenta con otro nombre o revisa las categorias.`
-          : `Proximamente tendremos productos disponibles en esta categoria. ¡Contactanos por WhatsApp para mas informacion!`;
-        catalogo.innerHTML = `<div class="mensaje-vacio">${mensaje}</div>`;
-        return;
+      function formatearPrecio(valor) {
+        if (
+          valor === null ||
+          valor === undefined ||
+          valor === "" ||
+          valor === 0
+        )
+          return "Consultar";
+        if (typeof valor === "number") {
+          return `$${valor.toLocaleString("es-MX", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        }
+        return valor;
       }
-      lista.forEach((item, index) => {
-        const tarjeta = document.createElement('div');
-        tarjeta.className = 'tarjeta-mueble';
-        tarjeta.style.animationDelay = `${index * 0.04}s`;
-        tarjeta.onclick = () => abrirModal(item.id);
-        const imgSrc = (item.imagenes && item.imagenes.length > 0) ? item.imagenes[0] : '';
-        const totalFotos = (item.imagenes && item.imagenes.length > 1) ? item.imagenes.length : 0;
-        const badgeFotosHTML = totalFotos > 1 ? `
+
+      function escaparHtml(texto) {
+        const div = document.createElement("div");
+        div.innerText = texto == null ? "" : texto;
+        return div.innerHTML;
+      }
+
+      const normalizar = (texto) =>
+        (texto || "")
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .toLowerCase();
+
+      function obtenerBadgesHTML(estado) {
+        if (estado === "disponible") {
+          return `<span class="badge-estado disponible">Disponible</span>`;
+        } else if (estado === "pedido") {
+          return `<span class="badge-estado agotado">No disponible</span><span class="badge-estado pedido">Por Pedido</span>`;
+        } else {
+          return `<span class="badge-estado agotado">No disponible</span>`;
+        }
+      }
+
+      function cargarCatalogo(lista = productos) {
+        const catalogo = document.getElementById("contenedor-productos");
+        if (!catalogo) return;
+        catalogo.innerHTML = "";
+        if (!lista || lista.length === 0) {
+          const mensaje = terminoBusqueda
+            ? `No encontramos articulos que coincidan con "${terminoBusqueda}". Intenta con otro nombre o revisa las categorias.`
+            : `Proximamente tendremos productos disponibles en esta categoria. ¡Contactanos por WhatsApp para mas informacion!`;
+          catalogo.innerHTML = `<div class="mensaje-vacio">${mensaje}</div>`;
+          return;
+        }
+        lista.forEach((item, index) => {
+          const tarjeta = document.createElement("div");
+          tarjeta.className = "tarjeta-mueble";
+          tarjeta.style.animationDelay = `${index * 0.04}s`;
+          tarjeta.onclick = () => abrirModal(item.id);
+          const imgSrc =
+            item.imagenes && item.imagenes.length > 0 ? item.imagenes[0] : "";
+          const totalFotos =
+            item.imagenes && item.imagenes.length > 1
+              ? item.imagenes.length
+              : 0;
+          const badgeFotosHTML =
+            totalFotos > 1
+              ? `
           <div class="badge-fotos-contador">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
             <span>${totalFotos}</span>
           </div>
-        ` : '';
-        const precioContado = formatearPrecio(item.precio_contado);
-        const precioHTML = precioContado !== 'Consultar'
-          ? `<div class="precio-tarjeta"><span class="precio-tarjeta-etiqueta">Contado</span><span class="precio-tarjeta-valor">${precioContado}</span></div>`
-          : `<div class="precio-tarjeta precio-tarjeta-consultar"><span class="precio-tarjeta-valor">Consultar precio</span></div>`;
-        tarjeta.innerHTML = `
+        `
+              : "";
+          const precioContado = formatearPrecio(item.precio_contado);
+          const precioHTML =
+            precioContado !== "Consultar"
+              ? `<div class="precio-tarjeta"><span class="precio-tarjeta-etiqueta">Contado</span><span class="precio-tarjeta-valor">${precioContado}</span></div>`
+              : `<div class="precio-tarjeta precio-tarjeta-consultar"><span class="precio-tarjeta-valor">Consultar precio</span></div>`;
+          tarjeta.innerHTML = `
           <div class="contenedor-imagen-tarjeta">
             ${badgeFotosHTML}
-            <img src="${imgSrc}" alt="${item.titulo || 'Mueble'}" class="imagen-mueble" loading="lazy">
+            <img src="${imgSrc}" alt="${item.titulo || "Mueble"}" class="imagen-mueble" loading="lazy">
           </div>
           <div class="info-mueble">
             <div class="contenedor-badges">${obtenerBadgesHTML(item.estado)}</div>
-            <h3>${item.titulo || ''}</h3>
-            <p>${item.descripcion || ''}</p>
+            <h3>${item.titulo || ""}</h3>
+            <p>${item.descripcion || ""}</p>
             ${precioHTML}
             <button class="btn-precios" onclick="event.stopPropagation(); abrirModal(${item.id})">Ver todos los planes</button>
           </div>
         `;
-        catalogo.appendChild(tarjeta);
-      });
-    }
+          catalogo.appendChild(tarjeta);
+        });
+      }
 
-    function filtrarCategoria(cat, btn) {
-      document.querySelectorAll('.btn-filtro').forEach(b => b.classList.remove('activo'));
-      if (btn) btn.classList.add('activo');
-      categoriaActiva = cat;
-      subcategoriaActiva = null;
-      const submenuLB = document.getElementById('submenuLineaBlanca');
-      if (cat === 'Linea Blanca') {
-        submenuLB.classList.add('activo');
-        const primerSubBtn = submenuLB.querySelector('.btn-subfiltro');
-        if (primerSubBtn) { filtrarSubcategoria(primerSubBtn.innerText, primerSubBtn); } 
-        else { aplicarFiltros(); }
-      } else {
-        submenuLB.classList.remove('activo');
+      function filtrarCategoria(cat, btn) {
+        document
+          .querySelectorAll(".btn-filtro")
+          .forEach((b) => b.classList.remove("activo"));
+        if (btn) btn.classList.add("activo");
+        categoriaActiva = cat;
+        subcategoriaActiva = null;
+        const submenuLB = document.getElementById("submenuLineaBlanca");
+        if (cat === "Linea Blanca") {
+          submenuLB.classList.add("activo");
+          const primerSubBtn = submenuLB.querySelector(".btn-subfiltro");
+          if (primerSubBtn) {
+            filtrarSubcategoria(primerSubBtn.innerText, primerSubBtn);
+          } else {
+            aplicarFiltros();
+          }
+        } else {
+          submenuLB.classList.remove("activo");
+          aplicarFiltros();
+        }
+      }
+
+      function filtrarSubcategoria(subcat, btn) {
+        document
+          .querySelectorAll(".btn-subfiltro")
+          .forEach((b) => b.classList.remove("activo"));
+        if (btn) btn.classList.add("activo");
+        subcategoriaActiva = subcat;
         aplicarFiltros();
       }
-    }
 
-    function filtrarSubcategoria(subcat, btn) {
-      document.querySelectorAll('.btn-subfiltro').forEach(b => b.classList.remove('activo'));
-      if (btn) btn.classList.add('activo');
-      subcategoriaActiva = subcat;
-      aplicarFiltros();
-    }
+      function aplicarFiltros() {
+        let base = productos;
+        if (categoriaActiva && categoriaActiva !== "Todos") {
+          base = base.filter(
+            (p) => normalizar(p.categoria) === normalizar(categoriaActiva),
+          );
+          if (categoriaActiva === "Linea Blanca" && subcategoriaActiva) {
+            base = base.filter(
+              (p) =>
+                normalizar(p.subcategoria) === normalizar(subcategoriaActiva),
+            );
+          }
+        }
+        if (terminoBusqueda) {
+          const termino = normalizar(terminoBusqueda);
+          base = base.filter((p) => normalizar(p.titulo).includes(termino));
+        }
+        cargarCatalogo(base);
+      }
 
-    function aplicarFiltros() {
-      let base = productos;
-      if (categoriaActiva && categoriaActiva !== 'Todos') {
-        base = base.filter(p => normalizar(p.categoria) === normalizar(categoriaActiva));
-        if (categoriaActiva === 'Linea Blanca' && subcategoriaActiva) {
-          base = base.filter(p => normalizar(p.subcategoria) === normalizar(subcategoriaActiva));
+      function buscarProductos(valor) {
+        terminoBusqueda = valor.trim();
+        const caja = document.getElementById("buscadorCaja");
+        if (caja)
+          caja.classList.toggle("tiene-texto", terminoBusqueda.length > 0);
+        aplicarFiltros();
+      }
+
+      function limpiarBusqueda() {
+        const campo = document.getElementById("campoBusqueda");
+        if (campo) campo.value = "";
+        buscarProductos("");
+        if (campo) campo.focus();
+      }
+
+      function limpiarFiltros() {
+        limpiarBusqueda();
+        document
+          .getElementById("submenuLineaBlanca")
+          .classList.remove("activo");
+        document
+          .querySelectorAll(".btn-filtro")
+          .forEach((b) => b.classList.remove("activo"));
+        const btnTodos = document.querySelector(
+          ".btn-filtro[onclick*=\"'Todos'\"]",
+        );
+        filtrarCategoria("Todos", btnTodos);
+      }
+
+      function abrirModal(id) {
+        productoActual = productos.find((p) => p.id == id);
+        if (!productoActual) return;
+        indiceImagenActual = 0;
+        actualizarImagenModal();
+        document.getElementById("modal-titulo").innerText =
+          productoActual.titulo || "";
+        document.getElementById("modal-descripcion").innerText =
+          productoActual.descripcion || "";
+        document.getElementById("modal-estado-contenedor").innerHTML =
+          obtenerBadgesHTML(productoActual.estado);
+        document.getElementById("val-precio-contado").innerText =
+          formatearPrecio(productoActual.precio_contado);
+        document.getElementById("val-enganche-2").innerText = formatearPrecio(
+          productoActual.enganche_2,
+        );
+        document.getElementById("val-pago-mes-2").innerText = formatearPrecio(
+          productoActual.pago_mes_2,
+        );
+        document.getElementById("val-enganche-3").innerText = formatearPrecio(
+          productoActual.enganche_3,
+        );
+        document.getElementById("val-pago-mes-3").innerText = formatearPrecio(
+          productoActual.pago_mes_3,
+        );
+        document.getElementById("val-enganche-6").innerText = formatearPrecio(
+          productoActual.enganche_6,
+        );
+        document.getElementById("val-pago-mes-6").innerText = formatearPrecio(
+          productoActual.pago_mes_6,
+        );
+        document.getElementById("val-pago-tarjeta-12").innerText =
+          formatearPrecio(productoActual.pago_tarjeta_12);
+        document.getElementById("modal-producto").classList.add("activo");
+        document.body.style.overflow = "hidden";
+      }
+
+      function cerrarModal() {
+        document.getElementById("modal-producto").classList.remove("activo");
+        document.body.style.overflow = "";
+      }
+
+      function cambiarImagen(direccion) {
+        if (
+          !productoActual ||
+          !productoActual.imagenes ||
+          productoActual.imagenes.length <= 1
+        )
+          return;
+        indiceImagenActual += direccion;
+        if (indiceImagenActual < 0) {
+          indiceImagenActual = productoActual.imagenes.length - 1;
+        } else if (indiceImagenActual >= productoActual.imagenes.length) {
+          indiceImagenActual = 0;
+        }
+        actualizarImagenModal();
+      }
+
+      function actualizarImagenModal() {
+        if (
+          productoActual &&
+          productoActual.imagenes &&
+          productoActual.imagenes.length > 0
+        ) {
+          document.getElementById("modal-img").src =
+            productoActual.imagenes[indiceImagenActual];
+          const imgGrande = document.getElementById("modal-img-grande");
+          if (imgGrande && imgGrande.classList.contains("activo")) {
+            document.getElementById("img-ampliada").src =
+              productoActual.imagenes[indiceImagenActual];
+            actualizarContadorImagenGrande();
+          }
         }
       }
-      if (terminoBusqueda) {
-        const termino = normalizar(terminoBusqueda);
-        base = base.filter(p => normalizar(p.titulo).includes(termino));
-      }
-      cargarCatalogo(base);
-    }
 
-    function buscarProductos(valor) {
-      terminoBusqueda = valor.trim();
-      const caja = document.getElementById('buscadorCaja');
-      if (caja) caja.classList.toggle('tiene-texto', terminoBusqueda.length > 0);
-      aplicarFiltros();
-    }
-
-    function limpiarBusqueda() {
-      const campo = document.getElementById('campoBusqueda');
-      if (campo) campo.value = '';
-      buscarProductos('');
-      if (campo) campo.focus();
-    }
-
-    function limpiarFiltros() {
-      limpiarBusqueda();
-      document.getElementById('submenuLineaBlanca').classList.remove('activo');
-      document.querySelectorAll('.btn-filtro').forEach(b => b.classList.remove('activo'));
-      const btnTodos = document.querySelector('.btn-filtro[onclick*="\'Todos\'"]');
-      filtrarCategoria('Todos', btnTodos);
-    }
-
-    function abrirModal(id) {
-      productoActual = productos.find(p => p.id == id);
-      if (!productoActual) return;
-      indiceImagenActual = 0;
-      actualizarImagenModal();
-      document.getElementById('modal-titulo').innerText = productoActual.titulo || '';
-      document.getElementById('modal-descripcion').innerText = productoActual.descripcion || '';
-      document.getElementById('modal-estado-contenedor').innerHTML = obtenerBadgesHTML(productoActual.estado);
-      document.getElementById('val-precio-contado').innerText = formatearPrecio(productoActual.precio_contado);
-      document.getElementById('val-enganche-2').innerText = formatearPrecio(productoActual.enganche_2);
-      document.getElementById('val-pago-mes-2').innerText = formatearPrecio(productoActual.pago_mes_2);
-      document.getElementById('val-enganche-3').innerText = formatearPrecio(productoActual.enganche_3);
-      document.getElementById('val-pago-mes-3').innerText = formatearPrecio(productoActual.pago_mes_3);
-      document.getElementById('val-enganche-6').innerText = formatearPrecio(productoActual.enganche_6);
-      document.getElementById('val-pago-mes-6').innerText = formatearPrecio(productoActual.pago_mes_6);
-      document.getElementById('val-pago-tarjeta-12').innerText = formatearPrecio(productoActual.pago_tarjeta_12);
-      document.getElementById('modal-producto').classList.add('activo');
-      document.body.style.overflow = 'hidden';
-    }
-
-    function cerrarModal() {
-      document.getElementById('modal-producto').classList.remove('activo');
-      document.body.style.overflow = '';
-    }
-
-    function cambiarImagen(direccion) {
-      if (!productoActual || !productoActual.imagenes || productoActual.imagenes.length <= 1) return;
-      indiceImagenActual += direccion;
-      if (indiceImagenActual < 0) { indiceImagenActual = productoActual.imagenes.length - 1; } 
-      else if (indiceImagenActual >= productoActual.imagenes.length) { indiceImagenActual = 0; }
-      actualizarImagenModal();
-    }
-
-    function actualizarImagenModal() {
-      if (productoActual && productoActual.imagenes && productoActual.imagenes.length > 0) {
-        document.getElementById('modal-img').src = productoActual.imagenes[indiceImagenActual];
-        const imgGrande = document.getElementById('modal-img-grande');
-        if (imgGrande && imgGrande.classList.contains('activo')) {
-          document.getElementById('img-ampliada').src = productoActual.imagenes[indiceImagenActual];
-          actualizarContadorImagenGrande();
+      function actualizarContadorImagenGrande() {
+        const contador = document.getElementById("contador-imagen-grande");
+        if (!contador || !productoActual || !productoActual.imagenes) return;
+        const total = productoActual.imagenes.length;
+        if (total > 1) {
+          contador.textContent = `${indiceImagenActual + 1} / ${total}`;
+          contador.style.display = "block";
+        } else {
+          contador.style.display = "none";
         }
       }
-    }
 
-    function actualizarContadorImagenGrande() {
-      const contador = document.getElementById('contador-imagen-grande');
-      if (!contador || !productoActual || !productoActual.imagenes) return;
-      const total = productoActual.imagenes.length;
-      if (total > 1) {
-        contador.textContent = `${indiceImagenActual + 1} / ${total}`;
-        contador.style.display = 'block';
-      } else {
-        contador.style.display = 'none';
+      function abrirImagenGrande() {
+        if (!productoActual || !productoActual.imagenes) return;
+        document.getElementById("img-ampliada").src =
+          productoActual.imagenes[indiceImagenActual];
+        document.getElementById("modal-img-grande").classList.add("activo");
+        const hayVarias = productoActual.imagenes.length > 1;
+        document
+          .querySelectorAll(".btn-carrusel-grande")
+          .forEach((b) => (b.style.display = hayVarias ? "flex" : "none"));
+        actualizarContadorImagenGrande();
+        document.body.style.overflow = "hidden";
       }
-    }
 
-    function abrirImagenGrande() {
-      if (!productoActual || !productoActual.imagenes) return;
-      document.getElementById('img-ampliada').src = productoActual.imagenes[indiceImagenActual];
-      document.getElementById('modal-img-grande').classList.add('activo');
-      const hayVarias = productoActual.imagenes.length > 1;
-      document.querySelectorAll('.btn-carrusel-grande').forEach(b => b.style.display = hayVarias ? 'flex' : 'none');
-      actualizarContadorImagenGrande();
-      document.body.style.overflow = 'hidden';
-    }
-
-    function cerrarImagenGrande() {
-      document.getElementById('modal-img-grande').classList.remove('activo');
-      document.body.style.overflow = '';
-    }
-
-    function agregarACarrito() {
-      if (!productoActual) return;
-      const yaExiste = carrito.some(p => p.id == productoActual.id);
-      if (yaExiste) { alert('Este artículo ya está en el carrito.'); return; }
-      carrito.push({
-        id: productoActual.id,
-        titulo: productoActual.titulo,
-        precio_contado: productoActual.precio_contado,
-        enganche_2: productoActual.enganche_2,
-        pago_mes_2: productoActual.pago_mes_2,
-        enganche_3: productoActual.enganche_3,
-        pago_mes_3: productoActual.pago_mes_3,
-        enganche_6: productoActual.enganche_6,
-        pago_mes_6: productoActual.pago_mes_6,
-        pago_tarjeta_12: productoActual.pago_tarjeta_12
-      });
-      actualizarContadorCarrito();
-      const btn = document.querySelector('.btn-agregar-carrito');
-      const textoOriginal = btn.innerHTML;
-      btn.innerHTML = '✓ Agregado al carrito';
-      setTimeout(() => { btn.innerHTML = textoOriginal; }, 1500);
-    }
-
-    function actualizarContadorCarrito() {
-      const contador = document.getElementById('carritoContador');
-      if (!contador) return;
-      contador.innerText = carrito.length;
-      contador.classList.toggle('visible', carrito.length > 0);
-    }
-
-    function abrirCarrito() {
-      renderizarCarrito();
-      document.getElementById('modal-carrito').classList.add('activo');
-      document.body.style.overflow = 'hidden';
-    }
-
-    function cerrarCarrito() {
-      document.getElementById('modal-carrito').classList.remove('activo');
-      document.body.style.overflow = '';
-    }
-
-    function renderizarCarrito() {
-      const lista = document.getElementById('listaCarrito');
-      if (!lista) return;
-      if (carrito.length === 0) {
-        lista.innerHTML = '<p class="carrito-vacio">No hay artículos en el carrito. Agrega productos desde el catálogo.</p>';
-        return;
+      function cerrarImagenGrande() {
+        document.getElementById("modal-img-grande").classList.remove("activo");
+        document.body.style.overflow = "";
       }
-      lista.innerHTML = carrito.map(p => `
+
+      function agregarACarrito() {
+        if (!productoActual) return;
+        const yaExiste = carrito.some((p) => p.id == productoActual.id);
+        if (yaExiste) {
+          alert("Este artículo ya está en el carrito.");
+          return;
+        }
+        carrito.push({
+          id: productoActual.id,
+          titulo: productoActual.titulo,
+          precio_contado: productoActual.precio_contado,
+          enganche_2: productoActual.enganche_2,
+          pago_mes_2: productoActual.pago_mes_2,
+          enganche_3: productoActual.enganche_3,
+          pago_mes_3: productoActual.pago_mes_3,
+          enganche_6: productoActual.enganche_6,
+          pago_mes_6: productoActual.pago_mes_6,
+          pago_tarjeta_12: productoActual.pago_tarjeta_12,
+        });
+        actualizarContadorCarrito();
+        const btn = document.querySelector(".btn-agregar-carrito");
+        const textoOriginal = btn.innerHTML;
+        btn.innerHTML = "✓ Agregado al carrito";
+        setTimeout(() => {
+          btn.innerHTML = textoOriginal;
+        }, 1500);
+      }
+
+      function actualizarContadorCarrito() {
+        const contador = document.getElementById("carritoContador");
+        if (!contador) return;
+        contador.innerText = carrito.length;
+        contador.classList.toggle("visible", carrito.length > 0);
+      }
+
+      function abrirCarrito() {
+        renderizarCarrito();
+        document.getElementById("modal-carrito").classList.add("activo");
+        document.body.style.overflow = "hidden";
+      }
+
+      function cerrarCarrito() {
+        document.getElementById("modal-carrito").classList.remove("activo");
+        document.body.style.overflow = "";
+      }
+
+      function renderizarCarrito() {
+        const lista = document.getElementById("listaCarrito");
+        if (!lista) return;
+        if (carrito.length === 0) {
+          lista.innerHTML =
+            '<p class="carrito-vacio">No hay artículos en el carrito. Agrega productos desde el catálogo.</p>';
+          return;
+        }
+        lista.innerHTML = carrito
+          .map(
+            (p) => `
         <div class="carrito-fila">
           <div class="carrito-fila-info">
-            <span class="carrito-fila-titulo">${escaparHtml(p.titulo || 'Sin título')}</span>
+            <span class="carrito-fila-titulo">${escaparHtml(p.titulo || "Sin título")}</span>
             <span class="carrito-fila-precio">${formatearPrecio(p.precio_contado)} contado</span>
           </div>
           <button type="button" class="btn-quitar-carrito" aria-label="Quitar artículo" onclick="quitarDelCarrito(${p.id})">&times;</button>
         </div>
-      `).join('');
-    }
+      `,
+          )
+          .join("");
+      }
 
-    function quitarDelCarrito(id) {
-      carrito = carrito.filter(p => p.id != id);
-      actualizarContadorCarrito();
-      renderizarCarrito();
-    }
-
-    function vaciarCarrito() {
-      if (carrito.length === 0) return;
-      if (confirm('¿Vaciar el carrito por completo?')) {
-        carrito = [];
+      function quitarDelCarrito(id) {
+        carrito = carrito.filter((p) => p.id != id);
         actualizarContadorCarrito();
         renderizarCarrito();
       }
-    }
 
-    function imprimirCotizacion() {
-      if (carrito.length === 0) {
-        alert('El carrito está vacío. Agrega artículos para imprimir una cotización.');
-        return;
+      function vaciarCarrito() {
+        if (carrito.length === 0) return;
+        if (confirm("¿Vaciar el carrito por completo?")) {
+          carrito = [];
+          actualizarContadorCarrito();
+          renderizarCarrito();
+        }
       }
 
-      const hoy = new Date();
-      const fechaStr = hoy.toLocaleDateString('es-MX', {
-        day: '2-digit', month: 'long', year: 'numeric'
-      });
+      function imprimirCotizacion() {
+        if (carrito.length === 0) {
+          alert(
+            "El carrito está vacío. Agrega artículos para imprimir una cotización.",
+          );
+          return;
+        }
 
-      const hoja = document.getElementById('hojaCotizacion');
-      
-      // Construir el HTML de la cotización
-      let html = `
+        const hoy = new Date();
+        const fechaStr = hoy.toLocaleDateString("es-MX", {
+          day: "2-digit",
+          month: "long",
+          year: "numeric",
+        });
+
+        const hoja = document.getElementById("hojaCotizacion");
+
+        // Construir el HTML de la cotización
+        let html = `
         <div class="cot-encabezado">
           <div class="cot-logo">
             <span class="cot-brand-script">Daguerr</span>
@@ -2100,11 +2942,11 @@
         <div class="cot-linea-oro"></div>
       `;
 
-      // Generar una tabla por cada producto
-      carrito.forEach((p, index) => {
-        html += `
+        // Generar una tabla por cada producto
+        carrito.forEach((p, index) => {
+          html += `
           <div class="cot-producto">
-            <div class="cot-producto-titulo">${index + 1}. ${escaparHtml(p.titulo || 'Sin título')}</div>
+            <div class="cot-producto-titulo">${index + 1}. ${escaparHtml(p.titulo || "Sin título")}</div>
             <table class="cot-tabla-precios">
               <thead>
                 <tr>
@@ -2119,16 +2961,16 @@
                 <tr>
                   <td class="cot-col-contado">${formatearPrecio(p.precio_contado)}</td>
                   <td class="cot-col-2m">
-                    ${p.pago_mes_2 ? formatearPrecio(p.pago_mes_2) + '/mes' : '<span class="cot-no-disponible">N/A</span>'}
-                    ${p.enganche_2 ? `<span class="cot-enganche-texto">Enganche ${formatearPrecio(p.enganche_2)}</span>` : ''}
+                    ${p.pago_mes_2 ? formatearPrecio(p.pago_mes_2) + "/mes" : '<span class="cot-no-disponible">N/A</span>'}
+                    ${p.enganche_2 ? `<span class="cot-enganche-texto">Enganche ${formatearPrecio(p.enganche_2)}</span>` : ""}
                   </td>
                   <td class="cot-col-3m">
-                    ${p.pago_mes_3 ? formatearPrecio(p.pago_mes_3) + '/mes' : '<span class="cot-no-disponible">N/A</span>'}
-                    ${p.enganche_3 ? `<span class="cot-enganche-texto">Enganche ${formatearPrecio(p.enganche_3)}</span>` : ''}
+                    ${p.pago_mes_3 ? formatearPrecio(p.pago_mes_3) + "/mes" : '<span class="cot-no-disponible">N/A</span>'}
+                    ${p.enganche_3 ? `<span class="cot-enganche-texto">Enganche ${formatearPrecio(p.enganche_3)}</span>` : ""}
                   </td>
                   <td class="cot-col-6m">
-                    ${p.pago_mes_6 ? formatearPrecio(p.pago_mes_6) + '/mes' : '<span class="cot-no-disponible">N/A</span>'}
-                    ${p.enganche_6 ? `<span class="cot-enganche-texto">Enganche ${formatearPrecio(p.enganche_6)}</span>` : ''}
+                    ${p.pago_mes_6 ? formatearPrecio(p.pago_mes_6) + "/mes" : '<span class="cot-no-disponible">N/A</span>'}
+                    ${p.enganche_6 ? `<span class="cot-enganche-texto">Enganche ${formatearPrecio(p.enganche_6)}</span>` : ""}
                   </td>
                   <td class="cot-col-12m">${formatearPrecio(p.pago_tarjeta_12)}</td>
                 </tr>
@@ -2136,56 +2978,66 @@
             </table>
           </div>
         `;
+        });
+
+        // Pie de página
+        html += `
+  <div class="cot-pie">
+    <p>Precios sujetos a cambio sin previo aviso. Cotización válida por 15 días.</p>
+    <p class="cot-gracias">¡Gracias por su preferencia, Mueblería Daguerr!</p>
+    <p class="cot-sitio-web"><strong>Visita nuestro catálogo completo en: www.muebleriadaguerr.com</strong></p>
+    
+    <div class="cot-contacto">
+      <p><strong>📍 Ubicación:</strong> Carr. A Abasolo y av. 2 #100, San Buenaventura, Coahuila, Mexico.</p>
+      <p><strong>📱 WhatsApp:</strong> +52 866 650 4200 &nbsp;|&nbsp; <strong>📞 Teléfono:</strong> +52 869 694 2677</p>
+      <p><strong>📘 Facebook:</strong> facebook.com/muebleriadaguerr</p>
+    </div>
+  </div>
+`;
+
+        hoja.innerHTML = html;
+
+        setTimeout(() => {
+          window.print();
+        }, 300);
+      }
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          cerrarModal();
+          cerrarCarrito();
+          cerrarImagenGrande();
+          return;
+        }
+        const imgGrande = document.getElementById("modal-img-grande");
+        if (!imgGrande || !imgGrande.classList.contains("activo")) return;
+        if (e.key === "ArrowLeft") cambiarImagen(-1);
+        else if (e.key === "ArrowRight") cambiarImagen(1);
       });
 
-      // Pie de página
-      html += `
-        <div class="cot-pie">
-          <p>Precios sujetos a cambio sin previo aviso. Cotización válida por 15 días.</p>
-          <p class="cot-gracias">¡Gracias por su preferencia, Mueblería Daguerr!</p>
-          <p class="cot-sitio-web">Visita nuestro catálogo completo en: www.muebleriadaguerr.com</p>
-        </div>
-      `;
-
-      hoja.innerHTML = html;
-
-      setTimeout(() => {
-        window.print();
-      }, 300);
-    }
-
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        cerrarModal();
-        cerrarCarrito();
-        cerrarImagenGrande();
-        return;
+      function alternarModoOscuro() {
+        const body = document.body;
+        body.classList.toggle("modo-oscuro");
+        localStorage.setItem(
+          "modoOscuro",
+          body.classList.contains("modo-oscuro") ? "activado" : "desactivado",
+        );
       }
-      const imgGrande = document.getElementById('modal-img-grande');
-      if (!imgGrande || !imgGrande.classList.contains('activo')) return;
-      if (e.key === 'ArrowLeft') cambiarImagen(-1);
-      else if (e.key === 'ArrowRight') cambiarImagen(1);
-    });
 
-    function alternarModoOscuro() {
-      const body = document.body;
-      body.classList.toggle('modo-oscuro');
-      localStorage.setItem('modoOscuro', body.classList.contains('modo-oscuro') ? 'activado' : 'desactivado');
-    }
+      window.addEventListener("scroll", () => {
+        const btnArriba = document.getElementById("btnVolverArriba");
+        if (btnArriba)
+          btnArriba.classList.toggle("visible", window.pageYOffset > 400);
+      });
 
-    window.addEventListener('scroll', () => {
-      const btnArriba = document.getElementById('btnVolverArriba');
-      if (btnArriba) btnArriba.classList.toggle('visible', window.pageYOffset > 400);
-    });
-
-    document.addEventListener('DOMContentLoaded', () => {
-      if (localStorage.getItem('modoOscuro') === 'activado') {
-        document.body.classList.add('modo-oscuro');
-        const switchElem = document.getElementById('switchModoOscuro');
-        if (switchElem) switchElem.checked = true;
-      }
-      inicializarProductos();
-    });
-  </script>
-</body>
+      document.addEventListener("DOMContentLoaded", () => {
+        if (localStorage.getItem("modoOscuro") === "activado") {
+          document.body.classList.add("modo-oscuro");
+          const switchElem = document.getElementById("switchModoOscuro");
+          if (switchElem) switchElem.checked = true;
+        }
+        inicializarProductos();
+      });
+    </script>
+  </body>
 </html>
