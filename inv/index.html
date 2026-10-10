@@ -130,6 +130,8 @@ header{
 }
 .btn-primary-action:hover{transform:translateY(-1px)}
 .btn-primary-action:active{transform:scale(0.96)}
+.btn-primary-action.danger{background:linear-gradient(135deg,var(--danger),#b91c1c); box-shadow:0 8px 18px rgba(239,68,68,0.28)}
+.btn-primary-action.info{background:linear-gradient(135deg,var(--info),#1d4ed8); box-shadow:0 8px 18px rgba(59,130,246,0.28)}
 .search-box{position:relative; flex:1; min-width:180px}
 .search-box input{
   width:100%; padding:11px 15px 11px 40px; border-radius:var(--radius-sm);
@@ -149,8 +151,6 @@ header{
   font-size:13px; min-height:var(--touch-target); white-space:nowrap;
 }
 .btn-actualizar:active{transform:scale(0.96)}
-
-/* Tabla */
 .table-wrap{
   background:var(--card-bg); border:1px solid var(--border);
   border-radius:var(--radius-md); overflow:hidden;
@@ -178,11 +178,9 @@ tbody tr:hover{background:#fdfbf8}
 .badge.transferencia{background:var(--info-light); color:var(--info)}
 .badge.ok{background:var(--success-light); color:var(--success)}
 .badge.bajo{background:var(--danger-light); color:var(--danger)}
-
 .stock-num{font-weight:800; font-size:15px}
 .stock-num.low{color:var(--danger)}
 .stock-num.ok{color:var(--text-main)}
-
 .btn-action{
   padding:8px 12px; border-radius:var(--radius-sm); font-size:12px;
   font-weight:700; cursor:pointer; border:1px solid transparent;
@@ -199,8 +197,6 @@ tbody tr:hover{background:#fdfbf8}
 .btn-out:hover{background:var(--danger); color:#fff}
 .btn-transfer{background:var(--info-light); color:var(--info); border-color:#bfdbfe}
 .btn-transfer:hover{background:var(--info); color:#fff}
-
-/* Modal */
 .modal-overlay{
   display:none; position:fixed; top:0; left:0; width:100%; height:100%;
   background:rgba(32,24,17,0.6); backdrop-filter:blur(5px);
@@ -269,10 +265,63 @@ textarea{resize:vertical; height:70px}
 }
 .btn-modal-cancel:hover{background:#ddd0c1; color:var(--text-main)}
 .btn-modal-cancel:active{transform:scale(0.97)}
-
 .hint{font-size:11.5px; color:var(--text-muted); margin-top:4px}
-
-/* Login */
+.tabs-modo{
+  display:flex; background:#f0ebe6; border-radius:var(--radius-sm);
+  padding:4px; gap:4px; margin-bottom:8px;
+}
+.tabs-modo button{
+  flex:1; border:none; background:transparent; padding:10px;
+  font-family:inherit; font-size:13px; font-weight:600;
+  color:var(--text-muted); border-radius:6px; cursor:pointer;
+  transition:all 0.2s ease;
+}
+.tabs-modo button.active{
+  background:#fff; color:var(--terracota);
+  box-shadow:0 1px 3px rgba(0,0,0,0.08);
+}
+.buscador-drop{
+  position:relative; margin-top:5px;
+}
+.buscador-drop input{
+  width:100%; padding:10px 12px 10px 36px; margin-top:0;
+  border:1px solid var(--border); border-radius:var(--radius-sm);
+  font-family:inherit; font-size:14px; outline:none; background:#fff;
+}
+.buscador-drop input:focus{border-color:var(--terracota); box-shadow:0 0 0 3px rgba(194,41,10,0.12)}
+.buscador-drop::before{
+  content:"🔍"; position:absolute; left:12px; top:50%;
+  transform:translateY(-50%); font-size:13px; pointer-events:none;
+}
+.drop-lista{
+  position:absolute; top:100%; left:0; right:0;
+  background:#fff; border:1px solid var(--border);
+  border-radius:var(--radius-sm); box-shadow:0 10px 25px -6px rgba(0,0,0,0.15);
+  max-height:220px; overflow-y:auto; z-index:50;
+  margin-top:4px; display:none;
+}
+.drop-lista.show{display:block}
+.drop-item{
+  padding:10px 12px; cursor:pointer; font-size:13px;
+  border-bottom:1px solid var(--border); transition:background 0.15s;
+}
+.drop-item:last-child{border-bottom:none}
+.drop-item:hover, .drop-item.highlight{background:var(--terracota-suave)}
+.drop-item .drop-tit{font-weight:600; color:var(--text-main)}
+.drop-item .drop-sub{font-size:11px; color:var(--text-muted); margin-top:2px}
+.drop-empty{padding:14px; text-align:center; color:var(--text-muted); font-size:12.5px}
+.producto-seleccionado{
+  background:var(--success-light); border:1px solid #a7f3d0;
+  border-radius:var(--radius-sm); padding:10px 12px; margin-top:6px;
+  display:flex; justify-content:space-between; align-items:center; gap:10px;
+}
+.producto-seleccionado .ps-info{font-size:13px}
+.producto-seleccionado .ps-info b{display:block; color:var(--text-main)}
+.producto-seleccionado .ps-info span{font-size:11px; color:var(--text-muted)}
+.btn-quitar-sel{
+  background:transparent; border:none; color:var(--danger);
+  font-size:11px; font-weight:700; cursor:pointer; padding:4px 8px;
+}
 #loginScreen{
   position:fixed; top:0; left:0; width:100vw; height:100vh;
   background:
@@ -302,7 +351,6 @@ textarea{resize:vertical; height:70px}
 }
 .btn-login-action:active{transform:scale(0.97)}
 .login-error{color:var(--danger); font-size:13px; margin-top:10px; display:none; font-weight:500}
-
 .vacio{
   text-align:center; color:var(--text-muted); padding:40px 20px;
   font-size:13px;
@@ -314,11 +362,10 @@ textarea{resize:vertical; height:70px}
   border-radius:var(--radius-sm); font-weight:600; font-size:13px;
   box-shadow:0 10px 25px -6px rgba(0,0,0,0.2);
   opacity:0; transform:translateY(-10px); transition:all 0.3s;
-  pointer-events:none;
+  pointer-events:none; max-width:90vw;
 }
 .mensaje-flash.show{opacity:1; transform:translateY(0)}
 .mensaje-flash.error{background:var(--danger)}
-
 @media (max-width:1024px){
   .stats-bar{grid-template-columns:repeat(2,1fr)}
   main{padding:20px 20px 30px}
@@ -417,8 +464,8 @@ textarea{resize:vertical; height:70px}
 
     <div class="action-bar">
       <button class="btn-primary-action" onclick="abrirModalMovimiento('alta')">⬆️ Nueva Alta</button>
-      <button class="btn-primary-action" onclick="abrirModalMovimiento('baja')" style="background:linear-gradient(135deg,var(--danger),#b91c1c); box-shadow:0 8px 18px rgba(239,68,68,0.28)">⬇️ Nueva Baja</button>
-      <button class="btn-primary-action" onclick="abrirModalMovimiento('transferencia')" style="background:linear-gradient(135deg,var(--info),#1d4ed8); box-shadow:0 8px 18px rgba(59,130,246,0.28)">🔄 Transferir</button>
+      <button class="btn-primary-action danger" onclick="abrirModalMovimiento('baja')">⬇️ Nueva Baja</button>
+      <button class="btn-primary-action info" onclick="abrirModalMovimiento('transferencia')">🔄 Transferir</button>
     </div>
 
     <h3 style="margin:20px 0 10px; font-size:15px; color:var(--primary)">Últimos 10 movimientos</h3>
@@ -431,7 +478,7 @@ textarea{resize:vertical; height:70px}
             <th>Producto</th>
             <th>Almacén</th>
             <th>Cant.</th>
-            <th>Usuario</th>
+            <th>Factura / Cliente</th>
           </tr>
         </thead>
         <tbody id="tablaUltimosMovs"></tbody>
@@ -473,13 +520,12 @@ textarea{resize:vertical; height:70px}
   <section id="vistaMovimientos" style="display:none">
     <div class="action-bar">
       <div class="search-box">
-        <input type="text" id="inputBuscadorMovs" placeholder="Buscar producto, almacén o usuario..." oninput="renderizarMovimientos()" autocomplete="off">
+        <input type="text" id="inputBuscadorMovs" placeholder="Buscar producto, almacén, factura o cliente..." oninput="renderizarMovimientos()" autocomplete="off">
       </div>
       <select id="filtroTipoMovs" onchange="renderizarMovimientos()" style="padding:11px 12px; border-radius:var(--radius-sm); border:1px solid var(--border); font-family:inherit; font-size:13px; min-height:var(--touch-target); background:#fff;">
         <option value="">Todos los tipos</option>
         <option value="alta">Altas</option>
         <option value="baja">Bajas</option>
-        <option value="ajuste">Ajustes</option>
         <option value="transferencia">Transferencias</option>
       </select>
       <button class="btn-actualizar" onclick="cargarTodo()">🔄 Actualizar</button>
@@ -495,8 +541,10 @@ textarea{resize:vertical; height:70px}
             <th>Almacén</th>
             <th>Cant.</th>
             <th>Antes → Después</th>
+            <th>Factura</th>
+            <th>Cliente</th>
             <th>Motivo</th>
-            <th>Usuario</th>
+            <th>Notas</th>
           </tr>
         </thead>
         <tbody id="tablaMovs"></tbody>
@@ -505,7 +553,7 @@ textarea{resize:vertical; height:70px}
   </section>
 </main>
 
-<!-- MODAL: MOVIMIENTO (alta/baja/transferencia) -->
+<!-- MODAL: MOVIMIENTO -->
 <div class="modal-overlay" id="modalMovimiento">
   <div class="modal-card">
     <div class="modal-header">
@@ -513,10 +561,60 @@ textarea{resize:vertical; height:70px}
       <button class="modal-close" onclick="cerrarModal('modalMovimiento')">&times;</button>
     </div>
     <div class="modal-body">
-      <div class="form-section-label">📦 Producto</div>
-      <label>Producto:</label>
-      <select id="movProducto"></select>
-      <div class="hint" id="hintProducto"></div>
+
+      <!-- TABS solo para ALTA -->
+      <div id="grupoTabsAlta" style="display:none">
+        <div class="form-section-label">📦 Origen del producto</div>
+        <div class="tabs-modo">
+          <button type="button" id="tabModoExistente" class="active" onclick="cambiarModoAlta('existente')">📚 Ya en Supabase</button>
+          <button type="button" id="tabModoNuevo" onclick="cambiarModoAlta('nuevo')">✨ Nuevo (manual)</button>
+        </div>
+      </div>
+
+      <!-- MODO: PRODUCTO EXISTENTE -->
+      <div id="modoExistente">
+        <label style="margin-top:0">Buscar producto en catálogo:</label>
+        <div class="buscador-drop">
+          <input type="text" id="buscarProductoInput" placeholder="Escribe el nombre del producto..." autocomplete="off" oninput="filtrarProductosDrop()" onfocus="filtrarProductosDrop()">
+          <div class="drop-lista" id="dropListaProductos"></div>
+        </div>
+        <div id="productoSeleccionadoBox"></div>
+      </div>
+
+      <!-- MODO: PRODUCTO NUEVO -->
+      <div id="modoNuevo" style="display:none">
+        <label style="margin-top:0">Título del producto nuevo:</label>
+        <input type="text" id="nuevoTitulo" placeholder="Ej. Sala Esquinera Roma">
+        <label>Categoría:</label>
+        <select id="nuevoCategoria">
+          <option value="Cocinas">Cocinas</option>
+          <option value="Linea Blanca">Línea Blanca</option>
+          <option value="Comedores">Comedores</option>
+          <option value="Tubulares">Tubulares</option>
+          <option value="Salas">Salas</option>
+          <option value="Recamaras">Recámaras</option>
+          <option value="Closet">Closet</option>
+          <option value="Colchoneria">Colchonería</option>
+          <option value="Deportivos">Deportivos</option>
+          <option value="Descanso">Descanso</option>
+          <option value="Hogar">Hogar</option>
+          <option value="Electronica">Electrónica</option>
+          <option value="Ropa y Calzado">Ropa y Calzado</option>
+        </select>
+        <label>Subcategoría (opcional):</label>
+        <input type="text" id="nuevoSubcategoria" placeholder="Ej. Refrigeradores">
+        <div class="hint">El producto nuevo <b>NO se publica</b> en el catálogo de la tienda. Solo se registra internamente en el inventario.</div>
+      </div>
+
+      <!-- PRODUCTO: INFO GENERAL (solo baja/transferencia, para mostrar título) -->
+      <div id="modoOtrosTipos" style="display:none">
+        <label style="margin-top:0">Buscar producto:</label>
+        <div class="buscador-drop">
+          <input type="text" id="buscarProductoInput2" placeholder="Escribe el nombre del producto..." autocomplete="off" oninput="filtrarProductosDrop2()" onfocus="filtrarProductosDrop2()">
+          <div class="drop-lista" id="dropListaProductos2"></div>
+        </div>
+        <div id="productoSeleccionadoBox2"></div>
+      </div>
 
       <div class="form-section-label">🏬 Almacén</div>
       <label id="labelAlmacenOrigen">Almacén:</label>
@@ -541,13 +639,20 @@ textarea{resize:vertical; height:70px}
         <option value="otro">Otro</option>
       </select>
 
-      <label>Notas (opcional):</label>
-      <textarea id="movNotas" placeholder="Factura #, observaciones, etc."></textarea>
+      <!-- CAMPO FACTURA (solo ALTA) -->
+      <div id="grupoFactura" style="display:none">
+        <label>Nº de Factura (opcional):</label>
+        <input type="text" id="movFactura" placeholder="Ej. FAC-2024-00123">
+      </div>
 
-      <div class="form-section-label">👤 Usuario</div>
-      <label>¿Quién registra el movimiento?</label>
-      <input type="text" id="movUsuario" placeholder="Tu nombre">
-      <div class="hint">Se guardará como responsable del movimiento.</div>
+      <!-- CAMPO CLIENTE (solo BAJA) -->
+      <div id="grupoCliente" style="display:none">
+        <label>Nombre del cliente:</label>
+        <input type="text" id="movCliente" placeholder="Ej. Juan Pérez">
+      </div>
+
+      <label>Notas (opcional):</label>
+      <textarea id="movNotas" placeholder="Observaciones adicionales..."></textarea>
     </div>
     <div class="modal-footer">
       <button class="btn-modal-cancel" onclick="cerrarModal('modalMovimiento')">Cancelar</button>
@@ -607,7 +712,11 @@ let stockGlobal = [];
 let movimientosGlobal = [];
 let vistaActual = 'dashboard';
 let tipoMovActual = 'alta';
-let almacenFiltroActual = null;
+let modoAltaActual = 'existente'; // 'existente' | 'nuevo'
+
+// Producto seleccionado desde el buscador
+let productoSeleccionadoExistente = null; // {id, titulo, categoria, subcategoria}
+let productoSeleccionadoOtros = null;     // para baja/transferencia
 
 /* ====== UTILS ====== */
 function flash(msg, error=false){
@@ -615,7 +724,7 @@ function flash(msg, error=false){
   el.textContent = msg;
   el.classList.toggle('error', error);
   el.classList.add('show');
-  setTimeout(()=>el.classList.remove('show'), 2200);
+  setTimeout(()=>el.classList.remove('show'), 2600);
 }
 function fmtFecha(iso){
   if(!iso) return '';
@@ -630,6 +739,12 @@ window.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('loginScreen').style.display='none';
     cargarTodo();
   }
+  // Cerrar dropdowns al hacer click fuera
+  document.addEventListener('click', (e) => {
+    if(!e.target.closest('.buscador-drop')){
+      document.querySelectorAll('.drop-lista').forEach(el => el.classList.remove('show'));
+    }
+  });
 });
 
 async function intentarLogin(){
@@ -657,28 +772,24 @@ function toggleMenuMobil(){
 
 /* ====== CARGAR DATOS ====== */
 async function cargarTodo(){
-  // catálogo de productos (solo lectura)
   const { data: prods } = await supabaseClient
     .from('productos')
     .select('id, titulo, categoria, subcategoria')
     .order('titulo',{ascending:true});
   productosCatalogo = prods || [];
 
-  // almacenes
   const { data: alms } = await supabaseClient
     .from('almacenes')
     .select('*')
     .order('nombre',{ascending:true});
   almacenesGlobal = alms || [];
 
-  // stock
   const { data: st } = await supabaseClient
     .from('inventario_stock')
     .select('*')
     .order('updated_at',{ascending:false});
   stockGlobal = st || [];
 
-  // movimientos
   const { data: movs } = await supabaseClient
     .from('movimientos_inventario')
     .select('*')
@@ -696,7 +807,6 @@ function renderizarTodo(){
   renderizarMovimientos();
   renderizarUltimosMovs();
   llenarSelectsAlmacenes();
-  llenarSelectProductos();
 }
 
 /* ====== SIDEBAR ALMACENES ====== */
@@ -716,7 +826,6 @@ function renderizarAlmacenesSidebar(){
 }
 
 function filtrarPorAlmacen(id, btn){
-  almacenFiltroActual = id;
   cambiarVista('stock', document.querySelector('[data-vista="stock"]'));
   document.getElementById('filtroAlmacenStock').value = String(id);
   renderizarStock();
@@ -747,8 +856,7 @@ function renderizarStock(){
   if(almFiltro) lista = lista.filter(s => String(s.almacen_id) === String(almFiltro));
   if(q) lista = lista.filter(s =>
     (s.producto_titulo || '').toLowerCase().includes(q) ||
-    (s.producto_categoria || '').toLowerCase().includes(q) ||
-    (s.id && String(s.id).includes(q))
+    (s.producto_categoria || '').toLowerCase().includes(q)
   );
 
   document.getElementById('contadorStock').textContent = `${lista.length} registro${lista.length===1?'':'s'}`;
@@ -763,7 +871,7 @@ function renderizarStock(){
     const bajo = s.stock_actual <= s.stock_minimo;
     return `
       <tr>
-        <td><b>#${s.producto_id}</b> ${s.producto_titulo || ''}</td>
+        <td><b>${s.producto_titulo || '(sin título)'}</b></td>
         <td>${s.producto_categoria || '-'}</td>
         <td>${alm ? alm.nombre : '—'}</td>
         <td><span class="stock-num ${bajo?'low':'ok'}">${s.stock_actual}</span></td>
@@ -772,7 +880,7 @@ function renderizarStock(){
         <td>
           <button class="btn-action btn-in" onclick="abrirModalMovimientoDesdeStock('alta', ${s.producto_id}, ${s.almacen_id})">⬆️ Alta</button>
           <button class="btn-action btn-out" onclick="abrirModalMovimientoDesdeStock('baja', ${s.producto_id}, ${s.almacen_id})">⬇️ Baja</button>
-          <button class="btn-action btn-edit" onclick="editarMinimo(${s.id}, ${s.stock_minimo})">✏️ Mínimo</button>
+          <button class="btn-action btn-edit" onclick="editarMinimo(${s.id}, ${s.stock_minimo})">✏️ Mín.</button>
         </td>
       </tr>
     `;
@@ -801,14 +909,15 @@ function renderizarMovimientos(){
   if(q) lista = lista.filter(m =>
     (m.producto_titulo || '').toLowerCase().includes(q) ||
     (m.almacen_nombre || '').toLowerCase().includes(q) ||
-    (m.usuario || '').toLowerCase().includes(q) ||
+    (m.numero_factura || '').toLowerCase().includes(q) ||
+    (m.nombre_cliente || '').toLowerCase().includes(q) ||
     (m.motivo || '').toLowerCase().includes(q)
   );
 
   document.getElementById('contadorMovs').textContent = `${lista.length} movimiento${lista.length===1?'':'s'}`;
 
   if(lista.length === 0){
-    tbody.innerHTML = '<tr><td colspan="8"><div class="vacio"><span class="ico">📜</span>Sin movimientos registrados.</div></td></tr>';
+    tbody.innerHTML = '<tr><td colspan="10"><div class="vacio"><span class="ico">📜</span>Sin movimientos registrados.</div></td></tr>';
     return;
   }
 
@@ -821,18 +930,20 @@ function renderizarMovimientos(){
       <tr>
         <td>${fmtFecha(m.created_at)}</td>
         <td><span class="badge ${m.tipo}">${m.tipo}</span></td>
-        <td><b>#${m.producto_id}</b> ${m.producto_titulo || ''}</td>
+        <td><b>${m.producto_titulo || '(sin título)'}</b></td>
         <td>${almacenTxt}</td>
         <td><b>${m.cantidad}</b></td>
         <td>${diff}</td>
+        <td>${m.numero_factura || '—'}</td>
+        <td>${m.nombre_cliente || '—'}</td>
         <td>${m.motivo || '-'}</td>
-        <td>${m.usuario || '-'}</td>
+        <td>${m.notas || '—'}</td>
       </tr>
     `;
   }).join('');
 }
 
-/* ====== ÚLTIMOS MOVS (DASHBOARD) ====== */
+/* ====== ÚLTIMOS MOVS ====== */
 function renderizarUltimosMovs(){
   const tbody = document.getElementById('tablaUltimosMovs');
   const ultimos = movimientosGlobal.slice(0,10);
@@ -840,16 +951,19 @@ function renderizarUltimosMovs(){
     tbody.innerHTML = '<tr><td colspan="6"><div class="vacio"><span class="ico">📊</span>Sin movimientos aún.</div></td></tr>';
     return;
   }
-  tbody.innerHTML = ultimos.map(m => `
-    <tr>
-      <td>${fmtFecha(m.created_at)}</td>
-      <td><span class="badge ${m.tipo}">${m.tipo}</span></td>
-      <td><b>#${m.producto_id}</b> ${m.producto_titulo || ''}</td>
-      <td>${m.tipo === 'transferencia' ? (m.almacen_nombre + ' → ' + m.almacen_destino_nombre) : (m.almacen_nombre || '—')}</td>
-      <td><b>${m.cantidad}</b></td>
-      <td>${m.usuario || '-'}</td>
-    </tr>
-  `).join('');
+  tbody.innerHTML = ultimos.map(m => {
+    const factCliente = m.tipo === 'alta' ? (m.numero_factura || '—') : (m.tipo === 'baja' ? (m.nombre_cliente || '—') : '—');
+    return `
+      <tr>
+        <td>${fmtFecha(m.created_at)}</td>
+        <td><span class="badge ${m.tipo}">${m.tipo}</span></td>
+        <td><b>${m.producto_titulo || '(sin título)'}</b></td>
+        <td>${m.tipo === 'transferencia' ? (m.almacen_nombre + ' → ' + m.almacen_destino_nombre) : (m.almacen_nombre || '—')}</td>
+        <td><b>${m.cantidad}</b></td>
+        <td>${factCliente}</td>
+      </tr>
+    `;
+  }).join('');
 }
 
 /* ====== VISTA ====== */
@@ -890,75 +1004,258 @@ function llenarSelectsAlmacenes(){
   });
 }
 
-function llenarSelectProductos(){
-  const sel = document.getElementById('movProducto');
-  const valorActual = sel.value;
-  sel.innerHTML = productosCatalogo.map(p =>
-    `<option value="${p.id}">#${p.id} · ${p.titulo || 'Sin título'} (${p.categoria || '—'})</option>`
-  ).join('');
-  if(valorActual) sel.value = valorActual;
-}
-
 /* ====== MODAL MOVIMIENTO ====== */
 function abrirModalMovimiento(tipo){
   tipoMovActual = tipo;
-  document.getElementById('movProducto').value = '';
+  modoAltaActual = 'existente';
+  productoSeleccionadoExistente = null;
+  productoSeleccionadoOtros = null;
+
+  // Reset campos
   document.getElementById('movCantidad').value = 1;
   document.getElementById('movMotivo').value = tipo === 'baja' ? 'venta' : 'compra';
   document.getElementById('movNotas').value = '';
-  document.getElementById('movUsuario').value = '';
+  document.getElementById('movFactura').value = '';
+  document.getElementById('movCliente').value = '';
+  document.getElementById('nuevoTitulo').value = '';
+  document.getElementById('nuevoCategoria').value = 'Cocinas';
+  document.getElementById('nuevoSubcategoria').value = '';
+  document.getElementById('buscarProductoInput').value = '';
+  document.getElementById('buscarProductoInput2').value = '';
+  document.getElementById('productoSeleccionadoBox').innerHTML = '';
+  document.getElementById('productoSeleccionadoBox2').innerHTML = '';
+  document.getElementById('dropListaProductos').classList.remove('show');
+  document.getElementById('dropListaProductos2').classList.remove('show');
+
   llenarSelectsAlmacenes();
 
   const titulos = { alta:'Dar de Alta Stock', baja:'Dar de Baja Stock', transferencia:'Transferir Stock entre Almacenes' };
   document.getElementById('modalMovTitulo').textContent = titulos[tipo];
 
+  // Mostrar/ocultar según tipo
+  const grupoTabs = document.getElementById('grupoTabsAlta');
+  const modoExistente = document.getElementById('modoExistente');
+  const modoNuevo = document.getElementById('modoNuevo');
+  const modoOtros = document.getElementById('modoOtrosTipos');
   const grupoDestino = document.getElementById('grupoAlmacenDestino');
   const labelOrigen = document.getElementById('labelAlmacenOrigen');
+  const grupoFactura = document.getElementById('grupoFactura');
+  const grupoCliente = document.getElementById('grupoCliente');
 
-  if(tipo === 'transferencia'){
-    grupoDestino.style.display = 'block';
-    labelOrigen.textContent = 'Almacén origen:';
-  } else {
+  if(tipo === 'alta'){
+    grupoTabs.style.display = 'block';
+    modoExistente.style.display = 'block';
+    modoNuevo.style.display = 'none';
+    modoOtros.style.display = 'none';
+    grupoFactura.style.display = 'block';
+    grupoCliente.style.display = 'none';
+    labelOrigen.textContent = 'Almacén destino:';
     grupoDestino.style.display = 'none';
-    labelOrigen.textContent = tipo === 'alta' ? 'Almacén destino:' : 'Almacén origen:';
+    cambiarModoAlta('existente');
+  } else if(tipo === 'baja'){
+    grupoTabs.style.display = 'none';
+    modoExistente.style.display = 'none';
+    modoNuevo.style.display = 'none';
+    modoOtros.style.display = 'block';
+    grupoFactura.style.display = 'none';
+    grupoCliente.style.display = 'block';
+    labelOrigen.textContent = 'Almacén origen:';
+    grupoDestino.style.display = 'none';
+  } else if(tipo === 'transferencia'){
+    grupoTabs.style.display = 'none';
+    modoExistente.style.display = 'none';
+    modoNuevo.style.display = 'none';
+    modoOtros.style.display = 'block';
+    grupoFactura.style.display = 'none';
+    grupoCliente.style.display = 'none';
+    labelOrigen.textContent = 'Almacén origen:';
+    grupoDestino.style.display = 'block';
   }
 
   document.getElementById('modalMovimiento').style.display = 'flex';
 }
 
-function abrirModalMovimientoDesdeStock(tipo, productoId, almacenId){
-  abrirModalMovimiento(tipo);
-  document.getElementById('movProducto').value = String(productoId);
-  if(tipo === 'transferencia'){
-    document.getElementById('movAlmacenOrigen').value = String(almacenId);
+function cambiarModoAlta(modo){
+  modoAltaActual = modo;
+  const tabExist = document.getElementById('tabModoExistente');
+  const tabNuevo = document.getElementById('tabModoNuevo');
+  const modoExistente = document.getElementById('modoExistente');
+  const modoNuevo = document.getElementById('modoNuevo');
+
+  if(modo === 'existente'){
+    tabExist.classList.add('active');
+    tabNuevo.classList.remove('active');
+    modoExistente.style.display = 'block';
+    modoNuevo.style.display = 'none';
   } else {
-    document.getElementById('movAlmacenOrigen').value = String(almacenId);
+    tabNuevo.classList.add('active');
+    tabExist.classList.remove('active');
+    modoExistente.style.display = 'none';
+    modoNuevo.style.display = 'block';
   }
 }
 
+/* ====== BUSCADOR DE PRODUCTOS (drop) ====== */
+function filtrarProductosDrop(){
+  const q = document.getElementById('buscarProductoInput').value.toLowerCase().trim();
+  const drop = document.getElementById('dropListaProductos');
+  let lista = productosCatalogo;
+  if(q) lista = lista.filter(p => (p.titulo||'').toLowerCase().includes(q) || String(p.id).includes(q));
+
+  if(lista.length === 0){
+    drop.innerHTML = '<div class="drop-empty">Sin resultados</div>';
+    drop.classList.add('show');
+    return;
+  }
+
+  drop.innerHTML = lista.slice(0, 30).map(p => `
+    <div class="drop-item" onclick="seleccionarProductoExistente(${p.id})">
+      <div class="drop-tit">${p.titulo || '(sin título)'}</div>
+      <div class="drop-sub">${p.categoria || ''}${p.subcategoria ? ' · '+p.subcategoria : ''}</div>
+    </div>
+  `).join('');
+  drop.classList.add('show');
+}
+
+function seleccionarProductoExistente(id){
+  const p = productosCatalogo.find(x => x.id === id);
+  if(!p) return;
+  productoSeleccionadoExistente = p;
+  document.getElementById('buscarProductoInput').value = '';
+  document.getElementById('dropListaProductos').classList.remove('show');
+  document.getElementById('productoSeleccionadoBox').innerHTML = `
+    <div class="producto-seleccionado">
+      <div class="ps-info">
+        <b>${p.titulo || '(sin título)'}</b>
+        <span>${p.categoria || ''}${p.subcategoria ? ' · '+p.subcategoria : ''}</span>
+      </div>
+      <button type="button" class="btn-quitar-sel" onclick="quitarProductoExistente()">✕ Quitar</button>
+    </div>
+  `;
+}
+
+function quitarProductoExistente(){
+  productoSeleccionadoExistente = null;
+  document.getElementById('productoSeleccionadoBox').innerHTML = '';
+}
+
+/* ====== BUSCADOR PARA BAJA / TRANSFERENCIA ====== */
+function filtrarProductosDrop2(){
+  const q = document.getElementById('buscarProductoInput2').value.toLowerCase().trim();
+  const drop = document.getElementById('dropListaProductos2');
+
+  // Solo mostrar productos que tengan stock (para baja y transferencia)
+  const idsConStock = new Set(stockGlobal.filter(s => s.stock_actual > 0).map(s => s.producto_id));
+
+  // Incluir productos en stockGlobal aunque no estén en el catálogo (productos nuevos manuales)
+  const productosDisponibles = [];
+  idsConStock.forEach(pid => {
+    const enCatalogo = productosCatalogo.find(p => p.id === pid);
+    if(enCatalogo){
+      productosDisponibles.push(enCatalogo);
+    } else {
+      // Producto que existe solo en inventario (creado manual)
+      const stockItem = stockGlobal.find(s => s.producto_id === pid);
+      productosDisponibles.push({
+        id: pid,
+        titulo: stockItem?.producto_titulo || '(sin título)',
+        categoria: stockItem?.producto_categoria || '',
+        subcategoria: ''
+      });
+    }
+  });
+
+  let lista = productosDisponibles;
+  if(q) lista = lista.filter(p => (p.titulo||'').toLowerCase().includes(q) || String(p.id).includes(q));
+
+  if(lista.length === 0){
+    drop.innerHTML = '<div class="drop-empty">Sin productos con stock</div>';
+    drop.classList.add('show');
+    return;
+  }
+
+  drop.innerHTML = lista.slice(0, 30).map(p => `
+    <div class="drop-item" onclick="seleccionarProductoOtros(${p.id})">
+      <div class="drop-tit">${p.titulo || '(sin título)'}</div>
+      <div class="drop-sub">${p.categoria || ''}</div>
+    </div>
+  `).join('');
+  drop.classList.add('show');
+}
+
+function seleccionarProductoOtros(id){
+  const p = productosCatalogo.find(x => x.id === id) || (() => {
+    const stockItem = stockGlobal.find(s => s.producto_id === id);
+    return {
+      id,
+      titulo: stockItem?.producto_titulo || '(sin título)',
+      categoria: stockItem?.producto_categoria || '',
+      subcategoria: ''
+    };
+  })();
+  productoSeleccionadoOtros = p;
+  document.getElementById('buscarProductoInput2').value = '';
+  document.getElementById('dropListaProductos2').classList.remove('show');
+  document.getElementById('productoSeleccionadoBox2').innerHTML = `
+    <div class="producto-seleccionado">
+      <div class="ps-info">
+        <b>${p.titulo || '(sin título)'}</b>
+        <span>${p.categoria || ''}</span>
+      </div>
+      <button type="button" class="btn-quitar-sel" onclick="quitarProductoOtros()">✕ Quitar</button>
+    </div>
+  `;
+}
+
+function quitarProductoOtros(){
+  productoSeleccionadoOtros = null;
+  document.getElementById('productoSeleccionadoBox2').innerHTML = '';
+}
+
+/* ====== GUARDAR MOVIMIENTO ====== */
 async function guardarMovimiento(){
-  const productoId = parseInt(document.getElementById('movProducto').value);
   const cantidad = parseInt(document.getElementById('movCantidad').value);
   const motivo = document.getElementById('movMotivo').value;
   const notas = document.getElementById('movNotas').value.trim();
-  const usuario = document.getElementById('movUsuario').value.trim();
+  const factura = document.getElementById('movFactura').value.trim();
+  const cliente = document.getElementById('movCliente').value.trim();
   const almacenOrigenId = parseInt(document.getElementById('movAlmacenOrigen').value);
   const almacenDestinoId = document.getElementById('movAlmacenDestino').value ? parseInt(document.getElementById('movAlmacenDestino').value) : null;
 
-  if(!productoId){ flash('Selecciona un producto', true); return; }
   if(!cantidad || cantidad <= 0){ flash('Cantidad inválida', true); return; }
-  if(!usuario){ flash('Escribe quién realiza el movimiento', true); return; }
   if(!almacenOrigenId){ flash('Selecciona un almacén', true); return; }
   if(tipoMovActual === 'transferencia' && !almacenDestinoId){ flash('Selecciona almacén destino', true); return; }
   if(tipoMovActual === 'transferencia' && almacenDestinoId === almacenOrigenId){ flash('Origen y destino deben ser diferentes', true); return; }
 
-  const producto = productosCatalogo.find(p => p.id === productoId);
+  let productoId, productoTitulo, productoCategoria;
+
+  if(tipoMovActual === 'alta'){
+    if(modoAltaActual === 'existente'){
+      if(!productoSeleccionadoExistente){ flash('Selecciona un producto del catálogo', true); return; }
+      productoId = productoSeleccionadoExistente.id;
+      productoTitulo = productoSeleccionadoExistente.titulo;
+      productoCategoria = productoSeleccionadoExistente.categoria;
+    } else {
+      const titulo = document.getElementById('nuevoTitulo').value.trim();
+      if(!titulo){ flash('Escribe el título del producto nuevo', true); return; }
+      productoTitulo = titulo;
+      productoCategoria = document.getElementById('nuevoCategoria').value;
+      // Generar ID temporal único (negativo para distinguir de los reales del catálogo)
+      // o buscar el ID más alto usado + 1 en inventario_stock
+      productoId = await generarIdProductoNuevo();
+    }
+  } else {
+    if(!productoSeleccionadoOtros){ flash('Selecciona un producto', true); return; }
+    productoId = productoSeleccionadoOtros.id;
+    productoTitulo = productoSeleccionadoOtros.titulo;
+    productoCategoria = productoSeleccionadoOtros.categoria;
+  }
+
   const almOrigen = almacenesGlobal.find(a => a.id === almacenOrigenId);
   const almDestino = almacenDestinoId ? almacenesGlobal.find(a => a.id === almacenDestinoId) : null;
 
   try {
     if(tipoMovActual === 'alta'){
-      // Sumar stock
       const { data: existente } = await supabaseClient
         .from('inventario_stock').select('*')
         .eq('producto_id', productoId).eq('almacen_id', almacenOrigenId).maybeSingle();
@@ -968,14 +1265,14 @@ async function guardarMovimiento(){
 
       if(existente){
         await supabaseClient.from('inventario_stock')
-          .update({ stock_actual: nuevo, updated_at: new Date().toISOString() })
+          .update({ stock_actual: nuevo, producto_titulo: productoTitulo, producto_categoria: productoCategoria, updated_at: new Date().toISOString() })
           .eq('id', existente.id);
       } else {
         const minimoGlobal = await obtenerMinimoGlobal();
         await supabaseClient.from('inventario_stock').insert([{
           producto_id: productoId,
-          producto_titulo: producto?.titulo || null,
-          producto_categoria: producto?.categoria || null,
+          producto_titulo: productoTitulo,
+          producto_categoria: productoCategoria,
           almacen_id: almacenOrigenId,
           stock_actual: nuevo,
           stock_minimo: minimoGlobal
@@ -984,14 +1281,16 @@ async function guardarMovimiento(){
 
       await supabaseClient.from('movimientos_inventario').insert([{
         producto_id: productoId,
-        producto_titulo: producto?.titulo || null,
+        producto_titulo: productoTitulo,
         almacen_id: almacenOrigenId,
         almacen_nombre: almOrigen?.nombre || null,
-        tipo: 'alta', cantidad, motivo, notas: notas || null,
-        stock_anterior: anterior, stock_nuevo: nuevo, usuario
+        tipo: 'alta', cantidad, motivo,
+        notas: notas || null,
+        numero_factura: factura || null,
+        stock_anterior: anterior, stock_nuevo: nuevo
       }]);
 
-      flash(`✅ +${cantidad} unidades a ${almOrigen?.nombre}`);
+      flash(`✅ +${cantidad} uds de "${productoTitulo}" en ${almOrigen?.nombre}`);
 
     } else if(tipoMovActual === 'baja'){
       const { data: existente } = await supabaseClient
@@ -1010,17 +1309,18 @@ async function guardarMovimiento(){
 
       await supabaseClient.from('movimientos_inventario').insert([{
         producto_id: productoId,
-        producto_titulo: producto?.titulo || null,
+        producto_titulo: productoTitulo,
         almacen_id: almacenOrigenId,
         almacen_nombre: almOrigen?.nombre || null,
-        tipo: 'baja', cantidad, motivo, notas: notas || null,
-        stock_anterior: anterior, stock_nuevo: nuevo, usuario
+        tipo: 'baja', cantidad, motivo,
+        notas: notas || null,
+        nombre_cliente: cliente || null,
+        stock_anterior: anterior, stock_nuevo: nuevo
       }]);
 
-      flash(`✅ -${cantidad} unidades de ${almOrigen?.nombre}`);
+      flash(`✅ -${cantidad} uds de "${productoTitulo}" en ${almOrigen?.nombre}`);
 
     } else if(tipoMovActual === 'transferencia'){
-      // Verificar stock origen
       const { data: origen } = await supabaseClient
         .from('inventario_stock').select('*')
         .eq('producto_id', productoId).eq('almacen_id', almacenOrigenId).maybeSingle();
@@ -1030,14 +1330,12 @@ async function guardarMovimiento(){
         return;
       }
 
-      // Bajar origen
       const anteriorOrigen = origen.stock_actual;
       const nuevoOrigen = anteriorOrigen - cantidad;
       await supabaseClient.from('inventario_stock')
         .update({ stock_actual: nuevoOrigen, updated_at: new Date().toISOString() })
         .eq('id', origen.id);
 
-      // Subir destino
       const { data: destino } = await supabaseClient
         .from('inventario_stock').select('*')
         .eq('producto_id', productoId).eq('almacen_id', almacenDestinoId).maybeSingle();
@@ -1053,8 +1351,8 @@ async function guardarMovimiento(){
         const minimoGlobal = await obtenerMinimoGlobal();
         await supabaseClient.from('inventario_stock').insert([{
           producto_id: productoId,
-          producto_titulo: producto?.titulo || null,
-          producto_categoria: producto?.categoria || null,
+          producto_titulo: productoTitulo,
+          producto_categoria: productoCategoria,
           almacen_id: almacenDestinoId,
           stock_actual: nuevoDest,
           stock_minimo: minimoGlobal
@@ -1063,13 +1361,14 @@ async function guardarMovimiento(){
 
       await supabaseClient.from('movimientos_inventario').insert([{
         producto_id: productoId,
-        producto_titulo: producto?.titulo || null,
+        producto_titulo: productoTitulo,
         almacen_id: almacenOrigenId,
         almacen_nombre: almOrigen?.nombre || null,
         almacen_destino_id: almacenDestinoId,
         almacen_destino_nombre: almDestino?.nombre || null,
-        tipo: 'transferencia', cantidad, motivo, notas: notas || null,
-        stock_anterior: anteriorOrigen, stock_nuevo: nuevoOrigen, usuario
+        tipo: 'transferencia', cantidad, motivo,
+        notas: notas || null,
+        stock_anterior: anteriorOrigen, stock_nuevo: nuevoOrigen
       }]);
 
       flash(`✅ Transferidas ${cantidad} uds: ${almOrigen?.nombre} → ${almDestino?.nombre}`);
@@ -1081,6 +1380,22 @@ async function guardarMovimiento(){
     console.error(e);
     flash('Error: ' + (e.message || 'desconocido'), true);
   }
+}
+
+async function generarIdProductoNuevo(){
+  // Buscar el ID más alto en inventario_stock (que no esté en el catálogo)
+  const { data } = await supabaseClient
+    .from('inventario_stock')
+    .select('producto_id')
+    .order('producto_id', { ascending: false })
+    .limit(1);
+
+  const maxInventario = (data && data[0]) ? data[0].producto_id : 0;
+  const maxCatalogo = productosCatalogo.reduce((max, p) => Math.max(max, p.id), 0);
+  const maxTodos = Math.max(maxInventario, maxCatalogo, 0);
+
+  // IDs manuales empiezan desde 100000 para evitar colisión con IDs del catálogo
+  return Math.max(maxTodos + 1, 100000);
 }
 
 async function obtenerMinimoGlobal(){
@@ -1121,19 +1436,58 @@ async function guardarAlmacen(){
   cargarTodo();
 }
 
+/* ====== MODAL MOVIMIENTO DESDE STOCK ====== */
+function abrirModalMovimientoDesdeStock(tipo, productoId, almacenId){
+  abrirModalMovimiento(tipo);
+  // Preseleccionar producto
+  const p = productosCatalogo.find(x => x.id === productoId) || (() => {
+    const stockItem = stockGlobal.find(s => s.producto_id === productoId);
+    return {
+      id: productoId,
+      titulo: stockItem?.producto_titulo || '(sin título)',
+      categoria: stockItem?.producto_categoria || '',
+      subcategoria: ''
+    };
+  })();
+
+  if(tipo === 'alta'){
+    productoSeleccionadoExistente = p;
+    document.getElementById('productoSeleccionadoBox').innerHTML = `
+      <div class="producto-seleccionado">
+        <div class="ps-info">
+          <b>${p.titulo || '(sin título)'}</b>
+          <span>${p.categoria || ''}${p.subcategoria ? ' · '+p.subcategoria : ''}</span>
+        </div>
+        <button type="button" class="btn-quitar-sel" onclick="quitarProductoExistente()">✕ Quitar</button>
+      </div>
+    `;
+  } else {
+    productoSeleccionadoOtros = p;
+    document.getElementById('productoSeleccionadoBox2').innerHTML = `
+      <div class="producto-seleccionado">
+        <div class="ps-info">
+          <b>${p.titulo || '(sin título)'}</b>
+          <span>${p.categoria || ''}</span>
+        </div>
+        <button type="button" class="btn-quitar-sel" onclick="quitarProductoOtros()">✕ Quitar</button>
+      </div>
+    `;
+  }
+
+  document.getElementById('movAlmacenOrigen').value = String(almacenId);
+}
+
 /* ====== CIERRE MODAL ====== */
 function cerrarModal(id){
   document.getElementById(id).style.display = 'none';
 }
 
-// Cerrar al hacer click fuera
 document.querySelectorAll('.modal-overlay').forEach(ov => {
   ov.addEventListener('click', e => {
     if(e.target === ov) ov.style.display = 'none';
   });
 });
 
-// Enter en login
 document.getElementById('passLogin')?.addEventListener('keypress', e => {
   if(e.key === 'Enter') intentarLogin();
 });
