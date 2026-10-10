@@ -309,11 +309,16 @@ textarea{resize:vertical; height:70px}
 .drop-item:hover, .drop-item.highlight{background:var(--terracota-suave)}
 .drop-item .drop-tit{font-weight:600; color:var(--text-main)}
 .drop-item .drop-sub{font-size:11px; color:var(--text-muted); margin-top:2px}
+.drop-item.add-new{background:var(--success-light)}
+.drop-item.add-new .drop-tit{color:var(--success)}
 .drop-empty{padding:14px; text-align:center; color:var(--text-muted); font-size:12.5px}
 .producto-seleccionado{
   background:var(--success-light); border:1px solid #a7f3d0;
   border-radius:var(--radius-sm); padding:10px 12px; margin-top:6px;
   display:flex; justify-content:space-between; align-items:center; gap:10px;
+}
+.producto-seleccionado.proveedor{
+  background:var(--info-light); border-color:#bfdbfe;
 }
 .producto-seleccionado .ps-info{font-size:13px}
 .producto-seleccionado .ps-info b{display:block; color:var(--text-main)}
@@ -418,6 +423,7 @@ textarea{resize:vertical; height:70px}
     <button class="sidebar-btn-cat active" data-vista="dashboard" onclick="cambiarVista('dashboard', this)"><span class="cat-ico">📊</span> Dashboard</button>
     <button class="sidebar-btn-cat" data-vista="stock" onclick="cambiarVista('stock', this)"><span class="cat-ico">📦</span> Stock por almacén</button>
     <button class="sidebar-btn-cat" data-vista="movimientos" onclick="cambiarVista('movimientos', this)"><span class="cat-ico">📜</span> Historial</button>
+    <button class="sidebar-btn-cat" data-vista="proveedores" onclick="cambiarVista('proveedores', this)"><span class="cat-ico">🚚</span> Proveedores</button>
 
     <div class="menu-label">Almacenes</div>
     <div id="listaAlmacenesSidebar"></div>
@@ -478,7 +484,7 @@ textarea{resize:vertical; height:70px}
             <th>Producto</th>
             <th>Almacén</th>
             <th>Cant.</th>
-            <th>Factura / Cliente</th>
+            <th>Factura / Cliente / Prov.</th>
           </tr>
         </thead>
         <tbody id="tablaUltimosMovs"></tbody>
@@ -520,7 +526,7 @@ textarea{resize:vertical; height:70px}
   <section id="vistaMovimientos" style="display:none">
     <div class="action-bar">
       <div class="search-box">
-        <input type="text" id="inputBuscadorMovs" placeholder="Buscar producto, almacén, factura o cliente..." oninput="renderizarMovimientos()" autocomplete="off">
+        <input type="text" id="inputBuscadorMovs" placeholder="Buscar producto, proveedor, factura o cliente..." oninput="renderizarMovimientos()" autocomplete="off">
       </div>
       <select id="filtroTipoMovs" onchange="renderizarMovimientos()" style="padding:11px 12px; border-radius:var(--radius-sm); border:1px solid var(--border); font-family:inherit; font-size:13px; min-height:var(--touch-target); background:#fff;">
         <option value="">Todos los tipos</option>
@@ -541,13 +547,39 @@ textarea{resize:vertical; height:70px}
             <th>Almacén</th>
             <th>Cant.</th>
             <th>Antes → Después</th>
+            <th>Proveedor</th>
             <th>Factura</th>
             <th>Cliente</th>
             <th>Motivo</th>
-            <th>Notas</th>
           </tr>
         </thead>
         <tbody id="tablaMovs"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- VISTA: PROVEEDORES -->
+  <section id="vistaProveedores" style="display:none">
+    <div class="action-bar">
+      <div class="search-box">
+        <input type="text" id="inputBuscadorProv" placeholder="Buscar proveedor..." oninput="renderizarProveedores()" autocomplete="off">
+      </div>
+      <button class="btn-primary-action" onclick="abrirModalNuevoProveedor()">➕ Nuevo Proveedor</button>
+      <span class="contador-resultados" id="contadorProv"></span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Proveedor</th>
+            <th>Contacto</th>
+            <th>Teléfono</th>
+            <th>Notas</th>
+            <th>Registrado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="tablaProv"></tbody>
       </table>
     </div>
   </section>
@@ -562,7 +594,6 @@ textarea{resize:vertical; height:70px}
     </div>
     <div class="modal-body">
 
-      <!-- TABS solo para ALTA -->
       <div id="grupoTabsAlta" style="display:none">
         <div class="form-section-label">📦 Origen del producto</div>
         <div class="tabs-modo">
@@ -571,7 +602,6 @@ textarea{resize:vertical; height:70px}
         </div>
       </div>
 
-      <!-- MODO: PRODUCTO EXISTENTE -->
       <div id="modoExistente">
         <label style="margin-top:0">Buscar producto en catálogo:</label>
         <div class="buscador-drop">
@@ -581,7 +611,6 @@ textarea{resize:vertical; height:70px}
         <div id="productoSeleccionadoBox"></div>
       </div>
 
-      <!-- MODO: PRODUCTO NUEVO -->
       <div id="modoNuevo" style="display:none">
         <label style="margin-top:0">Título del producto nuevo:</label>
         <input type="text" id="nuevoTitulo" placeholder="Ej. Sala Esquinera Roma">
@@ -606,7 +635,6 @@ textarea{resize:vertical; height:70px}
         <div class="hint">El producto nuevo <b>NO se publica</b> en el catálogo de la tienda. Solo se registra internamente en el inventario.</div>
       </div>
 
-      <!-- PRODUCTO: INFO GENERAL (solo baja/transferencia, para mostrar título) -->
       <div id="modoOtrosTipos" style="display:none">
         <label style="margin-top:0">Buscar producto:</label>
         <div class="buscador-drop">
@@ -639,13 +667,21 @@ textarea{resize:vertical; height:70px}
         <option value="otro">Otro</option>
       </select>
 
-      <!-- CAMPO FACTURA (solo ALTA) -->
+      <!-- PROVEEDOR (solo ALTA) -->
+      <div id="grupoProveedor" style="display:none">
+        <label>Proveedor:</label>
+        <div class="buscador-drop">
+          <input type="text" id="buscarProveedorInput" placeholder="Escribe para buscar o crear proveedor..." autocomplete="off" oninput="filtrarProveedoresDrop()" onfocus="filtrarProveedoresDrop()">
+          <div class="drop-lista" id="dropListaProveedores"></div>
+        </div>
+        <div id="proveedorSeleccionadoBox"></div>
+      </div>
+
       <div id="grupoFactura" style="display:none">
         <label>Nº de Factura (opcional):</label>
         <input type="text" id="movFactura" placeholder="Ej. FAC-2024-00123">
       </div>
 
-      <!-- CAMPO CLIENTE (solo BAJA) -->
       <div id="grupoCliente" style="display:none">
         <label>Nombre del cliente:</label>
         <input type="text" id="movCliente" placeholder="Ej. Juan Pérez">
@@ -699,6 +735,31 @@ textarea{resize:vertical; height:70px}
   </div>
 </div>
 
+<!-- MODAL: PROVEEDOR -->
+<div class="modal-overlay" id="modalProveedor">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3 id="modalProveedorTitulo">Nuevo Proveedor</h3>
+      <button class="modal-close" onclick="cerrarModal('modalProveedor')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="proveedorIdOriginal">
+      <label>Nombre del proveedor:</label>
+      <input type="text" id="proveedorNombre" placeholder="Ej. IMPULSORA">
+      <label>Contacto (opcional):</label>
+      <input type="text" id="proveedorContacto" placeholder="Nombre del vendedor">
+      <label>Teléfono (opcional):</label>
+      <input type="text" id="proveedorTelefono" placeholder="Ej. 555-123-4567">
+      <label>Notas (opcional):</label>
+      <textarea id="proveedorNotas" placeholder="Días de entrega, condiciones, etc."></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-modal-cancel" onclick="cerrarModal('modalProveedor')">Cancelar</button>
+      <button class="btn-modal-save" onclick="guardarProveedor()">Guardar Proveedor</button>
+    </div>
+  </div>
+</div>
+
 <div class="mensaje-flash" id="flash"></div>
 
 <script>
@@ -710,13 +771,14 @@ let productosCatalogo = [];
 let almacenesGlobal = [];
 let stockGlobal = [];
 let movimientosGlobal = [];
+let proveedoresGlobal = [];
 let vistaActual = 'dashboard';
 let tipoMovActual = 'alta';
-let modoAltaActual = 'existente'; // 'existente' | 'nuevo'
+let modoAltaActual = 'existente';
 
-// Producto seleccionado desde el buscador
-let productoSeleccionadoExistente = null; // {id, titulo, categoria, subcategoria}
-let productoSeleccionadoOtros = null;     // para baja/transferencia
+let productoSeleccionadoExistente = null;
+let productoSeleccionadoOtros = null;
+let proveedorSeleccionado = null;
 
 /* ====== UTILS ====== */
 function flash(msg, error=false){
@@ -731,6 +793,9 @@ function fmtFecha(iso){
   const d = new Date(iso);
   return d.toLocaleString('es-MX',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'});
 }
+function escapeHtml(s){
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
 
 /* ====== AUTH ====== */
 window.addEventListener('DOMContentLoaded', async () => {
@@ -739,7 +804,6 @@ window.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('loginScreen').style.display='none';
     cargarTodo();
   }
-  // Cerrar dropdowns al hacer click fuera
   document.addEventListener('click', (e) => {
     if(!e.target.closest('.buscador-drop')){
       document.querySelectorAll('.drop-lista').forEach(el => el.classList.remove('show'));
@@ -764,7 +828,6 @@ async function cerrarSesion(){
   location.reload();
 }
 
-/* ====== MENU MOVIL ====== */
 function toggleMenuMobil(){
   document.getElementById('appSidebar').classList.toggle('open');
   document.getElementById('sidebarOverlay').classList.toggle('open');
@@ -773,29 +836,26 @@ function toggleMenuMobil(){
 /* ====== CARGAR DATOS ====== */
 async function cargarTodo(){
   const { data: prods } = await supabaseClient
-    .from('productos')
-    .select('id, titulo, categoria, subcategoria')
+    .from('productos').select('id, titulo, categoria, subcategoria')
     .order('titulo',{ascending:true});
   productosCatalogo = prods || [];
 
   const { data: alms } = await supabaseClient
-    .from('almacenes')
-    .select('*')
-    .order('nombre',{ascending:true});
+    .from('almacenes').select('*').order('nombre',{ascending:true});
   almacenesGlobal = alms || [];
 
   const { data: st } = await supabaseClient
-    .from('inventario_stock')
-    .select('*')
-    .order('updated_at',{ascending:false});
+    .from('inventario_stock').select('*').order('updated_at',{ascending:false});
   stockGlobal = st || [];
 
   const { data: movs } = await supabaseClient
-    .from('movimientos_inventario')
-    .select('*')
-    .order('created_at',{ascending:false})
-    .limit(500);
+    .from('movimientos_inventario').select('*')
+    .order('created_at',{ascending:false}).limit(500);
   movimientosGlobal = movs || [];
+
+  const { data: provs } = await supabaseClient
+    .from('proveedores').select('*').order('nombre',{ascending:true});
+  proveedoresGlobal = provs || [];
 
   renderizarTodo();
 }
@@ -806,6 +866,7 @@ function renderizarTodo(){
   renderizarStock();
   renderizarMovimientos();
   renderizarUltimosMovs();
+  renderizarProveedores();
   llenarSelectsAlmacenes();
 }
 
@@ -819,8 +880,8 @@ function renderizarAlmacenesSidebar(){
   cont.innerHTML = almacenesGlobal.map(a => `
     <button class="sidebar-btn-cat" onclick="filtrarPorAlmacen(${a.id}, this)">
       <span class="cat-ico">🏬</span>
-      <span style="flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${a.nombre}</span>
-      ${a.categoria ? `<span style="font-size:10px; color:#9c8b7f;">${a.categoria}</span>` : ''}
+      <span style="flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(a.nombre)}</span>
+      ${a.categoria ? `<span style="font-size:10px; color:#9c8b7f;">${escapeHtml(a.categoria)}</span>` : ''}
     </button>
   `).join('');
 }
@@ -862,7 +923,7 @@ function renderizarStock(){
   document.getElementById('contadorStock').textContent = `${lista.length} registro${lista.length===1?'':'s'}`;
 
   if(lista.length === 0){
-    tbody.innerHTML = '<tr><td colspan="7"><div class="vacio"><span class="ico">📭</span>No hay registros de stock. Empieza dando de alta un producto.</div></td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7"><div class="vacio"><span class="ico">📭</span>No hay registros de stock.</div></td></tr>';
     return;
   }
 
@@ -871,16 +932,16 @@ function renderizarStock(){
     const bajo = s.stock_actual <= s.stock_minimo;
     return `
       <tr>
-        <td><b>${s.producto_titulo || '(sin título)'}</b></td>
-        <td>${s.producto_categoria || '-'}</td>
-        <td>${alm ? alm.nombre : '—'}</td>
+        <td><b>${escapeHtml(s.producto_titulo || '(sin título)')}</b></td>
+        <td>${escapeHtml(s.producto_categoria || '-')}</td>
+        <td>${escapeHtml(alm ? alm.nombre : '—')}</td>
         <td><span class="stock-num ${bajo?'low':'ok'}">${s.stock_actual}</span></td>
         <td>${s.stock_minimo}</td>
         <td>${bajo ? '<span class="badge bajo">Stock bajo</span>' : '<span class="badge ok">OK</span>'}</td>
         <td>
-          <button class="btn-action btn-in" onclick="abrirModalMovimientoDesdeStock('alta', ${s.producto_id}, ${s.almacen_id})">⬆️ Alta</button>
-          <button class="btn-action btn-out" onclick="abrirModalMovimientoDesdeStock('baja', ${s.producto_id}, ${s.almacen_id})">⬇️ Baja</button>
-          <button class="btn-action btn-edit" onclick="editarMinimo(${s.id}, ${s.stock_minimo})">✏️ Mín.</button>
+          <button class="btn-action btn-in" onclick="abrirModalMovimientoDesdeStock('alta', ${s.producto_id}, ${s.almacen_id})">⬆️</button>
+          <button class="btn-action btn-out" onclick="abrirModalMovimientoDesdeStock('baja', ${s.producto_id}, ${s.almacen_id})">⬇️</button>
+          <button class="btn-action btn-edit" onclick="editarMinimo(${s.id}, ${s.stock_minimo})">✏️</button>
         </td>
       </tr>
     `;
@@ -911,6 +972,7 @@ function renderizarMovimientos(){
     (m.almacen_nombre || '').toLowerCase().includes(q) ||
     (m.numero_factura || '').toLowerCase().includes(q) ||
     (m.nombre_cliente || '').toLowerCase().includes(q) ||
+    (m.proveedor || '').toLowerCase().includes(q) ||
     (m.motivo || '').toLowerCase().includes(q)
   );
 
@@ -930,14 +992,14 @@ function renderizarMovimientos(){
       <tr>
         <td>${fmtFecha(m.created_at)}</td>
         <td><span class="badge ${m.tipo}">${m.tipo}</span></td>
-        <td><b>${m.producto_titulo || '(sin título)'}</b></td>
-        <td>${almacenTxt}</td>
+        <td><b>${escapeHtml(m.producto_titulo || '(sin título)')}</b></td>
+        <td>${escapeHtml(almacenTxt)}</td>
         <td><b>${m.cantidad}</b></td>
         <td>${diff}</td>
-        <td>${m.numero_factura || '—'}</td>
-        <td>${m.nombre_cliente || '—'}</td>
-        <td>${m.motivo || '-'}</td>
-        <td>${m.notas || '—'}</td>
+        <td>${escapeHtml(m.proveedor || '—')}</td>
+        <td>${escapeHtml(m.numero_factura || '—')}</td>
+        <td>${escapeHtml(m.nombre_cliente || '—')}</td>
+        <td>${escapeHtml(m.motivo || '-')}</td>
       </tr>
     `;
   }).join('');
@@ -952,18 +1014,54 @@ function renderizarUltimosMovs(){
     return;
   }
   tbody.innerHTML = ultimos.map(m => {
-    const factCliente = m.tipo === 'alta' ? (m.numero_factura || '—') : (m.tipo === 'baja' ? (m.nombre_cliente || '—') : '—');
+    let ref = '—';
+    if(m.tipo === 'alta') ref = m.proveedor || m.numero_factura || '—';
+    else if(m.tipo === 'baja') ref = m.nombre_cliente || '—';
     return `
       <tr>
         <td>${fmtFecha(m.created_at)}</td>
         <td><span class="badge ${m.tipo}">${m.tipo}</span></td>
-        <td><b>${m.producto_titulo || '(sin título)'}</b></td>
-        <td>${m.tipo === 'transferencia' ? (m.almacen_nombre + ' → ' + m.almacen_destino_nombre) : (m.almacen_nombre || '—')}</td>
+        <td><b>${escapeHtml(m.producto_titulo || '(sin título)')}</b></td>
+        <td>${m.tipo === 'transferencia' ? (escapeHtml(m.almacen_nombre) + ' → ' + escapeHtml(m.almacen_destino_nombre)) : escapeHtml(m.almacen_nombre || '—')}</td>
         <td><b>${m.cantidad}</b></td>
-        <td>${factCliente}</td>
+        <td>${escapeHtml(ref)}</td>
       </tr>
     `;
   }).join('');
+}
+
+/* ====== VISTA: PROVEEDORES ====== */
+function renderizarProveedores(){
+  const tbody = document.getElementById('tablaProv');
+  const q = (document.getElementById('inputBuscadorProv').value || '').toLowerCase().trim();
+
+  let lista = [...proveedoresGlobal];
+  if(q) lista = lista.filter(p =>
+    (p.nombre || '').toLowerCase().includes(q) ||
+    (p.contacto || '').toLowerCase().includes(q) ||
+    (p.telefono || '').toLowerCase().includes(q)
+  );
+
+  document.getElementById('contadorProv').textContent = `${lista.length} proveedor${lista.length===1?'':'es'}`;
+
+  if(lista.length === 0){
+    tbody.innerHTML = '<tr><td colspan="6"><div class="vacio"><span class="ico">🚚</span>Sin proveedores registrados.</div></td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = lista.map(p => `
+    <tr>
+      <td><b>${escapeHtml(p.nombre)}</b></td>
+      <td>${escapeHtml(p.contacto || '—')}</td>
+      <td>${escapeHtml(p.telefono || '—')}</td>
+      <td>${escapeHtml(p.notas || '—')}</td>
+      <td>${fmtFecha(p.created_at)}</td>
+      <td>
+        <button class="btn-action btn-edit" onclick="abrirModalEditarProveedor(${p.id})">✏️</button>
+        <button class="btn-action btn-delete" onclick="eliminarProveedor(${p.id})">🗑️</button>
+      </td>
+    </tr>
+  `).join('');
 }
 
 /* ====== VISTA ====== */
@@ -975,11 +1073,13 @@ function cambiarVista(vista, btn){
   document.getElementById('vistaDashboard').style.display = 'none';
   document.getElementById('vistaStock').style.display = 'none';
   document.getElementById('vistaMovimientos').style.display = 'none';
+  document.getElementById('vistaProveedores').style.display = 'none';
 
   const titulos = {
     dashboard: ['Dashboard','Resumen general del inventario.'],
     stock: ['Stock por almacén','Consulta y gestiona el stock en cada ubicación.'],
-    movimientos: ['Historial de movimientos','Bitácora completa de altas, bajas y transferencias.']
+    movimientos: ['Historial de movimientos','Bitácora completa de altas, bajas y transferencias.'],
+    proveedores: ['Proveedores','Catálogo de proveedores registrados.']
   };
   document.getElementById('tituloVista').textContent = titulos[vista][0];
   document.getElementById('subtituloVista').textContent = titulos[vista][1];
@@ -987,6 +1087,7 @@ function cambiarVista(vista, btn){
   if(vista === 'dashboard') document.getElementById('vistaDashboard').style.display = 'block';
   if(vista === 'stock') document.getElementById('vistaStock').style.display = 'block';
   if(vista === 'movimientos') document.getElementById('vistaMovimientos').style.display = 'block';
+  if(vista === 'proveedores') document.getElementById('vistaProveedores').style.display = 'block';
 
   if(window.innerWidth <= 768) toggleMenuMobil();
 }
@@ -999,7 +1100,7 @@ function llenarSelectsAlmacenes(){
     if(!sel) return;
     const valorActual = sel.value;
     sel.innerHTML = (idSel === 'filtroAlmacenStock' ? '<option value="">Todos los almacenes</option>' : '') +
-      almacenesGlobal.filter(a => a.activo).map(a => `<option value="${a.id}">${a.nombre}${a.categoria ? ' · '+a.categoria : ''}</option>`).join('');
+      almacenesGlobal.filter(a => a.activo).map(a => `<option value="${a.id}">${escapeHtml(a.nombre)}${a.categoria ? ' · '+escapeHtml(a.categoria) : ''}</option>`).join('');
     if(valorActual) sel.value = valorActual;
   });
 }
@@ -1010,8 +1111,8 @@ function abrirModalMovimiento(tipo){
   modoAltaActual = 'existente';
   productoSeleccionadoExistente = null;
   productoSeleccionadoOtros = null;
+  proveedorSeleccionado = null;
 
-  // Reset campos
   document.getElementById('movCantidad').value = 1;
   document.getElementById('movMotivo').value = tipo === 'baja' ? 'venta' : 'compra';
   document.getElementById('movNotas').value = '';
@@ -1022,17 +1123,17 @@ function abrirModalMovimiento(tipo){
   document.getElementById('nuevoSubcategoria').value = '';
   document.getElementById('buscarProductoInput').value = '';
   document.getElementById('buscarProductoInput2').value = '';
+  document.getElementById('buscarProveedorInput').value = '';
   document.getElementById('productoSeleccionadoBox').innerHTML = '';
   document.getElementById('productoSeleccionadoBox2').innerHTML = '';
-  document.getElementById('dropListaProductos').classList.remove('show');
-  document.getElementById('dropListaProductos2').classList.remove('show');
+  document.getElementById('proveedorSeleccionadoBox').innerHTML = '';
+  document.querySelectorAll('.drop-lista').forEach(el => el.classList.remove('show'));
 
   llenarSelectsAlmacenes();
 
   const titulos = { alta:'Dar de Alta Stock', baja:'Dar de Baja Stock', transferencia:'Transferir Stock entre Almacenes' };
   document.getElementById('modalMovTitulo').textContent = titulos[tipo];
 
-  // Mostrar/ocultar según tipo
   const grupoTabs = document.getElementById('grupoTabsAlta');
   const modoExistente = document.getElementById('modoExistente');
   const modoNuevo = document.getElementById('modoNuevo');
@@ -1041,6 +1142,7 @@ function abrirModalMovimiento(tipo){
   const labelOrigen = document.getElementById('labelAlmacenOrigen');
   const grupoFactura = document.getElementById('grupoFactura');
   const grupoCliente = document.getElementById('grupoCliente');
+  const grupoProveedor = document.getElementById('grupoProveedor');
 
   if(tipo === 'alta'){
     grupoTabs.style.display = 'block';
@@ -1049,6 +1151,7 @@ function abrirModalMovimiento(tipo){
     modoOtros.style.display = 'none';
     grupoFactura.style.display = 'block';
     grupoCliente.style.display = 'none';
+    grupoProveedor.style.display = 'block';
     labelOrigen.textContent = 'Almacén destino:';
     grupoDestino.style.display = 'none';
     cambiarModoAlta('existente');
@@ -1059,6 +1162,7 @@ function abrirModalMovimiento(tipo){
     modoOtros.style.display = 'block';
     grupoFactura.style.display = 'none';
     grupoCliente.style.display = 'block';
+    grupoProveedor.style.display = 'none';
     labelOrigen.textContent = 'Almacén origen:';
     grupoDestino.style.display = 'none';
   } else if(tipo === 'transferencia'){
@@ -1068,6 +1172,7 @@ function abrirModalMovimiento(tipo){
     modoOtros.style.display = 'block';
     grupoFactura.style.display = 'none';
     grupoCliente.style.display = 'none';
+    grupoProveedor.style.display = 'none';
     labelOrigen.textContent = 'Almacén origen:';
     grupoDestino.style.display = 'block';
   }
@@ -1095,7 +1200,7 @@ function cambiarModoAlta(modo){
   }
 }
 
-/* ====== BUSCADOR DE PRODUCTOS (drop) ====== */
+/* ====== BUSCADOR PRODUCTOS (existente) ====== */
 function filtrarProductosDrop(){
   const q = document.getElementById('buscarProductoInput').value.toLowerCase().trim();
   const drop = document.getElementById('dropListaProductos');
@@ -1110,8 +1215,8 @@ function filtrarProductosDrop(){
 
   drop.innerHTML = lista.slice(0, 30).map(p => `
     <div class="drop-item" onclick="seleccionarProductoExistente(${p.id})">
-      <div class="drop-tit">${p.titulo || '(sin título)'}</div>
-      <div class="drop-sub">${p.categoria || ''}${p.subcategoria ? ' · '+p.subcategoria : ''}</div>
+      <div class="drop-tit">${escapeHtml(p.titulo || '(sin título)')}</div>
+      <div class="drop-sub">${escapeHtml(p.categoria || '')}${p.subcategoria ? ' · '+escapeHtml(p.subcategoria) : ''}</div>
     </div>
   `).join('');
   drop.classList.add('show');
@@ -1126,8 +1231,8 @@ function seleccionarProductoExistente(id){
   document.getElementById('productoSeleccionadoBox').innerHTML = `
     <div class="producto-seleccionado">
       <div class="ps-info">
-        <b>${p.titulo || '(sin título)'}</b>
-        <span>${p.categoria || ''}${p.subcategoria ? ' · '+p.subcategoria : ''}</span>
+        <b>${escapeHtml(p.titulo || '(sin título)')}</b>
+        <span>${escapeHtml(p.categoria || '')}${p.subcategoria ? ' · '+escapeHtml(p.subcategoria) : ''}</span>
       </div>
       <button type="button" class="btn-quitar-sel" onclick="quitarProductoExistente()">✕ Quitar</button>
     </div>
@@ -1139,22 +1244,19 @@ function quitarProductoExistente(){
   document.getElementById('productoSeleccionadoBox').innerHTML = '';
 }
 
-/* ====== BUSCADOR PARA BAJA / TRANSFERENCIA ====== */
+/* ====== BUSCADOR PRODUCTOS (baja/transferencia) ====== */
 function filtrarProductosDrop2(){
   const q = document.getElementById('buscarProductoInput2').value.toLowerCase().trim();
   const drop = document.getElementById('dropListaProductos2');
 
-  // Solo mostrar productos que tengan stock (para baja y transferencia)
   const idsConStock = new Set(stockGlobal.filter(s => s.stock_actual > 0).map(s => s.producto_id));
 
-  // Incluir productos en stockGlobal aunque no estén en el catálogo (productos nuevos manuales)
   const productosDisponibles = [];
   idsConStock.forEach(pid => {
     const enCatalogo = productosCatalogo.find(p => p.id === pid);
     if(enCatalogo){
       productosDisponibles.push(enCatalogo);
     } else {
-      // Producto que existe solo en inventario (creado manual)
       const stockItem = stockGlobal.find(s => s.producto_id === pid);
       productosDisponibles.push({
         id: pid,
@@ -1176,8 +1278,8 @@ function filtrarProductosDrop2(){
 
   drop.innerHTML = lista.slice(0, 30).map(p => `
     <div class="drop-item" onclick="seleccionarProductoOtros(${p.id})">
-      <div class="drop-tit">${p.titulo || '(sin título)'}</div>
-      <div class="drop-sub">${p.categoria || ''}</div>
+      <div class="drop-tit">${escapeHtml(p.titulo || '(sin título)')}</div>
+      <div class="drop-sub">${escapeHtml(p.categoria || '')}</div>
     </div>
   `).join('');
   drop.classList.add('show');
@@ -1199,8 +1301,8 @@ function seleccionarProductoOtros(id){
   document.getElementById('productoSeleccionadoBox2').innerHTML = `
     <div class="producto-seleccionado">
       <div class="ps-info">
-        <b>${p.titulo || '(sin título)'}</b>
-        <span>${p.categoria || ''}</span>
+        <b>${escapeHtml(p.titulo || '(sin título)')}</b>
+        <span>${escapeHtml(p.categoria || '')}</span>
       </div>
       <button type="button" class="btn-quitar-sel" onclick="quitarProductoOtros()">✕ Quitar</button>
     </div>
@@ -1210,6 +1312,77 @@ function seleccionarProductoOtros(id){
 function quitarProductoOtros(){
   productoSeleccionadoOtros = null;
   document.getElementById('productoSeleccionadoBox2').innerHTML = '';
+}
+
+/* ====== BUSCADOR PROVEEDORES ====== */
+function filtrarProveedoresDrop(){
+  const q = document.getElementById('buscarProveedorInput').value.trim();
+  const drop = document.getElementById('dropListaProveedores');
+  const qLower = q.toLowerCase();
+
+  let lista = proveedoresGlobal;
+  if(q) lista = lista.filter(p => (p.nombre||'').toLowerCase().includes(qLower));
+
+  let html = lista.slice(0, 30).map(p => `
+    <div class="drop-item" onclick="seleccionarProveedor('${escapeHtml(p.nombre).replace(/'/g, "\\'")}')">
+      <div class="drop-tit">🚚 ${escapeHtml(p.nombre)}</div>
+      ${p.contacto ? `<div class="drop-sub">${escapeHtml(p.contacto)}</div>` : ''}
+    </div>
+  `).join('');
+
+  // Opción para agregar nuevo si lo escrito no coincide exactamente con alguno
+  if(q && !proveedoresGlobal.some(p => (p.nombre||'').toLowerCase() === qLower)){
+    html += `
+      <div class="drop-item add-new" onclick="seleccionarProveedorNuevo('${escapeHtml(q).replace(/'/g, "\\'")}')">
+        <div class="drop-tit">➕ Agregar nuevo: "${escapeHtml(q)}"</div>
+        <div class="drop-sub">Se guardará en el catálogo de proveedores</div>
+      </div>
+    `;
+  }
+
+  if(!html){
+    drop.innerHTML = '<div class="drop-empty">Escribe para buscar o crear un proveedor</div>';
+  } else {
+    drop.innerHTML = html;
+  }
+  drop.classList.add('show');
+}
+
+function seleccionarProveedor(nombre){
+  const p = proveedoresGlobal.find(x => x.nombre === nombre);
+  proveedorSeleccionado = { nombre, esNuevo: false, id: p?.id };
+  document.getElementById('buscarProveedorInput').value = '';
+  document.getElementById('dropListaProveedores').classList.remove('show');
+  renderizarProveedorSeleccionado();
+}
+
+function seleccionarProveedorNuevo(nombre){
+  proveedorSeleccionado = { nombre, esNuevo: true };
+  document.getElementById('buscarProveedorInput').value = '';
+  document.getElementById('dropListaProveedores').classList.remove('show');
+  renderizarProveedorSeleccionado();
+}
+
+function renderizarProveedorSeleccionado(){
+  const box = document.getElementById('proveedorSeleccionadoBox');
+  if(!proveedorSeleccionado){
+    box.innerHTML = '';
+    return;
+  }
+  box.innerHTML = `
+    <div class="producto-seleccionado proveedor">
+      <div class="ps-info">
+        <b>🚚 ${escapeHtml(proveedorSeleccionado.nombre)}</b>
+        <span>${proveedorSeleccionado.esNuevo ? 'Se creará al guardar' : 'Proveedor registrado'}</span>
+      </div>
+      <button type="button" class="btn-quitar-sel" onclick="quitarProveedor()">✕ Quitar</button>
+    </div>
+  `;
+}
+
+function quitarProveedor(){
+  proveedorSeleccionado = null;
+  renderizarProveedorSeleccionado();
 }
 
 /* ====== GUARDAR MOVIMIENTO ====== */
@@ -1228,6 +1401,7 @@ async function guardarMovimiento(){
   if(tipoMovActual === 'transferencia' && almacenDestinoId === almacenOrigenId){ flash('Origen y destino deben ser diferentes', true); return; }
 
   let productoId, productoTitulo, productoCategoria;
+  let proveedorNombre = null;
 
   if(tipoMovActual === 'alta'){
     if(modoAltaActual === 'existente'){
@@ -1240,9 +1414,23 @@ async function guardarMovimiento(){
       if(!titulo){ flash('Escribe el título del producto nuevo', true); return; }
       productoTitulo = titulo;
       productoCategoria = document.getElementById('nuevoCategoria').value;
-      // Generar ID temporal único (negativo para distinguir de los reales del catálogo)
-      // o buscar el ID más alto usado + 1 en inventario_stock
       productoId = await generarIdProductoNuevo();
+    }
+
+    // Proveedor (opcional): si eligió uno nuevo, lo creamos primero
+    if(proveedorSeleccionado){
+      proveedorNombre = proveedorSeleccionado.nombre;
+      if(proveedorSeleccionado.esNuevo){
+        // Verificar si ya existe (por las dudas)
+        const yaExiste = proveedoresGlobal.some(p => (p.nombre||'').toLowerCase() === proveedorNombre.toLowerCase());
+        if(!yaExiste){
+          const { error: errProv } = await supabaseClient.from('proveedores').insert([{ nombre: proveedorNombre }]);
+          if(errProv){
+            console.warn('No se pudo crear el proveedor:', errProv.message);
+            // Continuamos igual, el movimiento se guarda con el nombre
+          }
+        }
+      }
     }
   } else {
     if(!productoSeleccionadoOtros){ flash('Selecciona un producto', true); return; }
@@ -1287,6 +1475,7 @@ async function guardarMovimiento(){
         tipo: 'alta', cantidad, motivo,
         notas: notas || null,
         numero_factura: factura || null,
+        proveedor: proveedorNombre || null,
         stock_anterior: anterior, stock_nuevo: nuevo
       }]);
 
@@ -1383,18 +1572,12 @@ async function guardarMovimiento(){
 }
 
 async function generarIdProductoNuevo(){
-  // Buscar el ID más alto en inventario_stock (que no esté en el catálogo)
   const { data } = await supabaseClient
-    .from('inventario_stock')
-    .select('producto_id')
-    .order('producto_id', { ascending: false })
-    .limit(1);
-
+    .from('inventario_stock').select('producto_id')
+    .order('producto_id', { ascending: false }).limit(1);
   const maxInventario = (data && data[0]) ? data[0].producto_id : 0;
   const maxCatalogo = productosCatalogo.reduce((max, p) => Math.max(max, p.id), 0);
   const maxTodos = Math.max(maxInventario, maxCatalogo, 0);
-
-  // IDs manuales empiezan desde 100000 para evitar colisión con IDs del catálogo
   return Math.max(maxTodos + 1, 100000);
 }
 
@@ -1436,10 +1619,73 @@ async function guardarAlmacen(){
   cargarTodo();
 }
 
+/* ====== MODAL PROVEEDOR ====== */
+function abrirModalNuevoProveedor(){
+  document.getElementById('modalProveedorTitulo').textContent = 'Nuevo Proveedor';
+  document.getElementById('proveedorIdOriginal').value = '';
+  document.getElementById('proveedorNombre').value = '';
+  document.getElementById('proveedorContacto').value = '';
+  document.getElementById('proveedorTelefono').value = '';
+  document.getElementById('proveedorNotas').value = '';
+  document.getElementById('modalProveedor').style.display = 'flex';
+}
+
+function abrirModalEditarProveedor(id){
+  const p = proveedoresGlobal.find(x => x.id === id);
+  if(!p) return;
+  document.getElementById('modalProveedorTitulo').textContent = 'Editar Proveedor';
+  document.getElementById('proveedorIdOriginal').value = p.id;
+  document.getElementById('proveedorNombre').value = p.nombre || '';
+  document.getElementById('proveedorContacto').value = p.contacto || '';
+  document.getElementById('proveedorTelefono').value = p.telefono || '';
+  document.getElementById('proveedorNotas').value = p.notas || '';
+  document.getElementById('modalProveedor').style.display = 'flex';
+}
+
+async function guardarProveedor(){
+  const id = document.getElementById('proveedorIdOriginal').value;
+  const nombre = document.getElementById('proveedorNombre').value.trim();
+  const contacto = document.getElementById('proveedorContacto').value.trim();
+  const telefono = document.getElementById('proveedorTelefono').value.trim();
+  const notas = document.getElementById('proveedorNotas').value.trim();
+
+  if(!nombre){ flash('Escribe el nombre del proveedor', true); return; }
+
+  const datos = {
+    nombre,
+    contacto: contacto || null,
+    telefono: telefono || null,
+    notas: notas || null
+  };
+
+  if(id){
+    const { error } = await supabaseClient.from('proveedores').update(datos).eq('id', id);
+    if(error){ flash('Error: '+error.message, true); return; }
+    flash('Proveedor actualizado');
+  } else {
+    const { error } = await supabaseClient.from('proveedores').insert([datos]);
+    if(error){
+      if(error.code === '23505'){ flash('Ese proveedor ya existe', true); }
+      else { flash('Error: '+error.message, true); }
+      return;
+    }
+    flash('Proveedor creado');
+  }
+  cerrarModal('modalProveedor');
+  cargarTodo();
+}
+
+async function eliminarProveedor(id){
+  if(!confirm('¿Eliminar este proveedor? Los movimientos pasados conservan su nombre.')) return;
+  const { error } = await supabaseClient.from('proveedores').delete().eq('id', id);
+  if(error){ flash('Error: '+error.message, true); return; }
+  flash('Proveedor eliminado');
+  cargarTodo();
+}
+
 /* ====== MODAL MOVIMIENTO DESDE STOCK ====== */
 function abrirModalMovimientoDesdeStock(tipo, productoId, almacenId){
   abrirModalMovimiento(tipo);
-  // Preseleccionar producto
   const p = productosCatalogo.find(x => x.id === productoId) || (() => {
     const stockItem = stockGlobal.find(s => s.producto_id === productoId);
     return {
@@ -1455,8 +1701,8 @@ function abrirModalMovimientoDesdeStock(tipo, productoId, almacenId){
     document.getElementById('productoSeleccionadoBox').innerHTML = `
       <div class="producto-seleccionado">
         <div class="ps-info">
-          <b>${p.titulo || '(sin título)'}</b>
-          <span>${p.categoria || ''}${p.subcategoria ? ' · '+p.subcategoria : ''}</span>
+          <b>${escapeHtml(p.titulo || '(sin título)')}</b>
+          <span>${escapeHtml(p.categoria || '')}</span>
         </div>
         <button type="button" class="btn-quitar-sel" onclick="quitarProductoExistente()">✕ Quitar</button>
       </div>
@@ -1466,8 +1712,8 @@ function abrirModalMovimientoDesdeStock(tipo, productoId, almacenId){
     document.getElementById('productoSeleccionadoBox2').innerHTML = `
       <div class="producto-seleccionado">
         <div class="ps-info">
-          <b>${p.titulo || '(sin título)'}</b>
-          <span>${p.categoria || ''}</span>
+          <b>${escapeHtml(p.titulo || '(sin título)')}</b>
+          <span>${escapeHtml(p.categoria || '')}</span>
         </div>
         <button type="button" class="btn-quitar-sel" onclick="quitarProductoOtros()">✕ Quitar</button>
       </div>
