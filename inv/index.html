@@ -132,6 +132,7 @@ header{
 .btn-primary-action:active{transform:scale(0.96)}
 .btn-primary-action.danger{background:linear-gradient(135deg,var(--danger),#b91c1c); box-shadow:0 8px 18px rgba(239,68,68,0.28)}
 .btn-primary-action.info{background:linear-gradient(135deg,var(--info),#1d4ed8); box-shadow:0 8px 18px rgba(59,130,246,0.28)}
+.btn-primary-action.ghost{background:#fff; color:var(--text-main); border:1px solid var(--border); box-shadow:none}
 .search-box{position:relative; flex:1; min-width:180px}
 .search-box input{
   width:100%; padding:11px 15px 11px 40px; border-radius:var(--radius-sm);
@@ -151,6 +152,97 @@ header{
   font-size:13px; min-height:var(--touch-target); white-space:nowrap;
 }
 .btn-actualizar:active{transform:scale(0.96)}
+
+/* GRID DE ARTÍCULOS (catálogo visual) */
+.articulos-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(240px, 1fr));
+  gap:14px;
+}
+.articulo-card{
+  background:var(--card-bg); border:1px solid var(--border);
+  border-radius:var(--radius-md); overflow:hidden;
+  box-shadow:var(--shadow-sm); transition:all 0.25s ease;
+  display:flex; flex-direction:column; cursor:pointer;
+}
+.articulo-card:hover{
+  border-color:#e2d5c8; box-shadow:var(--shadow); transform:translateY(-2px);
+}
+.articulo-card:active{transform:scale(0.98)}
+.articulo-img-wrap{
+  position:relative; width:100%; height:150px; background:#f1ebe3;
+  display:flex; align-items:center; justify-content:center;
+  font-size:42px; color:#c4b5a5;
+}
+.articulo-img{width:100%; height:100%; object-fit:cover; display:block}
+.articulo-cat-badge{
+  position:absolute; top:8px; left:8px;
+  background:rgba(32,24,17,0.72); color:#fff;
+  font-size:10px; font-weight:700; padding:3px 8px;
+  border-radius:20px; backdrop-filter:blur(2px);
+}
+.articulo-stock-badge{
+  position:absolute; top:8px; right:8px;
+  font-size:11px; font-weight:800; padding:4px 10px;
+  border-radius:20px; backdrop-filter:blur(2px);
+  background:rgba(16,185,129,0.92); color:#fff;
+}
+.articulo-stock-badge.low{background:rgba(239,68,68,0.92)}
+.articulo-stock-badge.mid{background:rgba(245,158,11,0.92)}
+.articulo-body{padding:12px 14px 14px; flex-grow:1; display:flex; flex-direction:column; gap:6px}
+.articulo-body h3{margin:0; font-size:14px; font-weight:700; line-height:1.3}
+.articulo-id{font-size:11px; color:var(--text-muted); font-weight:500}
+.articulo-mini-stats{
+  display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px;
+  margin-top:auto; padding-top:8px; border-top:1px dashed var(--border);
+}
+.articulo-mini-stats div{text-align:center}
+.articulo-mini-stats span{display:block; font-size:9px; color:var(--text-muted); font-weight:600; text-transform:uppercase}
+.articulo-mini-stats b{display:block; font-size:13px; font-weight:800; margin-top:2px}
+.articulo-mini-stats .verde{color:var(--success)}
+.articulo-mini-stats .rojo{color:var(--danger)}
+
+/* FICHA DE ARTÍCULO (vista detalle) */
+.ficha-header{
+  background:#fff; border:1px solid var(--border);
+  border-radius:var(--radius-md); padding:16px 18px;
+  margin-bottom:16px; display:flex; gap:16px;
+  flex-wrap:wrap; align-items:flex-start;
+  box-shadow:var(--shadow-sm);
+}
+.ficha-info{flex:1; min-width:200px}
+.ficha-info h2{margin:0 0 4px 0; font-size:18px; font-weight:800}
+.ficha-info .ficha-meta{font-size:12.5px; color:var(--text-muted); display:flex; gap:10px; flex-wrap:wrap; margin-top:6px}
+.ficha-btns{display:flex; gap:8px; flex-wrap:wrap}
+.ficha-stats{
+  display:grid; grid-template-columns:repeat(4,1fr); gap:10px;
+  margin-bottom:16px;
+}
+.ficha-stat{
+  background:#fff; border:1px solid var(--border);
+  border-radius:var(--radius-md); padding:12px 14px;
+  box-shadow:var(--shadow-sm);
+}
+.ficha-stat span{display:block; font-size:10.5px; color:var(--text-muted); font-weight:600; text-transform:uppercase; letter-spacing:0.04em}
+.ficha-stat b{display:block; font-size:20px; font-weight:800; margin-top:4px}
+.ficha-stat b.verde{color:var(--success)}
+.ficha-stat b.rojo{color:var(--danger)}
+
+.tabs-internas{
+  display:flex; background:#f0ebe6; border-radius:var(--radius-sm);
+  padding:4px; gap:4px; margin-bottom:14px; overflow-x:auto;
+}
+.tabs-internas button{
+  border:none; background:transparent; padding:10px 14px;
+  font-family:inherit; font-size:13px; font-weight:600;
+  color:var(--text-muted); border-radius:6px; cursor:pointer;
+  transition:all 0.2s ease; white-space:nowrap;
+}
+.tabs-internas button.active{
+  background:#fff; color:var(--terracota);
+  box-shadow:0 1px 3px rgba(0,0,0,0.08);
+}
+
 .table-wrap{
   background:var(--card-bg); border:1px solid var(--border);
   border-radius:var(--radius-md); overflow:hidden;
@@ -180,7 +272,6 @@ tbody tr:hover{background:#fdfbf8}
 .badge.bajo{background:var(--danger-light); color:var(--danger)}
 .stock-num{font-weight:800; font-size:15px}
 .stock-num.low{color:var(--danger)}
-.stock-num.ok{color:var(--text-main)}
 .btn-action{
   padding:8px 12px; border-radius:var(--radius-sm); font-size:12px;
   font-weight:700; cursor:pointer; border:1px solid transparent;
@@ -195,8 +286,7 @@ tbody tr:hover{background:#fdfbf8}
 .btn-in:hover{background:var(--success); color:#fff}
 .btn-out{background:var(--danger-light); color:var(--danger); border-color:#fecaca}
 .btn-out:hover{background:var(--danger); color:#fff}
-.btn-transfer{background:var(--info-light); color:var(--info); border-color:#bfdbfe}
-.btn-transfer:hover{background:var(--info); color:#fff}
+
 .modal-overlay{
   display:none; position:fixed; top:0; left:0; width:100%; height:100%;
   background:rgba(32,24,17,0.6); backdrop-filter:blur(5px);
@@ -280,9 +370,7 @@ textarea{resize:vertical; height:70px}
   background:#fff; color:var(--terracota);
   box-shadow:0 1px 3px rgba(0,0,0,0.08);
 }
-.buscador-drop{
-  position:relative; margin-top:5px;
-}
+.buscador-drop{position:relative; margin-top:5px}
 .buscador-drop input{
   width:100%; padding:10px 12px 10px 36px; margin-top:0;
   border:1px solid var(--border); border-radius:var(--radius-sm);
@@ -306,7 +394,7 @@ textarea{resize:vertical; height:70px}
   border-bottom:1px solid var(--border); transition:background 0.15s;
 }
 .drop-item:last-child{border-bottom:none}
-.drop-item:hover, .drop-item.highlight{background:var(--terracota-suave)}
+.drop-item:hover{background:var(--terracota-suave)}
 .drop-item .drop-tit{font-weight:600; color:var(--text-main)}
 .drop-item .drop-sub{font-size:11px; color:var(--text-muted); margin-top:2px}
 .drop-item.add-new{background:var(--success-light)}
@@ -317,9 +405,8 @@ textarea{resize:vertical; height:70px}
   border-radius:var(--radius-sm); padding:10px 12px; margin-top:6px;
   display:flex; justify-content:space-between; align-items:center; gap:10px;
 }
-.producto-seleccionado.proveedor{
-  background:var(--info-light); border-color:#bfdbfe;
-}
+.producto-seleccionado.proveedor{background:var(--info-light); border-color:#bfdbfe}
+.producto-seleccionado.cliente{background:var(--warning-light); border-color:#fde68a}
 .producto-seleccionado .ps-info{font-size:13px}
 .producto-seleccionado .ps-info b{display:block; color:var(--text-main)}
 .producto-seleccionado .ps-info span{font-size:11px; color:var(--text-muted)}
@@ -373,6 +460,7 @@ textarea{resize:vertical; height:70px}
 .mensaje-flash.error{background:var(--danger)}
 @media (max-width:1024px){
   .stats-bar{grid-template-columns:repeat(2,1fr)}
+  .ficha-stats{grid-template-columns:repeat(2,1fr)}
   main{padding:20px 20px 30px}
 }
 @media (max-width:768px){
@@ -391,6 +479,12 @@ textarea{resize:vertical; height:70px}
   .search-box{width:100%}
   .contador-resultados{text-align:center}
   .btn-actualizar{width:100%}
+  .articulos-grid{grid-template-columns:1fr 1fr; gap:10px}
+  .articulo-img-wrap{height:110px; font-size:34px}
+  .articulo-body h3{font-size:12.5px}
+  .articulo-mini-stats span{font-size:8px}
+  .articulo-mini-stats b{font-size:11px}
+  .ficha-stats{grid-template-columns:1fr 1fr}
   .table-wrap{overflow-x:auto}
   table{font-size:12px; min-width:640px}
   th, td{padding:9px 8px}
@@ -421,9 +515,10 @@ textarea{resize:vertical; height:70px}
   <div class="sidebar-menu">
     <div class="menu-label">Operaciones</div>
     <button class="sidebar-btn-cat active" data-vista="dashboard" onclick="cambiarVista('dashboard', this)"><span class="cat-ico">📊</span> Dashboard</button>
-    <button class="sidebar-btn-cat" data-vista="stock" onclick="cambiarVista('stock', this)"><span class="cat-ico">📦</span> Stock por almacén</button>
+    <button class="sidebar-btn-cat" data-vista="articulos" onclick="cambiarVista('articulos', this)"><span class="cat-ico">📦</span> Artículos</button>
     <button class="sidebar-btn-cat" data-vista="movimientos" onclick="cambiarVista('movimientos', this)"><span class="cat-ico">📜</span> Historial</button>
     <button class="sidebar-btn-cat" data-vista="proveedores" onclick="cambiarVista('proveedores', this)"><span class="cat-ico">🚚</span> Proveedores</button>
+    <button class="sidebar-btn-cat" data-vista="clientes" onclick="cambiarVista('clientes', this)"><span class="cat-ico">👥</span> Clientes</button>
 
     <div class="menu-label">Almacenes</div>
     <div id="listaAlmacenesSidebar"></div>
@@ -484,7 +579,7 @@ textarea{resize:vertical; height:70px}
             <th>Producto</th>
             <th>Almacén</th>
             <th>Cant.</th>
-            <th>Factura / Cliente / Prov.</th>
+            <th>Referencia</th>
           </tr>
         </thead>
         <tbody id="tablaUltimosMovs"></tbody>
@@ -492,34 +587,25 @@ textarea{resize:vertical; height:70px}
     </div>
   </section>
 
-  <!-- VISTA: STOCK -->
-  <section id="vistaStock" style="display:none">
+  <!-- VISTA: ARTÍCULOS (catálogo visual) -->
+  <section id="vistaArticulos" style="display:none">
     <div class="action-bar">
       <div class="search-box">
-        <input type="text" id="inputBuscadorStock" placeholder="Buscar producto o almacén..." oninput="renderizarStock()" autocomplete="off">
+        <input type="text" id="inputBuscadorArt" placeholder="Buscar artículo por nombre o categoría..." oninput="renderizarArticulos()" autocomplete="off">
       </div>
-      <select id="filtroAlmacenStock" onchange="renderizarStock()" style="padding:11px 12px; border-radius:var(--radius-sm); border:1px solid var(--border); font-family:inherit; font-size:13px; min-height:var(--touch-target); background:#fff;">
+      <select id="filtroAlmacenArt" onchange="renderizarArticulos()" style="padding:11px 12px; border-radius:var(--radius-sm); border:1px solid var(--border); font-family:inherit; font-size:13px; min-height:var(--touch-target); background:#fff;">
         <option value="">Todos los almacenes</option>
       </select>
       <button class="btn-actualizar" onclick="cargarTodo()">🔄 Actualizar</button>
-      <span class="contador-resultados" id="contadorStock"></span>
+      <span class="contador-resultados" id="contadorArt"></span>
     </div>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Producto</th>
-            <th>Categoría</th>
-            <th>Almacén</th>
-            <th>Stock</th>
-            <th>Mínimo</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody id="tablaStock"></tbody>
-      </table>
-    </div>
+    <div class="articulos-grid" id="gridArticulos"></div>
+  </section>
+
+  <!-- VISTA: FICHA DE ARTÍCULO -->
+  <section id="vistaFicha" style="display:none">
+    <button class="btn-primary-action ghost" onclick="volverAArticulos()" style="margin-bottom:14px">← Volver a Artículos</button>
+    <div id="fichaContenido"></div>
   </section>
 
   <!-- VISTA: HISTORIAL -->
@@ -546,7 +632,6 @@ textarea{resize:vertical; height:70px}
             <th>Producto</th>
             <th>Almacén</th>
             <th>Cant.</th>
-            <th>Antes → Después</th>
             <th>Proveedor</th>
             <th>Factura</th>
             <th>Cliente</th>
@@ -575,11 +660,34 @@ textarea{resize:vertical; height:70px}
             <th>Contacto</th>
             <th>Teléfono</th>
             <th>Notas</th>
-            <th>Registrado</th>
             <th>Acciones</th>
           </tr>
         </thead>
         <tbody id="tablaProv"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- VISTA: CLIENTES -->
+  <section id="vistaClientes" style="display:none">
+    <div class="action-bar">
+      <div class="search-box">
+        <input type="text" id="inputBuscadorCli" placeholder="Buscar cliente..." oninput="renderizarClientes()" autocomplete="off">
+      </div>
+      <button class="btn-primary-action" onclick="abrirModalNuevoCliente()">➕ Nuevo Cliente</button>
+      <span class="contador-resultados" id="contadorCli"></span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Cliente</th>
+            <th>Teléfono</th>
+            <th>Notas</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="tablaCli"></tbody>
       </table>
     </div>
   </section>
@@ -667,7 +775,6 @@ textarea{resize:vertical; height:70px}
         <option value="otro">Otro</option>
       </select>
 
-      <!-- PROVEEDOR (solo ALTA) -->
       <div id="grupoProveedor" style="display:none">
         <label>Proveedor:</label>
         <div class="buscador-drop">
@@ -683,8 +790,12 @@ textarea{resize:vertical; height:70px}
       </div>
 
       <div id="grupoCliente" style="display:none">
-        <label>Nombre del cliente:</label>
-        <input type="text" id="movCliente" placeholder="Ej. Juan Pérez">
+        <label>Cliente:</label>
+        <div class="buscador-drop">
+          <input type="text" id="buscarClienteInput" placeholder="Escribe para buscar o crear cliente..." autocomplete="off" oninput="filtrarClientesDrop()" onfocus="filtrarClientesDrop()">
+          <div class="drop-lista" id="dropListaClientes"></div>
+        </div>
+        <div id="clienteSeleccionadoBox"></div>
       </div>
 
       <label>Notas (opcional):</label>
@@ -760,6 +871,29 @@ textarea{resize:vertical; height:70px}
   </div>
 </div>
 
+<!-- MODAL: CLIENTE -->
+<div class="modal-overlay" id="modalCliente">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3 id="modalClienteTitulo">Nuevo Cliente</h3>
+      <button class="modal-close" onclick="cerrarModal('modalCliente')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="clienteIdOriginal">
+      <label>Nombre del cliente:</label>
+      <input type="text" id="clienteNombre" placeholder="Ej. Juan Pérez">
+      <label>Teléfono (opcional):</label>
+      <input type="text" id="clienteTelefono" placeholder="Ej. 555-123-4567">
+      <label>Notas (opcional):</label>
+      <textarea id="clienteNotas" placeholder="Dirección, referencias..."></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-modal-cancel" onclick="cerrarModal('modalCliente')">Cancelar</button>
+      <button class="btn-modal-save" onclick="guardarCliente()">Guardar Cliente</button>
+    </div>
+  </div>
+</div>
+
 <div class="mensaje-flash" id="flash"></div>
 
 <script>
@@ -772,6 +906,7 @@ let almacenesGlobal = [];
 let stockGlobal = [];
 let movimientosGlobal = [];
 let proveedoresGlobal = [];
+let clientesGlobal = [];
 let vistaActual = 'dashboard';
 let tipoMovActual = 'alta';
 let modoAltaActual = 'existente';
@@ -779,6 +914,9 @@ let modoAltaActual = 'existente';
 let productoSeleccionadoExistente = null;
 let productoSeleccionadoOtros = null;
 let proveedorSeleccionado = null;
+let clienteSeleccionado = null;
+
+let articuloActual = null; // {producto_id, titulo, categoria, imagenes}
 
 /* ====== UTILS ====== */
 function flash(msg, error=false){
@@ -836,7 +974,7 @@ function toggleMenuMobil(){
 /* ====== CARGAR DATOS ====== */
 async function cargarTodo(){
   const { data: prods } = await supabaseClient
-    .from('productos').select('id, titulo, categoria, subcategoria')
+    .from('productos').select('id, titulo, categoria, subcategoria, imagenes')
     .order('titulo',{ascending:true});
   productosCatalogo = prods || [];
 
@@ -850,12 +988,16 @@ async function cargarTodo(){
 
   const { data: movs } = await supabaseClient
     .from('movimientos_inventario').select('*')
-    .order('created_at',{ascending:false}).limit(500);
+    .order('created_at',{ascending:false}).limit(2000);
   movimientosGlobal = movs || [];
 
   const { data: provs } = await supabaseClient
     .from('proveedores').select('*').order('nombre',{ascending:true});
   proveedoresGlobal = provs || [];
+
+  const { data: clis } = await supabaseClient
+    .from('clientes').select('*').order('nombre',{ascending:true});
+  clientesGlobal = clis || [];
 
   renderizarTodo();
 }
@@ -863,10 +1005,11 @@ async function cargarTodo(){
 function renderizarTodo(){
   renderizarAlmacenesSidebar();
   renderizarStats();
-  renderizarStock();
+  renderizarArticulos();
   renderizarMovimientos();
   renderizarUltimosMovs();
   renderizarProveedores();
+  renderizarClientes();
   llenarSelectsAlmacenes();
 }
 
@@ -887,9 +1030,9 @@ function renderizarAlmacenesSidebar(){
 }
 
 function filtrarPorAlmacen(id, btn){
-  cambiarVista('stock', document.querySelector('[data-vista="stock"]'));
-  document.getElementById('filtroAlmacenStock').value = String(id);
-  renderizarStock();
+  cambiarVista('articulos', document.querySelector('[data-vista="articulos"]'));
+  document.getElementById('filtroAlmacenArt').value = String(id);
+  renderizarArticulos();
   if(window.innerWidth <= 768) toggleMenuMobil();
 }
 
@@ -907,56 +1050,337 @@ function renderizarStats(){
   document.getElementById('statMovsHoy').textContent = movsHoy;
 }
 
-/* ====== VISTA: STOCK ====== */
-function renderizarStock(){
-  const tbody = document.getElementById('tablaStock');
-  const q = (document.getElementById('inputBuscadorStock').value || '').toLowerCase().trim();
-  const almFiltro = document.getElementById('filtroAlmacenStock').value;
+/* ====== VISTA: ARTÍCULOS (grid) ====== */
+function agruparPorProducto(){
+  // Agrupar stockGlobal por producto_id
+  const mapa = {};
+  stockGlobal.forEach(s => {
+    if(!mapa[s.producto_id]){
+      mapa[s.producto_id] = {
+        producto_id: s.producto_id,
+        titulo: s.producto_titulo || '(sin título)',
+        categoria: s.producto_categoria || '',
+        almacenes: [], // {almacen_id, almacen_nombre, stock, minimo}
+        stockTotal: 0,
+        stockMinTotal: 0
+      };
+    }
+    const alm = almacenesGlobal.find(a => a.id === s.almacen_id);
+    mapa[s.producto_id].almacenes.push({
+      almacen_id: s.almacen_id,
+      almacen_nombre: alm?.nombre || '—',
+      stock: s.stock_actual,
+      minimo: s.stock_minimo
+    });
+    mapa[s.producto_id].stockTotal += s.stock_actual;
+    mapa[s.producto_id].stockMinTotal += s.stock_minimo;
+  });
 
-  let lista = [...stockGlobal];
-  if(almFiltro) lista = lista.filter(s => String(s.almacen_id) === String(almFiltro));
-  if(q) lista = lista.filter(s =>
-    (s.producto_titulo || '').toLowerCase().includes(q) ||
-    (s.producto_categoria || '').toLowerCase().includes(q)
-  );
+  // Calcular ventas y altas por producto
+  Object.values(mapa).forEach(art => {
+    const movsArt = movimientosGlobal.filter(m => m.producto_id === art.producto_id);
+    art.totalVendidos = movsArt.filter(m => m.tipo === 'baja').reduce((a,m)=> a + (m.cantidad||0), 0);
+    art.totalAltas = movsArt.filter(m => m.tipo === 'alta').reduce((a,m)=> a + (m.cantidad||0), 0);
+    art.numMovs = movsArt.length;
+    // Buscar imagen del catálogo
+    const enCatalogo = productosCatalogo.find(p => p.id === art.producto_id);
+    art.imagenes = enCatalogo?.imagenes || [];
+    art.enCatalogo = !!enCatalogo;
+  });
 
-  document.getElementById('contadorStock').textContent = `${lista.length} registro${lista.length===1?'':'s'}`;
+  return Object.values(mapa);
+}
+
+function renderizarArticulos(){
+  const grid = document.getElementById('gridArticulos');
+  const q = (document.getElementById('inputBuscadorArt').value || '').toLowerCase().trim();
+  const almFiltro = document.getElementById('filtroAlmacenArt').value;
+
+  let lista = agruparPorProducto();
+
+  // Filtrar por almacén
+  if(almFiltro){
+    lista = lista.filter(a => a.almacenes.some(al => String(al.almacen_id) === String(almFiltro) && al.stock > 0));
+  } else {
+    // Solo productos con stock > 0
+    lista = lista.filter(a => a.stockTotal > 0);
+  }
+
+  // Filtrar por búsqueda
+  if(q){
+    lista = lista.filter(a =>
+      (a.titulo || '').toLowerCase().includes(q) ||
+      (a.categoria || '').toLowerCase().includes(q)
+    );
+  }
+
+  document.getElementById('contadorArt').textContent = `${lista.length} artículo${lista.length===1?'':'s'}`;
 
   if(lista.length === 0){
-    tbody.innerHTML = '<tr><td colspan="7"><div class="vacio"><span class="ico">📭</span>No hay registros de stock.</div></td></tr>';
+    grid.innerHTML = '<div class="vacio" style="grid-column:1/-1; background:#fff; border:1px dashed var(--border); border-radius:var(--radius-md);"><span class="ico">📭</span>No hay artículos con stock. Empieza dando de alta uno.</div>';
     return;
   }
 
-  tbody.innerHTML = lista.map(s => {
-    const alm = almacenesGlobal.find(a => a.id === s.almacen_id);
-    const bajo = s.stock_actual <= s.stock_minimo;
+  grid.innerHTML = lista.map(a => {
+    const img = (a.imagenes && a.imagenes.length > 0) ? a.imagenes[0] : null;
+    const bajo = a.stockTotal <= a.stockMinTotal;
+    const stockClase = a.stockTotal <= 0 ? 'low' : (bajo ? 'mid' : '');
     return `
-      <tr>
-        <td><b>${escapeHtml(s.producto_titulo || '(sin título)')}</b></td>
-        <td>${escapeHtml(s.producto_categoria || '-')}</td>
-        <td>${escapeHtml(alm ? alm.nombre : '—')}</td>
-        <td><span class="stock-num ${bajo?'low':'ok'}">${s.stock_actual}</span></td>
-        <td>${s.stock_minimo}</td>
-        <td>${bajo ? '<span class="badge bajo">Stock bajo</span>' : '<span class="badge ok">OK</span>'}</td>
-        <td>
-          <button class="btn-action btn-in" onclick="abrirModalMovimientoDesdeStock('alta', ${s.producto_id}, ${s.almacen_id})">⬆️</button>
-          <button class="btn-action btn-out" onclick="abrirModalMovimientoDesdeStock('baja', ${s.producto_id}, ${s.almacen_id})">⬇️</button>
-          <button class="btn-action btn-edit" onclick="editarMinimo(${s.id}, ${s.stock_minimo})">✏️</button>
-        </td>
-      </tr>
+      <div class="articulo-card" onclick="abrirFicha(${a.producto_id})">
+        <div class="articulo-img-wrap">
+          ${img ? `<img src="${escapeHtml(img)}" class="articulo-img" loading="lazy" onerror="this.style.display='none'">` : '📦'}
+          <span class="articulo-cat-badge">${escapeHtml(a.categoria || 'Sin categoría')}</span>
+          <span class="articulo-stock-badge ${stockClase}">${a.stockTotal} uds</span>
+        </div>
+        <div class="articulo-body">
+          <h3>${escapeHtml(a.titulo)}</h3>
+          <span class="articulo-id">${a.enCatalogo ? 'ID #'+a.producto_id : '🆕 Manual'}</span>
+          <div class="articulo-mini-stats">
+            <div>
+              <span>Altas</span>
+              <b class="verde">+${a.totalAltas}</b>
+            </div>
+            <div>
+              <span>Vendidos</span>
+              <b class="rojo">-${a.totalVendidos}</b>
+            </div>
+            <div>
+              <span>Stock</span>
+              <b>${a.stockTotal}</b>
+            </div>
+          </div>
+        </div>
+      </div>
     `;
   }).join('');
 }
 
-async function editarMinimo(stockId, actual){
-  const nv = prompt('Nuevo stock mínimo:', actual);
-  if(nv === null) return;
-  const num = parseInt(nv);
-  if(isNaN(num) || num < 0){ flash('Valor inválido', true); return; }
-  const { error } = await supabaseClient.from('inventario_stock').update({ stock_minimo: num, updated_at: new Date().toISOString() }).eq('id', stockId);
-  if(error){ flash('Error: ' + error.message, true); return; }
-  flash('Mínimo actualizado');
-  cargarTodo();
+/* ====== VISTA: FICHA DE ARTÍCULO ====== */
+function abrirFicha(productoId){
+  const art = agruparPorProducto().find(a => a.producto_id === productoId);
+  if(!art) return;
+  articuloActual = art;
+  cambiarVistaInterna('ficha');
+  renderizarFicha();
+}
+
+function volverAArticulos(){
+  articuloActual = null;
+  cambiarVista('articulos', document.querySelector('[data-vista="articulos"]'));
+}
+
+function renderizarFicha(){
+  const cont = document.getElementById('fichaContenido');
+  const a = articuloActual;
+  if(!a){ cont.innerHTML = ''; return; }
+
+  const img = (a.imagenes && a.imagenes.length > 0) ? a.imagenes[0] : null;
+
+  // Movimientos del artículo
+  const movsArt = movimientosGlobal.filter(m => m.producto_id === a.producto_id);
+
+  // Calcular totales
+  const totalVendidos = movsArt.filter(m => m.tipo === 'baja').reduce((s,m)=> s + (m.cantidad||0), 0);
+  const totalAltas = movsArt.filter(m => m.tipo === 'alta').reduce((s,m)=> s + (m.cantidad||0), 0);
+  const totalTransferido = movsArt.filter(m => m.tipo === 'transferencia').reduce((s,m)=> s + (m.cantidad||0), 0);
+
+  // Clientes que compraron (agrupado)
+  const ventas = movsArt.filter(m => m.tipo === 'baja');
+  const clientesAgrup = {};
+  ventas.forEach(v => {
+    const key = v.nombre_cliente || 'Sin cliente';
+    if(!clientesAgrup[key]) clientesAgrup[key] = { nombre: key, cantidad: 0, ventas: [] };
+    clientesAgrup[key].cantidad += v.cantidad || 0;
+    clientesAgrup[key].ventas.push(v);
+  });
+
+  // Altas por proveedor (agrupado)
+  const altas = movsArt.filter(m => m.tipo === 'alta');
+  const provAgrup = {};
+  altas.forEach(al => {
+    const key = al.proveedor || 'Sin proveedor';
+    if(!provAgrup[key]) provAgrup[key] = { nombre: key, cantidad: 0, altas: [], facturas: new Set() };
+    provAgrup[key].cantidad += al.cantidad || 0;
+    provAgrup[key].altas.push(al);
+    if(al.numero_factura) provAgrup[key].facturas.add(al.numero_factura);
+  });
+
+  cont.innerHTML = `
+    <!-- Cabecera -->
+    <div class="ficha-header">
+      <div style="width:80px; height:80px; border-radius:var(--radius-md); overflow:hidden; background:#f1ebe3; display:flex; align-items:center; justify-content:center; font-size:32px; flex-shrink:0;">
+        ${img ? `<img src="${escapeHtml(img)}" style="width:100%; height:100%; object-fit:cover;">` : '📦'}
+      </div>
+      <div class="ficha-info">
+        <h2>${escapeHtml(a.titulo)}</h2>
+        <div class="ficha-meta">
+          <span>🏷️ ${escapeHtml(a.categoria || 'Sin categoría')}</span>
+          <span>${a.enCatalogo ? '📚 En catálogo (ID #'+a.producto_id+')' : '🆕 Producto manual'}</span>
+          <span>📦 ${a.almacenes.length} almacén(es)</span>
+        </div>
+      </div>
+      <div class="ficha-btns">
+        <button class="btn-primary-action" onclick="abrirModalMovimientoConProducto('alta', ${a.producto_id})">⬆️ Alta</button>
+        <button class="btn-primary-action danger" onclick="abrirModalMovimientoConProducto('baja', ${a.producto_id})">⬇️ Baja</button>
+        <button class="btn-primary-action info" onclick="abrirModalMovimientoConProducto('transferencia', ${a.producto_id})">🔄</button>
+      </div>
+    </div>
+
+    <!-- Stats resumen -->
+    <div class="ficha-stats">
+      <div class="ficha-stat">
+        <span>Stock total</span>
+        <b>${a.stockTotal}</b>
+      </div>
+      <div class="ficha-stat">
+        <span>Total altas</span>
+        <b class="verde">+${totalAltas}</b>
+      </div>
+      <div class="ficha-stat">
+        <span>Total vendidos</span>
+        <b class="rojo">-${totalVendidos}</b>
+      </div>
+      <div class="ficha-stat">
+        <span>Movimientos</span>
+        <b>${movsArt.length}</b>
+      </div>
+    </div>
+
+    <!-- Tabs internas -->
+    <div class="tabs-internas">
+      <button class="active" onclick="cambiarTabFicha('stock', this)">📦 Stock por almacén</button>
+      <button onclick="cambiarTabFicha('ventas', this)">💰 Ventas (${ventas.length})</button>
+      <button onclick="cambiarTabFicha('altas', this)">⬆️ Altas (${altas.length})</button>
+      <button onclick="cambiarTabFicha('historial', this)">📜 Historial completo</button>
+    </div>
+
+    <!-- TAB: STOCK -->
+    <div id="tabFichaStock">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Almacén</th>
+              <th>Stock</th>
+              <th>Mínimo</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${a.almacenes.map(al => {
+              const bajo = al.stock <= al.minimo;
+              return `
+                <tr>
+                  <td><b>${escapeHtml(al.almacen_nombre)}</b></td>
+                  <td><span class="stock-num ${bajo?'low':''}">${al.stock}</span></td>
+                  <td>${al.minimo}</td>
+                  <td>${bajo ? '<span class="badge bajo">Stock bajo</span>' : '<span class="badge ok">OK</span>'}</td>
+                </tr>
+              `;
+            }).join('') || '<tr><td colspan="4"><div class="vacio">Sin stock en almacenes</div></td></tr>'}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB: VENTAS -->
+    <div id="tabFichaVentas" style="display:none">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Cliente</th>
+              <th>Cantidad</th>
+              <th>Ventas</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${Object.values(clientesAgrup).map(c => `
+              <tr>
+                <td><b>${escapeHtml(c.nombre)}</b></td>
+                <td><span class="stock-num low">${c.cantidad}</span></td>
+                <td>${c.ventas.length}</td>
+              </tr>
+            `).join('') || '<tr><td colspan="3"><div class="vacio"><span class="ico">💰</span>Sin ventas registradas</div></td></tr>'}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB: ALTAS -->
+    <div id="tabFichaAltas" style="display:none">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Proveedor</th>
+              <th>Cantidad</th>
+              <th>Facturas</th>
+              <th>Altas</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${Object.values(provAgrup).map(p => `
+              <tr>
+                <td><b>${escapeHtml(p.nombre)}</b></td>
+                <td><span class="stock-num" style="color:var(--success)">+${p.cantidad}</span></td>
+                <td>${p.facturas.size > 0 ? Array.from(p.facturas).map(f => escapeHtml(f)).join(', ') : '—'}</td>
+                <td>${p.altas.length}</td>
+              </tr>
+            `).join('') || '<tr><td colspan="4"><div class="vacio"><span class="ico">📥</span>Sin altas registradas</div></td></tr>'}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB: HISTORIAL COMPLETO -->
+    <div id="tabFichaHistorial" style="display:none">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Tipo</th>
+              <th>Almacén</th>
+              <th>Cant.</th>
+              <th>Proveedor</th>
+              <th>Factura</th>
+              <th>Cliente</th>
+              <th>Motivo</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${movsArt.map(m => {
+              const almacenTxt = m.tipo === 'transferencia'
+                ? `${m.almacen_nombre || '—'} → ${m.almacen_destino_nombre || '—'}`
+                : (m.almacen_nombre || '—');
+              return `
+                <tr>
+                  <td>${fmtFecha(m.created_at)}</td>
+                  <td><span class="badge ${m.tipo}">${m.tipo}</span></td>
+                  <td>${escapeHtml(almacenTxt)}</td>
+                  <td><b>${m.cantidad}</b></td>
+                  <td>${escapeHtml(m.proveedor || '—')}</td>
+                  <td>${escapeHtml(m.numero_factura || '—')}</td>
+                  <td>${escapeHtml(m.nombre_cliente || '—')}</td>
+                  <td>${escapeHtml(m.motivo || '—')}</td>
+                </tr>
+              `;
+            }).join('') || '<tr><td colspan="8"><div class="vacio">Sin movimientos</div></td></tr>'}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+function cambiarTabFicha(tab, btn){
+  document.querySelectorAll('.tabs-internas button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tabFichaStock').style.display = tab === 'stock' ? 'block' : 'none';
+  document.getElementById('tabFichaVentas').style.display = tab === 'ventas' ? 'block' : 'none';
+  document.getElementById('tabFichaAltas').style.display = tab === 'altas' ? 'block' : 'none';
+  document.getElementById('tabFichaHistorial').style.display = tab === 'historial' ? 'block' : 'none';
 }
 
 /* ====== VISTA: MOVIMIENTOS ====== */
@@ -979,15 +1403,14 @@ function renderizarMovimientos(){
   document.getElementById('contadorMovs').textContent = `${lista.length} movimiento${lista.length===1?'':'s'}`;
 
   if(lista.length === 0){
-    tbody.innerHTML = '<tr><td colspan="10"><div class="vacio"><span class="ico">📜</span>Sin movimientos registrados.</div></td></tr>';
+    tbody.innerHTML = '<tr><td colspan="9"><div class="vacio"><span class="ico">📜</span>Sin movimientos registrados.</div></td></tr>';
     return;
   }
 
-  tbody.innerHTML = lista.map(m => {
+  tbody.innerHTML = lista.slice(0,300).map(m => {
     const almacenTxt = m.tipo === 'transferencia'
       ? `${m.almacen_nombre || '—'} → ${m.almacen_destino_nombre || '—'}`
       : (m.almacen_nombre || '—');
-    const diff = (m.stock_anterior != null && m.stock_nuevo != null) ? `${m.stock_anterior} → ${m.stock_nuevo}` : '—';
     return `
       <tr>
         <td>${fmtFecha(m.created_at)}</td>
@@ -995,7 +1418,6 @@ function renderizarMovimientos(){
         <td><b>${escapeHtml(m.producto_titulo || '(sin título)')}</b></td>
         <td>${escapeHtml(almacenTxt)}</td>
         <td><b>${m.cantidad}</b></td>
-        <td>${diff}</td>
         <td>${escapeHtml(m.proveedor || '—')}</td>
         <td>${escapeHtml(m.numero_factura || '—')}</td>
         <td>${escapeHtml(m.nombre_cliente || '—')}</td>
@@ -1034,28 +1456,23 @@ function renderizarUltimosMovs(){
 function renderizarProveedores(){
   const tbody = document.getElementById('tablaProv');
   const q = (document.getElementById('inputBuscadorProv').value || '').toLowerCase().trim();
-
   let lista = [...proveedoresGlobal];
   if(q) lista = lista.filter(p =>
     (p.nombre || '').toLowerCase().includes(q) ||
     (p.contacto || '').toLowerCase().includes(q) ||
     (p.telefono || '').toLowerCase().includes(q)
   );
-
   document.getElementById('contadorProv').textContent = `${lista.length} proveedor${lista.length===1?'':'es'}`;
-
   if(lista.length === 0){
-    tbody.innerHTML = '<tr><td colspan="6"><div class="vacio"><span class="ico">🚚</span>Sin proveedores registrados.</div></td></tr>';
+    tbody.innerHTML = '<tr><td colspan="5"><div class="vacio"><span class="ico">🚚</span>Sin proveedores registrados.</div></td></tr>';
     return;
   }
-
   tbody.innerHTML = lista.map(p => `
     <tr>
       <td><b>${escapeHtml(p.nombre)}</b></td>
       <td>${escapeHtml(p.contacto || '—')}</td>
       <td>${escapeHtml(p.telefono || '—')}</td>
       <td>${escapeHtml(p.notas || '—')}</td>
-      <td>${fmtFecha(p.created_at)}</td>
       <td>
         <button class="btn-action btn-edit" onclick="abrirModalEditarProveedor(${p.id})">✏️</button>
         <button class="btn-action btn-delete" onclick="eliminarProveedor(${p.id})">🗑️</button>
@@ -1064,42 +1481,80 @@ function renderizarProveedores(){
   `).join('');
 }
 
-/* ====== VISTA ====== */
+/* ====== VISTA: CLIENTES ====== */
+function renderizarClientes(){
+  const tbody = document.getElementById('tablaCli');
+  const q = (document.getElementById('inputBuscadorCli').value || '').toLowerCase().trim();
+  let lista = [...clientesGlobal];
+  if(q) lista = lista.filter(c =>
+    (c.nombre || '').toLowerCase().includes(q) ||
+    (c.telefono || '').toLowerCase().includes(q)
+  );
+  document.getElementById('contadorCli').textContent = `${lista.length} cliente${lista.length===1?'':'s'}`;
+  if(lista.length === 0){
+    tbody.innerHTML = '<tr><td colspan="4"><div class="vacio"><span class="ico">👥</span>Sin clientes registrados.</div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = lista.map(c => `
+    <tr>
+      <td><b>${escapeHtml(c.nombre)}</b></td>
+      <td>${escapeHtml(c.telefono || '—')}</td>
+      <td>${escapeHtml(c.notas || '—')}</td>
+      <td>
+        <button class="btn-action btn-edit" onclick="abrirModalEditarCliente(${c.id})">✏️</button>
+        <button class="btn-action btn-delete" onclick="eliminarCliente(${c.id})">🗑️</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+/* ====== VISTA: CAMBIO ====== */
 function cambiarVista(vista, btn){
+  if(vista !== 'ficha' && articuloActual){ articuloActual = null; }
   vistaActual = vista;
   document.querySelectorAll('.sidebar-btn-cat').forEach(b => b.classList.remove('active'));
   if(btn) btn.classList.add('active');
+  cambiarVistaInterna(vista);
+  if(window.innerWidth <= 768) toggleMenuMobil();
+}
 
+function cambiarVistaInterna(vista){
   document.getElementById('vistaDashboard').style.display = 'none';
-  document.getElementById('vistaStock').style.display = 'none';
+  document.getElementById('vistaArticulos').style.display = 'none';
+  document.getElementById('vistaFicha').style.display = 'none';
   document.getElementById('vistaMovimientos').style.display = 'none';
   document.getElementById('vistaProveedores').style.display = 'none';
+  document.getElementById('vistaClientes').style.display = 'none';
 
   const titulos = {
     dashboard: ['Dashboard','Resumen general del inventario.'],
-    stock: ['Stock por almacén','Consulta y gestiona el stock en cada ubicación.'],
+    articulos: ['Artículos en inventario','Catálogo visual de todo el stock disponible.'],
+    ficha: [articuloActual?.titulo || 'Artículo','Ficha detallada del artículo.'],
     movimientos: ['Historial de movimientos','Bitácora completa de altas, bajas y transferencias.'],
-    proveedores: ['Proveedores','Catálogo de proveedores registrados.']
+    proveedores: ['Proveedores','Catálogo de proveedores registrados.'],
+    clientes: ['Clientes','Catálogo de clientes registrados.']
   };
-  document.getElementById('tituloVista').textContent = titulos[vista][0];
-  document.getElementById('subtituloVista').textContent = titulos[vista][1];
+  if(titulos[vista]){
+    document.getElementById('tituloVista').textContent = titulos[vista][0];
+    document.getElementById('subtituloVista').textContent = titulos[vista][1];
+  }
 
   if(vista === 'dashboard') document.getElementById('vistaDashboard').style.display = 'block';
-  if(vista === 'stock') document.getElementById('vistaStock').style.display = 'block';
+  if(vista === 'articulos') document.getElementById('vistaArticulos').style.display = 'block';
+  if(vista === 'ficha') document.getElementById('vistaFicha').style.display = 'block';
   if(vista === 'movimientos') document.getElementById('vistaMovimientos').style.display = 'block';
   if(vista === 'proveedores') document.getElementById('vistaProveedores').style.display = 'block';
-
-  if(window.innerWidth <= 768) toggleMenuMobil();
+  if(vista === 'clientes') document.getElementById('vistaClientes').style.display = 'block';
 }
 
 /* ====== SELECTS ====== */
 function llenarSelectsAlmacenes(){
-  const selects = ['movAlmacenOrigen','movAlmacenDestino','filtroAlmacenStock'];
+  const selects = ['movAlmacenOrigen','movAlmacenDestino','filtroAlmacenArt'];
   selects.forEach(idSel => {
     const sel = document.getElementById(idSel);
     if(!sel) return;
     const valorActual = sel.value;
-    sel.innerHTML = (idSel === 'filtroAlmacenStock' ? '<option value="">Todos los almacenes</option>' : '') +
+    sel.innerHTML = (idSel === 'filtroAlmacenArt' ? '<option value="">Todos los almacenes</option>' : '') +
       almacenesGlobal.filter(a => a.activo).map(a => `<option value="${a.id}">${escapeHtml(a.nombre)}${a.categoria ? ' · '+escapeHtml(a.categoria) : ''}</option>`).join('');
     if(valorActual) sel.value = valorActual;
   });
@@ -1112,26 +1567,28 @@ function abrirModalMovimiento(tipo){
   productoSeleccionadoExistente = null;
   productoSeleccionadoOtros = null;
   proveedorSeleccionado = null;
+  clienteSeleccionado = null;
 
   document.getElementById('movCantidad').value = 1;
   document.getElementById('movMotivo').value = tipo === 'baja' ? 'venta' : 'compra';
   document.getElementById('movNotas').value = '';
   document.getElementById('movFactura').value = '';
-  document.getElementById('movCliente').value = '';
   document.getElementById('nuevoTitulo').value = '';
   document.getElementById('nuevoCategoria').value = 'Cocinas';
   document.getElementById('nuevoSubcategoria').value = '';
   document.getElementById('buscarProductoInput').value = '';
   document.getElementById('buscarProductoInput2').value = '';
   document.getElementById('buscarProveedorInput').value = '';
+  document.getElementById('buscarClienteInput').value = '';
   document.getElementById('productoSeleccionadoBox').innerHTML = '';
   document.getElementById('productoSeleccionadoBox2').innerHTML = '';
   document.getElementById('proveedorSeleccionadoBox').innerHTML = '';
+  document.getElementById('clienteSeleccionadoBox').innerHTML = '';
   document.querySelectorAll('.drop-lista').forEach(el => el.classList.remove('show'));
 
   llenarSelectsAlmacenes();
 
-  const titulos = { alta:'Dar de Alta Stock', baja:'Dar de Baja Stock', transferencia:'Transferir Stock entre Almacenes' };
+  const titulos = { alta:'Dar de Alta Stock', baja:'Dar de Baja Stock', transferencia:'Transferir Stock' };
   document.getElementById('modalMovTitulo').textContent = titulos[tipo];
 
   const grupoTabs = document.getElementById('grupoTabsAlta');
@@ -1180,511 +1637,7 @@ function abrirModalMovimiento(tipo){
   document.getElementById('modalMovimiento').style.display = 'flex';
 }
 
-function cambiarModoAlta(modo){
-  modoAltaActual = modo;
-  const tabExist = document.getElementById('tabModoExistente');
-  const tabNuevo = document.getElementById('tabModoNuevo');
-  const modoExistente = document.getElementById('modoExistente');
-  const modoNuevo = document.getElementById('modoNuevo');
-
-  if(modo === 'existente'){
-    tabExist.classList.add('active');
-    tabNuevo.classList.remove('active');
-    modoExistente.style.display = 'block';
-    modoNuevo.style.display = 'none';
-  } else {
-    tabNuevo.classList.add('active');
-    tabExist.classList.remove('active');
-    modoExistente.style.display = 'none';
-    modoNuevo.style.display = 'block';
-  }
-}
-
-/* ====== BUSCADOR PRODUCTOS (existente) ====== */
-function filtrarProductosDrop(){
-  const q = document.getElementById('buscarProductoInput').value.toLowerCase().trim();
-  const drop = document.getElementById('dropListaProductos');
-  let lista = productosCatalogo;
-  if(q) lista = lista.filter(p => (p.titulo||'').toLowerCase().includes(q) || String(p.id).includes(q));
-
-  if(lista.length === 0){
-    drop.innerHTML = '<div class="drop-empty">Sin resultados</div>';
-    drop.classList.add('show');
-    return;
-  }
-
-  drop.innerHTML = lista.slice(0, 30).map(p => `
-    <div class="drop-item" onclick="seleccionarProductoExistente(${p.id})">
-      <div class="drop-tit">${escapeHtml(p.titulo || '(sin título)')}</div>
-      <div class="drop-sub">${escapeHtml(p.categoria || '')}${p.subcategoria ? ' · '+escapeHtml(p.subcategoria) : ''}</div>
-    </div>
-  `).join('');
-  drop.classList.add('show');
-}
-
-function seleccionarProductoExistente(id){
-  const p = productosCatalogo.find(x => x.id === id);
-  if(!p) return;
-  productoSeleccionadoExistente = p;
-  document.getElementById('buscarProductoInput').value = '';
-  document.getElementById('dropListaProductos').classList.remove('show');
-  document.getElementById('productoSeleccionadoBox').innerHTML = `
-    <div class="producto-seleccionado">
-      <div class="ps-info">
-        <b>${escapeHtml(p.titulo || '(sin título)')}</b>
-        <span>${escapeHtml(p.categoria || '')}${p.subcategoria ? ' · '+escapeHtml(p.subcategoria) : ''}</span>
-      </div>
-      <button type="button" class="btn-quitar-sel" onclick="quitarProductoExistente()">✕ Quitar</button>
-    </div>
-  `;
-}
-
-function quitarProductoExistente(){
-  productoSeleccionadoExistente = null;
-  document.getElementById('productoSeleccionadoBox').innerHTML = '';
-}
-
-/* ====== BUSCADOR PRODUCTOS (baja/transferencia) ====== */
-function filtrarProductosDrop2(){
-  const q = document.getElementById('buscarProductoInput2').value.toLowerCase().trim();
-  const drop = document.getElementById('dropListaProductos2');
-
-  const idsConStock = new Set(stockGlobal.filter(s => s.stock_actual > 0).map(s => s.producto_id));
-
-  const productosDisponibles = [];
-  idsConStock.forEach(pid => {
-    const enCatalogo = productosCatalogo.find(p => p.id === pid);
-    if(enCatalogo){
-      productosDisponibles.push(enCatalogo);
-    } else {
-      const stockItem = stockGlobal.find(s => s.producto_id === pid);
-      productosDisponibles.push({
-        id: pid,
-        titulo: stockItem?.producto_titulo || '(sin título)',
-        categoria: stockItem?.producto_categoria || '',
-        subcategoria: ''
-      });
-    }
-  });
-
-  let lista = productosDisponibles;
-  if(q) lista = lista.filter(p => (p.titulo||'').toLowerCase().includes(q) || String(p.id).includes(q));
-
-  if(lista.length === 0){
-    drop.innerHTML = '<div class="drop-empty">Sin productos con stock</div>';
-    drop.classList.add('show');
-    return;
-  }
-
-  drop.innerHTML = lista.slice(0, 30).map(p => `
-    <div class="drop-item" onclick="seleccionarProductoOtros(${p.id})">
-      <div class="drop-tit">${escapeHtml(p.titulo || '(sin título)')}</div>
-      <div class="drop-sub">${escapeHtml(p.categoria || '')}</div>
-    </div>
-  `).join('');
-  drop.classList.add('show');
-}
-
-function seleccionarProductoOtros(id){
-  const p = productosCatalogo.find(x => x.id === id) || (() => {
-    const stockItem = stockGlobal.find(s => s.producto_id === id);
-    return {
-      id,
-      titulo: stockItem?.producto_titulo || '(sin título)',
-      categoria: stockItem?.producto_categoria || '',
-      subcategoria: ''
-    };
-  })();
-  productoSeleccionadoOtros = p;
-  document.getElementById('buscarProductoInput2').value = '';
-  document.getElementById('dropListaProductos2').classList.remove('show');
-  document.getElementById('productoSeleccionadoBox2').innerHTML = `
-    <div class="producto-seleccionado">
-      <div class="ps-info">
-        <b>${escapeHtml(p.titulo || '(sin título)')}</b>
-        <span>${escapeHtml(p.categoria || '')}</span>
-      </div>
-      <button type="button" class="btn-quitar-sel" onclick="quitarProductoOtros()">✕ Quitar</button>
-    </div>
-  `;
-}
-
-function quitarProductoOtros(){
-  productoSeleccionadoOtros = null;
-  document.getElementById('productoSeleccionadoBox2').innerHTML = '';
-}
-
-/* ====== BUSCADOR PROVEEDORES ====== */
-function filtrarProveedoresDrop(){
-  const q = document.getElementById('buscarProveedorInput').value.trim();
-  const drop = document.getElementById('dropListaProveedores');
-  const qLower = q.toLowerCase();
-
-  let lista = proveedoresGlobal;
-  if(q) lista = lista.filter(p => (p.nombre||'').toLowerCase().includes(qLower));
-
-  let html = lista.slice(0, 30).map(p => `
-    <div class="drop-item" onclick="seleccionarProveedor('${escapeHtml(p.nombre).replace(/'/g, "\\'")}')">
-      <div class="drop-tit">🚚 ${escapeHtml(p.nombre)}</div>
-      ${p.contacto ? `<div class="drop-sub">${escapeHtml(p.contacto)}</div>` : ''}
-    </div>
-  `).join('');
-
-  // Opción para agregar nuevo si lo escrito no coincide exactamente con alguno
-  if(q && !proveedoresGlobal.some(p => (p.nombre||'').toLowerCase() === qLower)){
-    html += `
-      <div class="drop-item add-new" onclick="seleccionarProveedorNuevo('${escapeHtml(q).replace(/'/g, "\\'")}')">
-        <div class="drop-tit">➕ Agregar nuevo: "${escapeHtml(q)}"</div>
-        <div class="drop-sub">Se guardará en el catálogo de proveedores</div>
-      </div>
-    `;
-  }
-
-  if(!html){
-    drop.innerHTML = '<div class="drop-empty">Escribe para buscar o crear un proveedor</div>';
-  } else {
-    drop.innerHTML = html;
-  }
-  drop.classList.add('show');
-}
-
-function seleccionarProveedor(nombre){
-  const p = proveedoresGlobal.find(x => x.nombre === nombre);
-  proveedorSeleccionado = { nombre, esNuevo: false, id: p?.id };
-  document.getElementById('buscarProveedorInput').value = '';
-  document.getElementById('dropListaProveedores').classList.remove('show');
-  renderizarProveedorSeleccionado();
-}
-
-function seleccionarProveedorNuevo(nombre){
-  proveedorSeleccionado = { nombre, esNuevo: true };
-  document.getElementById('buscarProveedorInput').value = '';
-  document.getElementById('dropListaProveedores').classList.remove('show');
-  renderizarProveedorSeleccionado();
-}
-
-function renderizarProveedorSeleccionado(){
-  const box = document.getElementById('proveedorSeleccionadoBox');
-  if(!proveedorSeleccionado){
-    box.innerHTML = '';
-    return;
-  }
-  box.innerHTML = `
-    <div class="producto-seleccionado proveedor">
-      <div class="ps-info">
-        <b>🚚 ${escapeHtml(proveedorSeleccionado.nombre)}</b>
-        <span>${proveedorSeleccionado.esNuevo ? 'Se creará al guardar' : 'Proveedor registrado'}</span>
-      </div>
-      <button type="button" class="btn-quitar-sel" onclick="quitarProveedor()">✕ Quitar</button>
-    </div>
-  `;
-}
-
-function quitarProveedor(){
-  proveedorSeleccionado = null;
-  renderizarProveedorSeleccionado();
-}
-
-/* ====== GUARDAR MOVIMIENTO ====== */
-async function guardarMovimiento(){
-  const cantidad = parseInt(document.getElementById('movCantidad').value);
-  const motivo = document.getElementById('movMotivo').value;
-  const notas = document.getElementById('movNotas').value.trim();
-  const factura = document.getElementById('movFactura').value.trim();
-  const cliente = document.getElementById('movCliente').value.trim();
-  const almacenOrigenId = parseInt(document.getElementById('movAlmacenOrigen').value);
-  const almacenDestinoId = document.getElementById('movAlmacenDestino').value ? parseInt(document.getElementById('movAlmacenDestino').value) : null;
-
-  if(!cantidad || cantidad <= 0){ flash('Cantidad inválida', true); return; }
-  if(!almacenOrigenId){ flash('Selecciona un almacén', true); return; }
-  if(tipoMovActual === 'transferencia' && !almacenDestinoId){ flash('Selecciona almacén destino', true); return; }
-  if(tipoMovActual === 'transferencia' && almacenDestinoId === almacenOrigenId){ flash('Origen y destino deben ser diferentes', true); return; }
-
-  let productoId, productoTitulo, productoCategoria;
-  let proveedorNombre = null;
-
-  if(tipoMovActual === 'alta'){
-    if(modoAltaActual === 'existente'){
-      if(!productoSeleccionadoExistente){ flash('Selecciona un producto del catálogo', true); return; }
-      productoId = productoSeleccionadoExistente.id;
-      productoTitulo = productoSeleccionadoExistente.titulo;
-      productoCategoria = productoSeleccionadoExistente.categoria;
-    } else {
-      const titulo = document.getElementById('nuevoTitulo').value.trim();
-      if(!titulo){ flash('Escribe el título del producto nuevo', true); return; }
-      productoTitulo = titulo;
-      productoCategoria = document.getElementById('nuevoCategoria').value;
-      productoId = await generarIdProductoNuevo();
-    }
-
-    // Proveedor (opcional): si eligió uno nuevo, lo creamos primero
-    if(proveedorSeleccionado){
-      proveedorNombre = proveedorSeleccionado.nombre;
-      if(proveedorSeleccionado.esNuevo){
-        // Verificar si ya existe (por las dudas)
-        const yaExiste = proveedoresGlobal.some(p => (p.nombre||'').toLowerCase() === proveedorNombre.toLowerCase());
-        if(!yaExiste){
-          const { error: errProv } = await supabaseClient.from('proveedores').insert([{ nombre: proveedorNombre }]);
-          if(errProv){
-            console.warn('No se pudo crear el proveedor:', errProv.message);
-            // Continuamos igual, el movimiento se guarda con el nombre
-          }
-        }
-      }
-    }
-  } else {
-    if(!productoSeleccionadoOtros){ flash('Selecciona un producto', true); return; }
-    productoId = productoSeleccionadoOtros.id;
-    productoTitulo = productoSeleccionadoOtros.titulo;
-    productoCategoria = productoSeleccionadoOtros.categoria;
-  }
-
-  const almOrigen = almacenesGlobal.find(a => a.id === almacenOrigenId);
-  const almDestino = almacenDestinoId ? almacenesGlobal.find(a => a.id === almacenDestinoId) : null;
-
-  try {
-    if(tipoMovActual === 'alta'){
-      const { data: existente } = await supabaseClient
-        .from('inventario_stock').select('*')
-        .eq('producto_id', productoId).eq('almacen_id', almacenOrigenId).maybeSingle();
-
-      const anterior = existente ? existente.stock_actual : 0;
-      const nuevo = anterior + cantidad;
-
-      if(existente){
-        await supabaseClient.from('inventario_stock')
-          .update({ stock_actual: nuevo, producto_titulo: productoTitulo, producto_categoria: productoCategoria, updated_at: new Date().toISOString() })
-          .eq('id', existente.id);
-      } else {
-        const minimoGlobal = await obtenerMinimoGlobal();
-        await supabaseClient.from('inventario_stock').insert([{
-          producto_id: productoId,
-          producto_titulo: productoTitulo,
-          producto_categoria: productoCategoria,
-          almacen_id: almacenOrigenId,
-          stock_actual: nuevo,
-          stock_minimo: minimoGlobal
-        }]);
-      }
-
-      await supabaseClient.from('movimientos_inventario').insert([{
-        producto_id: productoId,
-        producto_titulo: productoTitulo,
-        almacen_id: almacenOrigenId,
-        almacen_nombre: almOrigen?.nombre || null,
-        tipo: 'alta', cantidad, motivo,
-        notas: notas || null,
-        numero_factura: factura || null,
-        proveedor: proveedorNombre || null,
-        stock_anterior: anterior, stock_nuevo: nuevo
-      }]);
-
-      flash(`✅ +${cantidad} uds de "${productoTitulo}" en ${almOrigen?.nombre}`);
-
-    } else if(tipoMovActual === 'baja'){
-      const { data: existente } = await supabaseClient
-        .from('inventario_stock').select('*')
-        .eq('producto_id', productoId).eq('almacen_id', almacenOrigenId).maybeSingle();
-
-      if(!existente){ flash('Ese producto no tiene stock en ese almacén', true); return; }
-      if(existente.stock_actual < cantidad){ flash(`Solo hay ${existente.stock_actual} unidades disponibles`, true); return; }
-
-      const anterior = existente.stock_actual;
-      const nuevo = anterior - cantidad;
-
-      await supabaseClient.from('inventario_stock')
-        .update({ stock_actual: nuevo, updated_at: new Date().toISOString() })
-        .eq('id', existente.id);
-
-      await supabaseClient.from('movimientos_inventario').insert([{
-        producto_id: productoId,
-        producto_titulo: productoTitulo,
-        almacen_id: almacenOrigenId,
-        almacen_nombre: almOrigen?.nombre || null,
-        tipo: 'baja', cantidad, motivo,
-        notas: notas || null,
-        nombre_cliente: cliente || null,
-        stock_anterior: anterior, stock_nuevo: nuevo
-      }]);
-
-      flash(`✅ -${cantidad} uds de "${productoTitulo}" en ${almOrigen?.nombre}`);
-
-    } else if(tipoMovActual === 'transferencia'){
-      const { data: origen } = await supabaseClient
-        .from('inventario_stock').select('*')
-        .eq('producto_id', productoId).eq('almacen_id', almacenOrigenId).maybeSingle();
-
-      if(!origen || origen.stock_actual < cantidad){
-        flash(`Stock insuficiente en origen (${origen?.stock_actual || 0})`, true);
-        return;
-      }
-
-      const anteriorOrigen = origen.stock_actual;
-      const nuevoOrigen = anteriorOrigen - cantidad;
-      await supabaseClient.from('inventario_stock')
-        .update({ stock_actual: nuevoOrigen, updated_at: new Date().toISOString() })
-        .eq('id', origen.id);
-
-      const { data: destino } = await supabaseClient
-        .from('inventario_stock').select('*')
-        .eq('producto_id', productoId).eq('almacen_id', almacenDestinoId).maybeSingle();
-
-      const anteriorDest = destino ? destino.stock_actual : 0;
-      const nuevoDest = anteriorDest + cantidad;
-
-      if(destino){
-        await supabaseClient.from('inventario_stock')
-          .update({ stock_actual: nuevoDest, updated_at: new Date().toISOString() })
-          .eq('id', destino.id);
-      } else {
-        const minimoGlobal = await obtenerMinimoGlobal();
-        await supabaseClient.from('inventario_stock').insert([{
-          producto_id: productoId,
-          producto_titulo: productoTitulo,
-          producto_categoria: productoCategoria,
-          almacen_id: almacenDestinoId,
-          stock_actual: nuevoDest,
-          stock_minimo: minimoGlobal
-        }]);
-      }
-
-      await supabaseClient.from('movimientos_inventario').insert([{
-        producto_id: productoId,
-        producto_titulo: productoTitulo,
-        almacen_id: almacenOrigenId,
-        almacen_nombre: almOrigen?.nombre || null,
-        almacen_destino_id: almacenDestinoId,
-        almacen_destino_nombre: almDestino?.nombre || null,
-        tipo: 'transferencia', cantidad, motivo,
-        notas: notas || null,
-        stock_anterior: anteriorOrigen, stock_nuevo: nuevoOrigen
-      }]);
-
-      flash(`✅ Transferidas ${cantidad} uds: ${almOrigen?.nombre} → ${almDestino?.nombre}`);
-    }
-
-    cerrarModal('modalMovimiento');
-    cargarTodo();
-  } catch(e){
-    console.error(e);
-    flash('Error: ' + (e.message || 'desconocido'), true);
-  }
-}
-
-async function generarIdProductoNuevo(){
-  const { data } = await supabaseClient
-    .from('inventario_stock').select('producto_id')
-    .order('producto_id', { ascending: false }).limit(1);
-  const maxInventario = (data && data[0]) ? data[0].producto_id : 0;
-  const maxCatalogo = productosCatalogo.reduce((max, p) => Math.max(max, p.id), 0);
-  const maxTodos = Math.max(maxInventario, maxCatalogo, 0);
-  return Math.max(maxTodos + 1, 100000);
-}
-
-async function obtenerMinimoGlobal(){
-  const { data } = await supabaseClient.from('config_inventario').select('stock_minimo_global').eq('id',1).maybeSingle();
-  return data?.stock_minimo_global || 3;
-}
-
-/* ====== MODAL ALMACEN ====== */
-function abrirModalNuevoAlmacen(){
-  document.getElementById('modalAlmacenTitulo').textContent = 'Nuevo Almacén';
-  document.getElementById('almacenIdOriginal').value = '';
-  document.getElementById('almacenNombre').value = '';
-  document.getElementById('almacenCategoria').value = '';
-  document.getElementById('almacenDescripcion').value = '';
-  document.getElementById('modalAlmacen').style.display = 'flex';
-}
-
-async function guardarAlmacen(){
-  const id = document.getElementById('almacenIdOriginal').value;
-  const nombre = document.getElementById('almacenNombre').value.trim();
-  const categoria = document.getElementById('almacenCategoria').value || null;
-  const descripcion = document.getElementById('almacenDescripcion').value.trim();
-
-  if(!nombre){ flash('Escribe un nombre', true); return; }
-
-  const datos = { nombre, categoria, descripcion: descripcion || null };
-
-  if(id){
-    const { error } = await supabaseClient.from('almacenes').update(datos).eq('id', id);
-    if(error){ flash('Error: '+error.message, true); return; }
-    flash('Almacén actualizado');
-  } else {
-    const { error } = await supabaseClient.from('almacenes').insert([datos]);
-    if(error){ flash('Error: '+error.message, true); return; }
-    flash('Almacén creado');
-  }
-  cerrarModal('modalAlmacen');
-  cargarTodo();
-}
-
-/* ====== MODAL PROVEEDOR ====== */
-function abrirModalNuevoProveedor(){
-  document.getElementById('modalProveedorTitulo').textContent = 'Nuevo Proveedor';
-  document.getElementById('proveedorIdOriginal').value = '';
-  document.getElementById('proveedorNombre').value = '';
-  document.getElementById('proveedorContacto').value = '';
-  document.getElementById('proveedorTelefono').value = '';
-  document.getElementById('proveedorNotas').value = '';
-  document.getElementById('modalProveedor').style.display = 'flex';
-}
-
-function abrirModalEditarProveedor(id){
-  const p = proveedoresGlobal.find(x => x.id === id);
-  if(!p) return;
-  document.getElementById('modalProveedorTitulo').textContent = 'Editar Proveedor';
-  document.getElementById('proveedorIdOriginal').value = p.id;
-  document.getElementById('proveedorNombre').value = p.nombre || '';
-  document.getElementById('proveedorContacto').value = p.contacto || '';
-  document.getElementById('proveedorTelefono').value = p.telefono || '';
-  document.getElementById('proveedorNotas').value = p.notas || '';
-  document.getElementById('modalProveedor').style.display = 'flex';
-}
-
-async function guardarProveedor(){
-  const id = document.getElementById('proveedorIdOriginal').value;
-  const nombre = document.getElementById('proveedorNombre').value.trim();
-  const contacto = document.getElementById('proveedorContacto').value.trim();
-  const telefono = document.getElementById('proveedorTelefono').value.trim();
-  const notas = document.getElementById('proveedorNotas').value.trim();
-
-  if(!nombre){ flash('Escribe el nombre del proveedor', true); return; }
-
-  const datos = {
-    nombre,
-    contacto: contacto || null,
-    telefono: telefono || null,
-    notas: notas || null
-  };
-
-  if(id){
-    const { error } = await supabaseClient.from('proveedores').update(datos).eq('id', id);
-    if(error){ flash('Error: '+error.message, true); return; }
-    flash('Proveedor actualizado');
-  } else {
-    const { error } = await supabaseClient.from('proveedores').insert([datos]);
-    if(error){
-      if(error.code === '23505'){ flash('Ese proveedor ya existe', true); }
-      else { flash('Error: '+error.message, true); }
-      return;
-    }
-    flash('Proveedor creado');
-  }
-  cerrarModal('modalProveedor');
-  cargarTodo();
-}
-
-async function eliminarProveedor(id){
-  if(!confirm('¿Eliminar este proveedor? Los movimientos pasados conservan su nombre.')) return;
-  const { error } = await supabaseClient.from('proveedores').delete().eq('id', id);
-  if(error){ flash('Error: '+error.message, true); return; }
-  flash('Proveedor eliminado');
-  cargarTodo();
-}
-
-/* ====== MODAL MOVIMIENTO DESDE STOCK ====== */
-function abrirModalMovimientoDesdeStock(tipo, productoId, almacenId){
+function abrirModalMovimientoConProducto(tipo, productoId){
   abrirModalMovimiento(tipo);
   const p = productosCatalogo.find(x => x.id === productoId) || (() => {
     const stockItem = stockGlobal.find(s => s.producto_id === productoId);
@@ -1719,21 +1672,532 @@ function abrirModalMovimientoDesdeStock(tipo, productoId, almacenId){
       </div>
     `;
   }
+}
 
-  document.getElementById('movAlmacenOrigen').value = String(almacenId);
+function cambiarModoAlta(modo){
+  modoAltaActual = modo;
+  const tabExist = document.getElementById('tabModoExistente');
+  const tabNuevo = document.getElementById('tabModoNuevo');
+  const modoExistente = document.getElementById('modoExistente');
+  const modoNuevo = document.getElementById('modoNuevo');
+  if(modo === 'existente'){
+    tabExist.classList.add('active'); tabNuevo.classList.remove('active');
+    modoExistente.style.display = 'block'; modoNuevo.style.display = 'none';
+  } else {
+    tabNuevo.classList.add('active'); tabExist.classList.remove('active');
+    modoExistente.style.display = 'none'; modoNuevo.style.display = 'block';
+  }
+}
+
+/* ====== BUSCADORES ====== */
+function filtrarProductosDrop(){
+  const q = document.getElementById('buscarProductoInput').value.toLowerCase().trim();
+  const drop = document.getElementById('dropListaProductos');
+  let lista = productosCatalogo;
+  if(q) lista = lista.filter(p => (p.titulo||'').toLowerCase().includes(q) || String(p.id).includes(q));
+  if(lista.length === 0){ drop.innerHTML = '<div class="drop-empty">Sin resultados</div>'; drop.classList.add('show'); return; }
+  drop.innerHTML = lista.slice(0, 30).map(p => `
+    <div class="drop-item" onclick="seleccionarProductoExistente(${p.id})">
+      <div class="drop-tit">${escapeHtml(p.titulo || '(sin título)')}</div>
+      <div class="drop-sub">${escapeHtml(p.categoria || '')}${p.subcategoria ? ' · '+escapeHtml(p.subcategoria) : ''}</div>
+    </div>
+  `).join('');
+  drop.classList.add('show');
+}
+
+function seleccionarProductoExistente(id){
+  const p = productosCatalogo.find(x => x.id === id);
+  if(!p) return;
+  productoSeleccionadoExistente = p;
+  document.getElementById('buscarProductoInput').value = '';
+  document.getElementById('dropListaProductos').classList.remove('show');
+  document.getElementById('productoSeleccionadoBox').innerHTML = `
+    <div class="producto-seleccionado">
+      <div class="ps-info">
+        <b>${escapeHtml(p.titulo || '(sin título)')}</b>
+        <span>${escapeHtml(p.categoria || '')}</span>
+      </div>
+      <button type="button" class="btn-quitar-sel" onclick="quitarProductoExistente()">✕ Quitar</button>
+    </div>
+  `;
+}
+
+function quitarProductoExistente(){
+  productoSeleccionadoExistente = null;
+  document.getElementById('productoSeleccionadoBox').innerHTML = '';
+}
+
+function filtrarProductosDrop2(){
+  const q = document.getElementById('buscarProductoInput2').value.toLowerCase().trim();
+  const drop = document.getElementById('dropListaProductos2');
+  const idsConStock = new Set(stockGlobal.filter(s => s.stock_actual > 0).map(s => s.producto_id));
+  const productosDisponibles = [];
+  idsConStock.forEach(pid => {
+    const enCatalogo = productosCatalogo.find(p => p.id === pid);
+    if(enCatalogo) productosDisponibles.push(enCatalogo);
+    else {
+      const stockItem = stockGlobal.find(s => s.producto_id === pid);
+      productosDisponibles.push({
+        id: pid, titulo: stockItem?.producto_titulo || '(sin título)',
+        categoria: stockItem?.producto_categoria || '', subcategoria: ''
+      });
+    }
+  });
+  let lista = productosDisponibles;
+  if(q) lista = lista.filter(p => (p.titulo||'').toLowerCase().includes(q) || String(p.id).includes(q));
+  if(lista.length === 0){ drop.innerHTML = '<div class="drop-empty">Sin productos con stock</div>'; drop.classList.add('show'); return; }
+  drop.innerHTML = lista.slice(0, 30).map(p => `
+    <div class="drop-item" onclick="seleccionarProductoOtros(${p.id})">
+      <div class="drop-tit">${escapeHtml(p.titulo || '(sin título)')}</div>
+      <div class="drop-sub">${escapeHtml(p.categoria || '')}</div>
+    </div>
+  `).join('');
+  drop.classList.add('show');
+}
+
+function seleccionarProductoOtros(id){
+  const p = productosCatalogo.find(x => x.id === id) || (() => {
+    const stockItem = stockGlobal.find(s => s.producto_id === id);
+    return { id, titulo: stockItem?.producto_titulo || '(sin título)', categoria: stockItem?.producto_categoria || '', subcategoria: '' };
+  })();
+  productoSeleccionadoOtros = p;
+  document.getElementById('buscarProductoInput2').value = '';
+  document.getElementById('dropListaProductos2').classList.remove('show');
+  document.getElementById('productoSeleccionadoBox2').innerHTML = `
+    <div class="producto-seleccionado">
+      <div class="ps-info"><b>${escapeHtml(p.titulo || '(sin título)')}</b><span>${escapeHtml(p.categoria || '')}</span></div>
+      <button type="button" class="btn-quitar-sel" onclick="quitarProductoOtros()">✕ Quitar</button>
+    </div>
+  `;
+}
+
+function quitarProductoOtros(){
+  productoSeleccionadoOtros = null;
+  document.getElementById('productoSeleccionadoBox2').innerHTML = '';
+}
+
+function filtrarProveedoresDrop(){
+  const q = document.getElementById('buscarProveedorInput').value.trim();
+  const drop = document.getElementById('dropListaProveedores');
+  const qLower = q.toLowerCase();
+  let lista = proveedoresGlobal;
+  if(q) lista = lista.filter(p => (p.nombre||'').toLowerCase().includes(qLower));
+  let html = lista.slice(0, 30).map(p => `
+    <div class="drop-item" onclick="seleccionarProveedor('${escapeHtml(p.nombre).replace(/'/g, "\\'")}')">
+      <div class="drop-tit">🚚 ${escapeHtml(p.nombre)}</div>
+      ${p.contacto ? `<div class="drop-sub">${escapeHtml(p.contacto)}</div>` : ''}
+    </div>
+  `).join('');
+  if(q && !proveedoresGlobal.some(p => (p.nombre||'').toLowerCase() === qLower)){
+    html += `
+      <div class="drop-item add-new" onclick="seleccionarProveedorNuevo('${escapeHtml(q).replace(/'/g, "\\'")}')">
+        <div class="drop-tit">➕ Agregar nuevo: "${escapeHtml(q)}"</div>
+        <div class="drop-sub">Se guardará en el catálogo</div>
+      </div>
+    `;
+  }
+  drop.innerHTML = html || '<div class="drop-empty">Escribe para buscar o crear</div>';
+  drop.classList.add('show');
+}
+
+function seleccionarProveedor(nombre){
+  proveedorSeleccionado = { nombre, esNuevo: false };
+  document.getElementById('buscarProveedorInput').value = '';
+  document.getElementById('dropListaProveedores').classList.remove('show');
+  renderizarProveedorSeleccionado();
+}
+
+function seleccionarProveedorNuevo(nombre){
+  proveedorSeleccionado = { nombre, esNuevo: true };
+  document.getElementById('buscarProveedorInput').value = '';
+  document.getElementById('dropListaProveedores').classList.remove('show');
+  renderizarProveedorSeleccionado();
+}
+
+function renderizarProveedorSeleccionado(){
+  const box = document.getElementById('proveedorSeleccionadoBox');
+  if(!proveedorSeleccionado){ box.innerHTML = ''; return; }
+  box.innerHTML = `
+    <div class="producto-seleccionado proveedor">
+      <div class="ps-info">
+        <b>🚚 ${escapeHtml(proveedorSeleccionado.nombre)}</b>
+        <span>${proveedorSeleccionado.esNuevo ? 'Se creará al guardar' : 'Registrado'}</span>
+      </div>
+      <button type="button" class="btn-quitar-sel" onclick="quitarProveedor()">✕</button>
+    </div>
+  `;
+}
+function quitarProveedor(){ proveedorSeleccionado = null; renderizarProveedorSeleccionado(); }
+
+function filtrarClientesDrop(){
+  const q = document.getElementById('buscarClienteInput').value.trim();
+  const drop = document.getElementById('dropListaClientes');
+  const qLower = q.toLowerCase();
+  let lista = clientesGlobal;
+  if(q) lista = lista.filter(c => (c.nombre||'').toLowerCase().includes(qLower));
+  let html = lista.slice(0, 30).map(c => `
+    <div class="drop-item" onclick="seleccionarCliente('${escapeHtml(c.nombre).replace(/'/g, "\\'")}')">
+      <div class="drop-tit">👤 ${escapeHtml(c.nombre)}</div>
+      ${c.telefono ? `<div class="drop-sub">${escapeHtml(c.telefono)}</div>` : ''}
+    </div>
+  `).join('');
+  if(q && !clientesGlobal.some(c => (c.nombre||'').toLowerCase() === qLower)){
+    html += `
+      <div class="drop-item add-new" onclick="seleccionarClienteNuevo('${escapeHtml(q).replace(/'/g, "\\'")}')">
+        <div class="drop-tit">➕ Agregar nuevo: "${escapeHtml(q)}"</div>
+        <div class="drop-sub">Se guardará en el catálogo</div>
+      </div>
+    `;
+  }
+  drop.innerHTML = html || '<div class="drop-empty">Escribe para buscar o crear</div>';
+  drop.classList.add('show');
+}
+
+function seleccionarCliente(nombre){
+  clienteSeleccionado = { nombre, esNuevo: false };
+  document.getElementById('buscarClienteInput').value = '';
+  document.getElementById('dropListaClientes').classList.remove('show');
+  renderizarClienteSeleccionado();
+}
+
+function seleccionarClienteNuevo(nombre){
+  clienteSeleccionado = { nombre, esNuevo: true };
+  document.getElementById('buscarClienteInput').value = '';
+  document.getElementById('dropListaClientes').classList.remove('show');
+  renderizarClienteSeleccionado();
+}
+
+function renderizarClienteSeleccionado(){
+  const box = document.getElementById('clienteSeleccionadoBox');
+  if(!clienteSeleccionado){ box.innerHTML = ''; return; }
+  box.innerHTML = `
+    <div class="producto-seleccionado cliente">
+      <div class="ps-info">
+        <b>👤 ${escapeHtml(clienteSeleccionado.nombre)}</b>
+        <span>${clienteSeleccionado.esNuevo ? 'Se creará al guardar' : 'Registrado'}</span>
+      </div>
+      <button type="button" class="btn-quitar-sel" onclick="quitarCliente()">✕</button>
+    </div>
+  `;
+}
+function quitarCliente(){ clienteSeleccionado = null; renderizarClienteSeleccionado(); }
+
+/* ====== GUARDAR MOVIMIENTO ====== */
+async function guardarMovimiento(){
+  const cantidad = parseInt(document.getElementById('movCantidad').value);
+  const motivo = document.getElementById('movMotivo').value;
+  const notas = document.getElementById('movNotas').value.trim();
+  const factura = document.getElementById('movFactura').value.trim();
+  const almacenOrigenId = parseInt(document.getElementById('movAlmacenOrigen').value);
+  const almacenDestinoId = document.getElementById('movAlmacenDestino').value ? parseInt(document.getElementById('movAlmacenDestino').value) : null;
+
+  if(!cantidad || cantidad <= 0){ flash('Cantidad inválida', true); return; }
+  if(!almacenOrigenId){ flash('Selecciona un almacén', true); return; }
+  if(tipoMovActual === 'transferencia' && !almacenDestinoId){ flash('Selecciona almacén destino', true); return; }
+  if(tipoMovActual === 'transferencia' && almacenDestinoId === almacenOrigenId){ flash('Origen y destino deben ser diferentes', true); return; }
+
+  let productoId, productoTitulo, productoCategoria;
+  let proveedorNombre = null, clienteNombre = null;
+
+  if(tipoMovActual === 'alta'){
+    if(modoAltaActual === 'existente'){
+      if(!productoSeleccionadoExistente){ flash('Selecciona un producto del catálogo', true); return; }
+      productoId = productoSeleccionadoExistente.id;
+      productoTitulo = productoSeleccionadoExistente.titulo;
+      productoCategoria = productoSeleccionadoExistente.categoria;
+    } else {
+      const titulo = document.getElementById('nuevoTitulo').value.trim();
+      if(!titulo){ flash('Escribe el título del producto nuevo', true); return; }
+      productoTitulo = titulo;
+      productoCategoria = document.getElementById('nuevoCategoria').value;
+      productoId = await generarIdProductoNuevo();
+    }
+    if(proveedorSeleccionado){
+      proveedorNombre = proveedorSeleccionado.nombre;
+      if(proveedorSeleccionado.esNuevo){
+        const yaExiste = proveedoresGlobal.some(p => (p.nombre||'').toLowerCase() === proveedorNombre.toLowerCase());
+        if(!yaExiste){
+          await supabaseClient.from('proveedores').insert([{ nombre: proveedorNombre }]);
+        }
+      }
+    }
+  } else {
+    if(!productoSeleccionadoOtros){ flash('Selecciona un producto', true); return; }
+    productoId = productoSeleccionadoOtros.id;
+    productoTitulo = productoSeleccionadoOtros.titulo;
+    productoCategoria = productoSeleccionadoOtros.categoria;
+    if(tipoMovActual === 'baja' && clienteSeleccionado){
+      clienteNombre = clienteSeleccionado.nombre;
+      if(clienteSeleccionado.esNuevo){
+        const yaExiste = clientesGlobal.some(c => (c.nombre||'').toLowerCase() === clienteNombre.toLowerCase());
+        if(!yaExiste){
+          await supabaseClient.from('clientes').insert([{ nombre: clienteNombre }]);
+        }
+      }
+    }
+  }
+
+  const almOrigen = almacenesGlobal.find(a => a.id === almacenOrigenId);
+  const almDestino = almacenDestinoId ? almacenesGlobal.find(a => a.id === almacenDestinoId) : null;
+
+  try {
+    if(tipoMovActual === 'alta'){
+      const { data: existente } = await supabaseClient
+        .from('inventario_stock').select('*')
+        .eq('producto_id', productoId).eq('almacen_id', almacenOrigenId).maybeSingle();
+      const anterior = existente ? existente.stock_actual : 0;
+      const nuevo = anterior + cantidad;
+      if(existente){
+        await supabaseClient.from('inventario_stock').update({
+          stock_actual: nuevo, producto_titulo: productoTitulo,
+          producto_categoria: productoCategoria, updated_at: new Date().toISOString()
+        }).eq('id', existente.id);
+      } else {
+        const minimoGlobal = await obtenerMinimoGlobal();
+        await supabaseClient.from('inventario_stock').insert([{
+          producto_id: productoId, producto_titulo: productoTitulo,
+          producto_categoria: productoCategoria, almacen_id: almacenOrigenId,
+          stock_actual: nuevo, stock_minimo: minimoGlobal
+        }]);
+      }
+      await supabaseClient.from('movimientos_inventario').insert([{
+        producto_id: productoId, producto_titulo: productoTitulo,
+        almacen_id: almacenOrigenId, almacen_nombre: almOrigen?.nombre || null,
+        tipo: 'alta', cantidad, motivo, notas: notas || null,
+        numero_factura: factura || null, proveedor: proveedorNombre || null,
+        stock_anterior: anterior, stock_nuevo: nuevo
+      }]);
+      flash(`✅ +${cantidad} uds de "${productoTitulo}"`);
+
+    } else if(tipoMovActual === 'baja'){
+      const { data: existente } = await supabaseClient
+        .from('inventario_stock').select('*')
+        .eq('producto_id', productoId).eq('almacen_id', almacenOrigenId).maybeSingle();
+      if(!existente || existente.stock_actual < cantidad){
+        flash(`Stock insuficiente (${existente?.stock_actual || 0})`, true); return;
+      }
+      const anterior = existente.stock_actual;
+      const nuevo = anterior - cantidad;
+      await supabaseClient.from('inventario_stock')
+        .update({ stock_actual: nuevo, updated_at: new Date().toISOString() })
+        .eq('id', existente.id);
+      await supabaseClient.from('movimientos_inventario').insert([{
+        producto_id: productoId, producto_titulo: productoTitulo,
+        almacen_id: almacenOrigenId, almacen_nombre: almOrigen?.nombre || null,
+        tipo: 'baja', cantidad, motivo, notas: notas || null,
+        nombre_cliente: clienteNombre || null,
+        stock_anterior: anterior, stock_nuevo: nuevo
+      }]);
+      flash(`✅ -${cantidad} uds de "${productoTitulo}"`);
+
+    } else if(tipoMovActual === 'transferencia'){
+      const { data: origen } = await supabaseClient
+        .from('inventario_stock').select('*')
+        .eq('producto_id', productoId).eq('almacen_id', almacenOrigenId).maybeSingle();
+      if(!origen || origen.stock_actual < cantidad){
+        flash(`Stock insuficiente (${origen?.stock_actual || 0})`, true); return;
+      }
+      const anteriorOrigen = origen.stock_actual;
+      const nuevoOrigen = anteriorOrigen - cantidad;
+      await supabaseClient.from('inventario_stock')
+        .update({ stock_actual: nuevoOrigen, updated_at: new Date().toISOString() })
+        .eq('id', origen.id);
+
+      const { data: destino } = await supabaseClient
+        .from('inventario_stock').select('*')
+        .eq('producto_id', productoId).eq('almacen_id', almacenDestinoId).maybeSingle();
+      const anteriorDest = destino ? destino.stock_actual : 0;
+      const nuevoDest = anteriorDest + cantidad;
+      if(destino){
+        await supabaseClient.from('inventario_stock')
+          .update({ stock_actual: nuevoDest, updated_at: new Date().toISOString() })
+          .eq('id', destino.id);
+      } else {
+        const minimoGlobal = await obtenerMinimoGlobal();
+        await supabaseClient.from('inventario_stock').insert([{
+          producto_id: productoId, producto_titulo: productoTitulo,
+          producto_categoria: productoCategoria, almacen_id: almacenDestinoId,
+          stock_actual: nuevoDest, stock_minimo: minimoGlobal
+        }]);
+      }
+      await supabaseClient.from('movimientos_inventario').insert([{
+        producto_id: productoId, producto_titulo: productoTitulo,
+        almacen_id: almacenOrigenId, almacen_nombre: almOrigen?.nombre || null,
+        almacen_destino_id: almacenDestinoId, almacen_destino_nombre: almDestino?.nombre || null,
+        tipo: 'transferencia', cantidad, motivo, notas: notas || null,
+        stock_anterior: anteriorOrigen, stock_nuevo: nuevoOrigen
+      }]);
+      flash(`✅ Transferidas ${cantidad} uds`);
+    }
+
+    cerrarModal('modalMovimiento');
+    await cargarTodo();
+    if(vistaActual === 'ficha' && articuloActual){
+      const actualizado = agruparPorProducto().find(a => a.producto_id === articuloActual.producto_id);
+      if(actualizado){ articuloActual = actualizado; renderizarFicha(); }
+    }
+  } catch(e){
+    console.error(e);
+    flash('Error: ' + (e.message || 'desconocido'), true);
+  }
+}
+
+async function generarIdProductoNuevo(){
+  const { data } = await supabaseClient
+    .from('inventario_stock').select('producto_id')
+    .order('producto_id', { ascending: false }).limit(1);
+  const maxInventario = (data && data[0]) ? data[0].producto_id : 0;
+  const maxCatalogo = productosCatalogo.reduce((max, p) => Math.max(max, p.id), 0);
+  return Math.max(Math.max(maxInventario, maxCatalogo, 0) + 1, 100000);
+}
+
+async function obtenerMinimoGlobal(){
+  const { data } = await supabaseClient.from('config_inventario').select('stock_minimo_global').eq('id',1).maybeSingle();
+  return data?.stock_minimo_global || 3;
+}
+
+/* ====== MODAL ALMACEN ====== */
+function abrirModalNuevoAlmacen(){
+  document.getElementById('modalAlmacenTitulo').textContent = 'Nuevo Almacén';
+  document.getElementById('almacenIdOriginal').value = '';
+  document.getElementById('almacenNombre').value = '';
+  document.getElementById('almacenCategoria').value = '';
+  document.getElementById('almacenDescripcion').value = '';
+  document.getElementById('modalAlmacen').style.display = 'flex';
+}
+
+async function guardarAlmacen(){
+  const id = document.getElementById('almacenIdOriginal').value;
+  const nombre = document.getElementById('almacenNombre').value.trim();
+  const categoria = document.getElementById('almacenCategoria').value || null;
+  const descripcion = document.getElementById('almacenDescripcion').value.trim();
+  if(!nombre){ flash('Escribe un nombre', true); return; }
+  const datos = { nombre, categoria, descripcion: descripcion || null };
+  if(id){
+    const { error } = await supabaseClient.from('almacenes').update(datos).eq('id', id);
+    if(error){ flash('Error: '+error.message, true); return; }
+    flash('Almacén actualizado');
+  } else {
+    const { error } = await supabaseClient.from('almacenes').insert([datos]);
+    if(error){ flash('Error: '+error.message, true); return; }
+    flash('Almacén creado');
+  }
+  cerrarModal('modalAlmacen');
+  cargarTodo();
+}
+
+/* ====== MODAL PROVEEDOR ====== */
+function abrirModalNuevoProveedor(){
+  document.getElementById('modalProveedorTitulo').textContent = 'Nuevo Proveedor';
+  document.getElementById('proveedorIdOriginal').value = '';
+  document.getElementById('proveedorNombre').value = '';
+  document.getElementById('proveedorContacto').value = '';
+  document.getElementById('proveedorTelefono').value = '';
+  document.getElementById('proveedorNotas').value = '';
+  document.getElementById('modalProveedor').style.display = 'flex';
+}
+function abrirModalEditarProveedor(id){
+  const p = proveedoresGlobal.find(x => x.id === id);
+  if(!p) return;
+  document.getElementById('modalProveedorTitulo').textContent = 'Editar Proveedor';
+  document.getElementById('proveedorIdOriginal').value = p.id;
+  document.getElementById('proveedorNombre').value = p.nombre || '';
+  document.getElementById('proveedorContacto').value = p.contacto || '';
+  document.getElementById('proveedorTelefono').value = p.telefono || '';
+  document.getElementById('proveedorNotas').value = p.notas || '';
+  document.getElementById('modalProveedor').style.display = 'flex';
+}
+async function guardarProveedor(){
+  const id = document.getElementById('proveedorIdOriginal').value;
+  const nombre = document.getElementById('proveedorNombre').value.trim();
+  if(!nombre){ flash('Escribe el nombre', true); return; }
+  const datos = {
+    nombre,
+    contacto: document.getElementById('proveedorContacto').value.trim() || null,
+    telefono: document.getElementById('proveedorTelefono').value.trim() || null,
+    notas: document.getElementById('proveedorNotas').value.trim() || null
+  };
+  if(id){
+    const { error } = await supabaseClient.from('proveedores').update(datos).eq('id', id);
+    if(error){ flash('Error: '+error.message, true); return; }
+    flash('Proveedor actualizado');
+  } else {
+    const { error } = await supabaseClient.from('proveedores').insert([datos]);
+    if(error){
+      if(error.code === '23505') flash('Ese proveedor ya existe', true);
+      else flash('Error: '+error.message, true);
+      return;
+    }
+    flash('Proveedor creado');
+  }
+  cerrarModal('modalProveedor');
+  cargarTodo();
+}
+async function eliminarProveedor(id){
+  if(!confirm('¿Eliminar este proveedor?')) return;
+  const { error } = await supabaseClient.from('proveedores').delete().eq('id', id);
+  if(error){ flash('Error: '+error.message, true); return; }
+  flash('Proveedor eliminado');
+  cargarTodo();
+}
+
+/* ====== MODAL CLIENTE ====== */
+function abrirModalNuevoCliente(){
+  document.getElementById('modalClienteTitulo').textContent = 'Nuevo Cliente';
+  document.getElementById('clienteIdOriginal').value = '';
+  document.getElementById('clienteNombre').value = '';
+  document.getElementById('clienteTelefono').value = '';
+  document.getElementById('clienteNotas').value = '';
+  document.getElementById('modalCliente').style.display = 'flex';
+}
+function abrirModalEditarCliente(id){
+  const c = clientesGlobal.find(x => x.id === id);
+  if(!c) return;
+  document.getElementById('modalClienteTitulo').textContent = 'Editar Cliente';
+  document.getElementById('clienteIdOriginal').value = c.id;
+  document.getElementById('clienteNombre').value = c.nombre || '';
+  document.getElementById('clienteTelefono').value = c.telefono || '';
+  document.getElementById('clienteNotas').value = c.notas || '';
+  document.getElementById('modalCliente').style.display = 'flex';
+}
+async function guardarCliente(){
+  const id = document.getElementById('clienteIdOriginal').value;
+  const nombre = document.getElementById('clienteNombre').value.trim();
+  if(!nombre){ flash('Escribe el nombre', true); return; }
+  const datos = {
+    nombre,
+    telefono: document.getElementById('clienteTelefono').value.trim() || null,
+    notas: document.getElementById('clienteNotas').value.trim() || null
+  };
+  if(id){
+    const { error } = await supabaseClient.from('clientes').update(datos).eq('id', id);
+    if(error){ flash('Error: '+error.message, true); return; }
+    flash('Cliente actualizado');
+  } else {
+    const { error } = await supabaseClient.from('clientes').insert([datos]);
+    if(error){
+      if(error.code === '23505') flash('Ese cliente ya existe', true);
+      else flash('Error: '+error.message, true);
+      return;
+    }
+    flash('Cliente creado');
+  }
+  cerrarModal('modalCliente');
+  cargarTodo();
+}
+async function eliminarCliente(id){
+  if(!confirm('¿Eliminar este cliente?')) return;
+  const { error } = await supabaseClient.from('clientes').delete().eq('id', id);
+  if(error){ flash('Error: '+error.message, true); return; }
+  flash('Cliente eliminado');
+  cargarTodo();
 }
 
 /* ====== CIERRE MODAL ====== */
-function cerrarModal(id){
-  document.getElementById(id).style.display = 'none';
-}
-
+function cerrarModal(id){ document.getElementById(id).style.display = 'none'; }
 document.querySelectorAll('.modal-overlay').forEach(ov => {
-  ov.addEventListener('click', e => {
-    if(e.target === ov) ov.style.display = 'none';
-  });
+  ov.addEventListener('click', e => { if(e.target === ov) ov.style.display = 'none'; });
 });
-
 document.getElementById('passLogin')?.addEventListener('keypress', e => {
   if(e.key === 'Enter') intentarLogin();
 });
