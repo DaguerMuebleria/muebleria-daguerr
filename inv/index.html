@@ -94,8 +94,6 @@ main{
   padding:22px 26px 40px; width:calc(100% - var(--sidebar-width));
   min-height:100vh;
 }
-
-/* Breadcrumbs */
 .breadcrumbs{
   font-size:12px; color:var(--text-muted); margin-bottom:12px;
   display:flex; align-items:center; gap:6px; flex-wrap:wrap;
@@ -104,8 +102,6 @@ main{
 .breadcrumbs a:hover{color:var(--terracota)}
 .breadcrumbs .sep{opacity:0.5}
 .breadcrumbs .current{color:var(--text-main); font-weight:600}
-
-/* Header unificado */
 .page-header{
   display:flex; justify-content:space-between; align-items:flex-start;
   margin-bottom:22px; flex-wrap:wrap; gap:14px;
@@ -176,7 +172,6 @@ main{
   color:var(--text-main); letter-spacing:-0.5px;
 }
 .stat-tile .sub{font-size:11.5px; color:var(--text-muted); margin-top:2px}
-
 .dashboard-cols{
   display:grid; grid-template-columns:2fr 1fr; gap:16px;
 }
@@ -196,8 +191,6 @@ main{
 }
 .dash-panel-head .link:hover{text-decoration:underline}
 .dash-panel-body{padding:6px 0}
-
-/* Accesos rápidos */
 .quick-actions{
   display:grid; grid-template-columns:1fr 1fr; gap:10px;
   padding:16px;
@@ -251,7 +244,6 @@ main{
   background:#fff; padding:8px 14px; border-radius:20px;
   border:1px solid var(--border); white-space:nowrap;
 }
-
 .cards-grid{
   display:grid; grid-template-columns:repeat(auto-fill, minmax(240px, 1fr));
   gap:14px;
@@ -303,6 +295,18 @@ main{
   font-size:9.5px; color:var(--text-muted); font-weight:600;
   text-transform:uppercase; letter-spacing:0.04em;
 }
+.art-card .art-del{
+  position:absolute; bottom:9px; right:9px;
+  width:32px; height:32px; border-radius:50%;
+  background:rgba(255,255,255,0.92); border:none;
+  cursor:pointer; font-size:14px; display:flex;
+  align-items:center; justify-content:center;
+  box-shadow:0 2px 8px rgba(0,0,0,0.15);
+  opacity:0; transition:all 0.2s;
+  z-index:5;
+}
+.art-card:hover .art-del{opacity:1}
+.art-card .art-del:hover{background:var(--danger); transform:scale(1.1)}
 
 /* ============ FICHA DE ARTÍCULO ============ */
 .ficha-layout{
@@ -331,7 +335,6 @@ main{
 .ficha-tag.cat{background:var(--terracota-suave); color:var(--terracota)}
 .ficha-tag.supabase{background:var(--info-light); color:var(--info)}
 .ficha-tag.manual{background:var(--warning-light); color:var(--warning)}
-
 .ficha-stock-total{
   background:linear-gradient(135deg, #faf6f1, #f0ebe6);
   border-radius:var(--radius-md); padding:14px 16px;
@@ -351,10 +354,8 @@ main{
   color:var(--danger); background:#fff;
   padding:5px 10px; border-radius:20px; display:inline-block;
 }
-
 .ficha-action-stack{display:flex; flex-direction:column; gap:8px}
 .ficha-action-stack .btn{width:100%; justify-content:center}
-
 .ficha-main{display:flex; flex-direction:column; gap:16px}
 .ficha-summary{
   background:#fff; border:1px solid var(--border);
@@ -370,7 +371,6 @@ main{
   font-size:10.5px; color:var(--text-muted); font-weight:700;
   text-transform:uppercase; letter-spacing:0.04em; margin-top:3px;
 }
-
 .ficha-tabs-card{
   background:#fff; border:1px solid var(--border);
   border-radius:var(--radius-md); overflow:hidden;
@@ -417,6 +417,8 @@ td{padding:12px 14px; border-bottom:1px solid var(--border); vertical-align:midd
 tr:last-child td{border-bottom:none}
 tbody tr{transition:background 0.15s}
 tbody tr:hover{background:#fdfbf8}
+tbody tr.clickable{cursor:pointer}
+tbody tr.clickable:hover{background:var(--terracota-suave) !important}
 
 /* Badges */
 .badge{
@@ -432,19 +434,17 @@ tbody tr:hover{background:#fdfbf8}
 .badge.ok{background:var(--success-light); color:var(--success)}
 .badge.bajo{background:var(--danger-light); color:var(--danger)}
 .badge.neutral{background:#f0ebe6; color:var(--text-muted)}
-
 .text-pos{color:var(--success); font-weight:800}
 .text-neg{color:var(--danger); font-weight:800}
 .text-muted{color:var(--text-muted)}
 .text-bold{font-weight:700}
-
 .empty-state{
   text-align:center; color:var(--text-muted); padding:50px 20px; font-size:13px;
 }
 .empty-state .ico{font-size:44px; margin-bottom:12px; display:block; opacity:0.5}
 .empty-state .tit{font-size:15px; font-weight:700; color:var(--text-main); margin-bottom:6px}
 
-/* Toolbar variante dentro de paneles */
+/* Toolbar paneles */
 .panel-toolbar{
   padding:12px 16px; background:#faf6f1;
   border-bottom:1px solid var(--border);
@@ -513,7 +513,6 @@ tbody tr:hover{background:#fdfbf8}
 .field textarea{resize:vertical; height:70px}
 .field .hint{font-size:11.5px; color:var(--text-muted); margin-top:5px; font-weight:400}
 .field-row{display:grid; grid-template-columns:1fr 1fr; gap:10px}
-
 .section-label{
   font-size:10.5px; text-transform:uppercase; letter-spacing:0.08em;
   font-weight:700; color:var(--terracota);
@@ -522,8 +521,6 @@ tbody tr:hover{background:#fdfbf8}
   display:flex; align-items:center; gap:6px;
 }
 .section-label:first-child{margin-top:0; padding-top:0; border-top:none}
-
-/* Modo tabs (existente/nuevo) */
 .mode-switch{
   display:flex; background:#f0ebe6; border-radius:var(--radius-sm);
   padding:4px; gap:4px;
@@ -538,8 +535,6 @@ tbody tr:hover{background:#fdfbf8}
   background:#fff; color:var(--terracota);
   box-shadow:0 1px 3px rgba(0,0,0,0.08);
 }
-
-/* Buscador con dropdown */
 .search-drop{position:relative}
 .search-drop input{
   width:100%; padding:10px 12px 10px 38px;
@@ -570,8 +565,6 @@ tbody tr:hover{background:#fdfbf8}
 .drop-item.new{background:var(--success-light)}
 .drop-item.new .tit{color:var(--success)}
 .drop-empty{padding:16px; text-align:center; color:var(--text-muted); font-size:12.5px}
-
-/* Chip de seleccionado */
 .chip-selected{
   background:var(--success-light); border:1px solid #a7f3d0;
   border-radius:var(--radius-sm); padding:10px 12px; margin-top:8px;
@@ -587,6 +580,59 @@ tbody tr:hover{background:#fdfbf8}
   border-radius:6px;
 }
 .chip-x:hover{background:rgba(239,68,68,0.1)}
+
+/* ============ DETALLE DE MOVIMIENTO ============ */
+.detalle-grid{
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:12px; margin-bottom:14px;
+}
+.detalle-item{
+  background:#faf6f1; border-radius:var(--radius-sm);
+  padding:10px 12px;
+}
+.detalle-item .lbl{
+  font-size:10px; text-transform:uppercase;
+  letter-spacing:0.06em; font-weight:700;
+  color:var(--text-muted); margin-bottom:4px;
+}
+.detalle-item .val{
+  font-size:14px; font-weight:700; color:var(--text-main);
+  word-break:break-word;
+}
+.detalle-item.full{grid-column:1/-1}
+.detalle-hero{
+  background:linear-gradient(135deg, var(--terracota-suave), #fce8e1);
+  border-radius:var(--radius-md);
+  padding:16px; text-align:center; margin-bottom:14px;
+}
+.detalle-hero .tipo{
+  display:inline-block; padding:5px 14px; border-radius:20px;
+  font-size:11px; font-weight:800; text-transform:uppercase;
+  letter-spacing:0.06em; margin-bottom:8px;
+}
+.detalle-hero .tipo.alta{background:var(--success); color:#fff}
+.detalle-hero .tipo.baja{background:var(--danger); color:#fff}
+.detalle-hero .tipo.transferencia{background:var(--info); color:#fff}
+.detalle-hero .tipo.ajuste{background:var(--warning); color:#fff}
+.detalle-hero .cant{
+  font-size:32px; font-weight:800; line-height:1.1; color:var(--text-main);
+}
+.detalle-hero .prod{
+  font-size:14px; font-weight:600; margin-top:6px; color:var(--text-main);
+}
+.detalle-hero .fecha{
+  font-size:12px; color:var(--text-muted); margin-top:6px;
+  font-weight:500;
+}
+.detalle-notas{
+  background:#fff; border:1px dashed var(--border);
+  border-radius:var(--radius-sm); padding:10px 12px;
+  font-size:13px; color:var(--text-main); line-height:1.5;
+  margin-top:12px;
+}
+@media (max-width:520px){
+  .detalle-grid{grid-template-columns:1fr}
+}
 
 /* ============ LOGIN ============ */
 #loginScreen{
@@ -656,6 +702,7 @@ tbody tr:hover{background:#fdfbf8}
   .cards-grid{grid-template-columns:1fr 1fr; gap:10px}
   .art-img-box{height:110px; font-size:34px}
   .art-title{font-size:12.5px}
+  .art-card .art-del{opacity:1}
   .ficha-summary{grid-template-columns:1fr 1fr; gap:6px}
   .summary-item .val{font-size:18px}
   .toolbar{flex-direction:column; align-items:stretch}
@@ -1183,6 +1230,35 @@ tbody tr:hover{background:#fdfbf8}
   </div>
 </div>
 
+<!-- MODAL DETALLE DE MOVIMIENTO -->
+<div class="modal-overlay" id="modalDetalle">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h3 id="mdTitulo">Detalle del movimiento</h3>
+      <button class="modal-x" onclick="cerrarModal('modalDetalle')">×</button>
+    </div>
+    <div class="modal-body" id="mdBody"></div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="cerrarModal('modalDetalle')">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CONFIRMAR ELIMINAR ARTÍCULO -->
+<div class="modal-overlay" id="modalEliminar">
+  <div class="modal-card" style="max-width:460px">
+    <div class="modal-head">
+      <h3>⚠️ Eliminar artículo</h3>
+      <button class="modal-x" onclick="cerrarModal('modalEliminar')">×</button>
+    </div>
+    <div class="modal-body" id="meBody"></div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="cerrarModal('modalEliminar')">Cancelar</button>
+      <button class="btn btn-danger" onclick="confirmarEliminar()">Sí, eliminar</button>
+    </div>
+  </div>
+</div>
+
 <div class="flash" id="flash"></div>
 
 <script>
@@ -1193,15 +1269,28 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 /* ============ ESTADO ============ */
 let productos = [], almacenes = [], stock = [], movs = [], provs = [], clis = [];
 let vista = 'dashboard';
-let artActual = null; // para la ficha
+let artActual = null;
 let tipoMov = 'alta';
 let modoAlta = 'ex';
 let selProd = null, selProd2 = null, selProv = null, selCli = null;
+let _productoEliminar = null;
 
 /* ============ HELPERS ============ */
 const $ = id => document.getElementById(id);
 const esc = s => String(s??'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const fmt = iso => iso ? new Date(iso).toLocaleString('es-MX',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'}) : '';
+
+function fmt(iso){
+  if(!iso) return '';
+  const d = new Date(iso);
+  const hoy = new Date();
+  const esHoy = d.toDateString() === hoy.toDateString();
+  const ayer = new Date(hoy); ayer.setDate(ayer.getDate() - 1);
+  const esAyer = d.toDateString() === ayer.toDateString();
+  const hora = d.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
+  if(esHoy) return `Hoy · ${hora}`;
+  if(esAyer) return `Ayer · ${hora}`;
+  return d.toLocaleDateString('es-MX',{day:'2-digit',month:'2-digit',year:'2-digit'}) + ' · ' + hora;
+}
 
 function flash(msg, err=false){
   const el = $('flash');
@@ -1225,6 +1314,9 @@ window.addEventListener('DOMContentLoaded', async () => {
     if(!e.target.closest('.search-drop')) document.querySelectorAll('.drop-list').forEach(el => el.classList.remove('show'));
   });
   $('passLogin').addEventListener('keypress', e => { if(e.key === 'Enter') intentarLogin(); });
+  document.querySelectorAll('.modal-overlay').forEach(ov => {
+    ov.addEventListener('click', e => { if(e.target === ov) ov.style.display = 'none'; });
+  });
 });
 
 async function intentarLogin(){
@@ -1426,6 +1518,7 @@ function renderInventario(){
           ${img ? `<img src="${esc(img)}" class="art-img" loading="lazy" onerror="this.style.display='none'">` : '📦'}
           <span class="art-badge-cat">${esc(a.categoria || 'Sin categoría')}</span>
           <span class="art-badge-stock ${cls}">${a.stockTotal} uds</span>
+          <button class="art-del" title="Eliminar artículo" onclick="event.stopPropagation(); abrirModalEliminar(${a.producto_id})">🗑️</button>
         </div>
         <div class="art-body">
           <h3 class="art-title">${esc(a.titulo)}</h3>
@@ -1474,7 +1567,6 @@ function renderFicha(){
   const ventas = movsArt.filter(m => m.tipo === 'baja');
   const altas = movsArt.filter(m => m.tipo === 'alta');
 
-  // Agrupar ventas por cliente
   const porCli = {};
   ventas.forEach(v => {
     const k = v.nombre_cliente || 'Sin cliente';
@@ -1483,7 +1575,6 @@ function renderFicha(){
     porCli[k].count++;
   });
 
-  // Agrupar altas por proveedor
   const porProv = {};
   altas.forEach(al => {
     const k = al.proveedor || 'Sin proveedor';
@@ -1497,7 +1588,6 @@ function renderFicha(){
   const totalVendidos = ventas.reduce((s,m)=> s + (m.cantidad||0), 0);
   const bajo = a.stockTotal <= a.stockMinTotal;
 
-  // SIDEBAR
   $('fichaSidebar').innerHTML = `
     <div class="ficha-img-hero">
       ${img ? `<img src="${esc(img)}" onerror="this.style.display='none'">` : '📦'}
@@ -1519,11 +1609,11 @@ function renderFicha(){
         <button class="btn btn-success" onclick="abrirModalConProducto('alta', ${a.producto_id})">⬆️ Dar de alta</button>
         <button class="btn btn-danger" onclick="abrirModalConProducto('baja', ${a.producto_id})">⬇️ Dar de baja</button>
         <button class="btn btn-info" onclick="abrirModalConProducto('transferencia', ${a.producto_id})">🔄 Transferir</button>
+        <button class="btn btn-ghost" onclick="abrirModalEliminar(${a.producto_id})" style="color:var(--danger); border-color:#fecaca">🗑️ Eliminar artículo</button>
       </div>
     </div>
   `;
 
-  // MAIN
   $('fichaMain').innerHTML = `
     <div class="ficha-summary">
       <div class="summary-item"><div class="val pos">+${totalAltas}</div><div class="lbl">Total altas</div></div>
@@ -1543,7 +1633,6 @@ function renderFicha(){
     </div>
   `;
 
-  // Guardar datos para los tabs
   window._fichaData = { a, movsArt, ventas, altas, porCli, porProv };
   tabFicha('stock', document.querySelector('.ficha-tab-btn'));
 }
@@ -1622,7 +1711,7 @@ function tabFicha(tab, btn){
             ${movsArt.length === 0 ? '<tr><td colspan="8" class="empty-state">Sin movimientos</td></tr>' :
               movsArt.map(m => {
                 const almTxt = m.tipo === 'transferencia' ? `${esc(m.almacen_nombre||'—')} → ${esc(m.almacen_destino_nombre||'—')}` : esc(m.almacen_nombre||'—');
-                return `<tr>
+                return `<tr class="clickable" onclick="verDetalleMovimiento(${m.id})">
                   <td>${fmt(m.created_at)}</td>
                   <td><span class="badge ${m.tipo}">${m.tipo}</span></td>
                   <td>${almTxt}</td>
@@ -1675,7 +1764,7 @@ function renderMovimientos(){
   }
   t.innerHTML = lista.slice(0,300).map(m => {
     const almTxt = m.tipo === 'transferencia' ? `${esc(m.almacen_nombre||'—')} → ${esc(m.almacen_destino_nombre||'—')}` : esc(m.almacen_nombre||'—');
-    return `<tr>
+    return `<tr class="clickable" onclick="verDetalleMovimiento(${m.id})">
       <td>${fmt(m.created_at)}</td>
       <td><span class="badge ${m.tipo}">${m.tipo}</span></td>
       <td class="text-bold">${esc(m.producto_titulo||'—')}</td>
@@ -1700,7 +1789,7 @@ function renderUltimos(){
     let ref = '—';
     if(m.tipo === 'alta') ref = m.proveedor || m.numero_factura || '—';
     else if(m.tipo === 'baja') ref = m.nombre_cliente || '—';
-    return `<tr>
+    return `<tr class="clickable" onclick="verDetalleMovimiento(${m.id})">
       <td>${fmt(m.created_at)}</td>
       <td><span class="badge ${m.tipo}">${m.tipo}</span></td>
       <td class="text-bold">${esc(m.producto_titulo||'—')}</td>
@@ -1798,11 +1887,9 @@ function abrirModal(tipo, prodPre){
   $('chipCli').innerHTML = '';
   document.querySelectorAll('.drop-list').forEach(el => el.classList.remove('show'));
 
-  // Mostrar/ocultar bloques según tipo
   const bloques = {
     tabsModo: tipo === 'alta',
-    ex: tipo === 'alta' || (tipo === 'alta' && !prodPre),
-    nu: tipo === 'alta',
+    ex: tipo === 'alta',
     otros: tipo === 'baja' || tipo === 'transferencia',
     almDest: tipo === 'transferencia',
     prov: tipo === 'alta',
@@ -1810,7 +1897,7 @@ function abrirModal(tipo, prodPre){
   };
 
   $('mmTabsModo').style.display = bloques.tabsModo ? 'flex' : 'none';
-  $('bloqueEx').style.display = (tipo === 'alta') ? 'block' : 'none';
+  $('bloqueEx').style.display = bloques.ex ? 'block' : 'none';
   $('bloqueNu').style.display = 'none';
   $('bloqueOtros').style.display = bloques.otros ? 'block' : 'none';
   $('bloqueAlmDest').style.display = bloques.almDest ? 'block' : 'none';
@@ -1824,7 +1911,6 @@ function abrirModal(tipo, prodPre){
   if(tipo === 'alta'){ setModo('ex'); }
   llenarSelectsAlm();
 
-  // Preseleccionar producto
   if(selProd){
     if(tipo === 'alta'){ renderChipProd(selProd); }
     else { selProd2 = selProd; renderChipProd2(selProd); }
@@ -1879,7 +1965,6 @@ function renderChipProd(p){
       <button class="chip-x" onclick="selProd=null;renderChipProd(null)">✕</button>
     </div>`;
 }
-function quitarProd(){ selProd = null; renderChipProd(null); }
 
 function filtraProd2(){
   const q = $('inpBuscarProd2').value.toLowerCase().trim();
@@ -2194,10 +2279,181 @@ async function borrarCli(id){
   cargarTodo();
 }
 
-/* Cerrar modales con click afuera */
-document.querySelectorAll('.modal-overlay').forEach(ov => {
-  ov.addEventListener('click', e => { if(e.target === ov) ov.style.display = 'none'; });
-});
+/* ============ VER DETALLE DE MOVIMIENTO ============ */
+function verDetalleMovimiento(movId){
+  const m = movs.find(x => x.id === movId);
+  if(!m){ flash('Movimiento no encontrado', true); return; }
+
+  const provInfo = m.proveedor ? provs.find(p => (p.nombre||'').toLowerCase() === m.proveedor.toLowerCase()) : null;
+  const cliInfo = m.nombre_cliente ? clis.find(c => (c.nombre||'').toLowerCase() === m.nombre_cliente.toLowerCase()) : null;
+
+  const fechaObj = new Date(m.created_at);
+  const fechaStr = fechaObj.toLocaleDateString('es-MX',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
+  const horaStr = fechaObj.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+
+  const titulos = { alta:'📥 Alta de inventario', baja:'📤 Baja de inventario', transferencia:'🔄 Transferencia', ajuste:'⚙️ Ajuste' };
+  $('mdTitulo').innerHTML = `${titulos[m.tipo] || 'Detalle'} <span style="font-size:11px;color:var(--text-muted);font-weight:500">#${m.id}</span>`;
+
+  const cantSign = m.tipo === 'alta' ? '+' : (m.tipo === 'baja' ? '−' : '↔');
+  const cantColor = m.tipo === 'alta' ? 'var(--success)' : (m.tipo === 'baja' ? 'var(--danger)' : 'var(--info)');
+
+  let html = `
+    <div class="detalle-hero">
+      <div class="tipo ${m.tipo}">${m.tipo}</div>
+      <div class="cant" style="color:${cantColor}">${cantSign}${m.cantidad} uds</div>
+      <div class="prod">${esc(m.producto_titulo || '(sin título)')}</div>
+      <div class="fecha">📅 ${fechaStr}<br>🕐 ${horaStr}</div>
+    </div>
+
+    <div class="detalle-grid">
+      <div class="detalle-item">
+        <div class="lbl">Almacén</div>
+        <div class="val">${esc(m.almacen_nombre || '—')}</div>
+      </div>
+  `;
+
+  if(m.tipo === 'transferencia'){
+    html += `
+      <div class="detalle-item">
+        <div class="lbl">Almacén destino</div>
+        <div class="val">${esc(m.almacen_destino_nombre || '—')}</div>
+      </div>
+    `;
+  } else {
+    html += `
+      <div class="detalle-item">
+        <div class="lbl">Stock antes</div>
+        <div class="val">${m.stock_anterior ?? '—'} uds</div>
+      </div>
+      <div class="detalle-item">
+        <div class="lbl">Stock después</div>
+        <div class="val" style="color:${cantColor}">${m.stock_nuevo ?? '—'} uds</div>
+      </div>
+    `;
+  }
+
+  html += `
+      <div class="detalle-item">
+        <div class="lbl">Motivo</div>
+        <div class="val">${esc(m.motivo || '—')}</div>
+      </div>
+  `;
+
+  if(m.tipo === 'alta' && m.proveedor){
+    html += `
+      <div class="detalle-item full" style="background:var(--info-light); border:1px solid #bfdbfe">
+        <div class="lbl">🚚 Proveedor</div>
+        <div class="val">${esc(m.proveedor)}</div>
+        ${provInfo ? `
+          <div style="margin-top:6px;font-size:12px;color:var(--text-muted)">
+            ${provInfo.contacto ? `👤 ${esc(provInfo.contacto)}<br>` : ''}
+            ${provInfo.telefono ? `📞 ${esc(provInfo.telefono)}<br>` : ''}
+            ${provInfo.notas ? `📝 ${esc(provInfo.notas)}` : ''}
+          </div>
+        ` : '<div style="margin-top:6px;font-size:12px;color:var(--text-muted)">Sin datos adicionales</div>'}
+      </div>
+    `;
+  }
+
+  if(m.tipo === 'alta' && m.numero_factura){
+    html += `
+      <div class="detalle-item full">
+        <div class="lbl">📄 Nº Factura</div>
+        <div class="val">${esc(m.numero_factura)}</div>
+      </div>
+    `;
+  }
+
+  if(m.tipo === 'baja' && m.nombre_cliente){
+    html += `
+      <div class="detalle-item full" style="background:var(--warning-light); border:1px solid #fde68a">
+        <div class="lbl">👤 Cliente</div>
+        <div class="val">${esc(m.nombre_cliente)}</div>
+        ${cliInfo ? `
+          <div style="margin-top:6px;font-size:12px;color:var(--text-muted)">
+            ${cliInfo.telefono ? `📞 ${esc(cliInfo.telefono)}<br>` : ''}
+            ${cliInfo.notas ? `📝 ${esc(cliInfo.notas)}` : ''}
+          </div>
+        ` : '<div style="margin-top:6px;font-size:12px;color:var(--text-muted)">Sin datos adicionales</div>'}
+      </div>
+    `;
+  }
+
+  html += `</div>`;
+
+  if(m.notas){
+    html += `
+      <div class="detalle-notas">
+        <b style="font-size:11px;text-transform:uppercase;color:var(--text-muted)">📝 Notas</b><br>
+        ${esc(m.notas).replace(/\n/g,'<br>')}
+      </div>
+    `;
+  }
+
+  $('mdBody').innerHTML = html;
+  $('modalDetalle').style.display = 'flex';
+}
+
+/* ============ ELIMINAR ARTÍCULO ============ */
+function abrirModalEliminar(prodId){
+  const a = agrupar().find(x => x.producto_id === prodId);
+  if(!a){ flash('Artículo no encontrado', true); return; }
+  _productoEliminar = a;
+
+  const movsArt = movs.filter(m => m.producto_id === prodId);
+
+  $('meBody').innerHTML = `
+    <div style="text-align:center; margin-bottom:16px">
+      <div style="font-size:52px; margin-bottom:8px">🗑️</div>
+      <div style="font-size:16px; font-weight:800; color:var(--text-main); margin-bottom:4px">${esc(a.titulo)}</div>
+      <div style="font-size:12.5px; color:var(--text-muted)">
+        ${a.enCatalogo ? `ID de catálogo #${prodId}` : 'Artículo manual'} · ${esc(a.categoria||'Sin categoría')}
+      </div>
+    </div>
+
+    <div style="background:var(--danger-light); border:1px solid #fecaca; border-radius:var(--radius-sm); padding:14px; margin-bottom:14px">
+      <div style="font-size:13px; font-weight:700; color:var(--danger); margin-bottom:6px">⚠️ Esta acción eliminará:</div>
+      <ul style="margin:0; padding-left:20px; font-size:12.5px; line-height:1.7; color:var(--text-main)">
+        <li><b>${a.almacenes.length}</b> registro(s) de stock (${a.stockTotal} uds en total)</li>
+        <li>El artículo desaparecerá del inventario</li>
+      </ul>
+    </div>
+
+    <div style="background:var(--info-light); border:1px solid #bfdbfe; border-radius:var(--radius-sm); padding:12px 14px">
+      <div style="font-size:12.5px; color:var(--info); font-weight:600; display:flex; gap:8px; align-items:flex-start">
+        <span style="font-size:16px">ℹ️</span>
+        <span>Se conservarán los <b>${movsArt.length} movimiento(s)</b> en el historial para auditoría. Si vuelves a dar de alta este mismo producto después, tendrás su historial completo.</span>
+      </div>
+    </div>
+  `;
+
+  $('modalEliminar').style.display = 'flex';
+}
+
+async function confirmarEliminar(){
+  if(!_productoEliminar){ return; }
+  const prodId = _productoEliminar.producto_id;
+
+  try {
+    const { error } = await sb.from('inventario_stock').delete().eq('producto_id', prodId);
+    if(error) throw error;
+
+    flash(`✅ Artículo eliminado del inventario`);
+    cerrarModal('modalEliminar');
+
+    if(vista === 'ficha' && artActual?.producto_id === prodId){
+      artActual = null;
+      goTo('inventario');
+    }
+
+    await cargarTodo();
+  } catch(e){
+    console.error(e);
+    flash('Error al eliminar: ' + (e.message||''), true);
+  } finally {
+    _productoEliminar = null;
+  }
+}
 </script>
 
 </body>
