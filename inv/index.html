@@ -634,6 +634,13 @@ tbody tr.clickable:hover{background:var(--terracota-suave) !important}
   .detalle-grid{grid-template-columns:1fr}
 }
 
+.modal-foot button[disabled]{pointer-events:none}
+#inpConfirmarBorrar{
+  font-weight:700; letter-spacing:0.05em;
+  text-transform:uppercase; text-align:center;
+}
+#inpConfirmarBorrar:focus{border-color:var(--danger); box-shadow:0 0 0 3px rgba(239,68,68,0.12)}
+
 /* ============ LOGIN ============ */
 #loginScreen{
   position:fixed; top:0; left:0; width:100vw; height:100vh;
@@ -1238,8 +1245,42 @@ tbody tr.clickable:hover{background:var(--terracota-suave) !important}
       <button class="modal-x" onclick="cerrarModal('modalDetalle')">×</button>
     </div>
     <div class="modal-body" id="mdBody"></div>
-    <div class="modal-foot">
+    <div class="modal-foot" style="justify-content:space-between">
+      <button class="btn btn-ghost" id="mdBtnEliminar" style="color:var(--danger); border-color:#fecaca; flex:0 0 auto; min-width:auto" onclick="abrirModalEliminarMovimiento()">🗑️ Eliminar</button>
       <button class="btn btn-ghost" onclick="cerrarModal('modalDetalle')">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CONFIRMAR ELIMINAR MOVIMIENTO -->
+<div class="modal-overlay" id="modalEliminarMov" style="z-index:1100">
+  <div class="modal-card" style="max-width:440px">
+    <div class="modal-head">
+      <h3>⚠️ Eliminar movimiento</h3>
+      <button class="modal-x" onclick="cerrarModal('modalEliminarMov')">×</button>
+    </div>
+    <div class="modal-body">
+      <div style="text-align:center; margin-bottom:16px">
+        <div style="font-size:48px; margin-bottom:8px">🗑️</div>
+        <div style="font-size:15px; font-weight:800; color:var(--text-main); margin-bottom:6px">Esta acción es permanente</div>
+        <div id="meMovInfo" style="font-size:12.5px; color:var(--text-muted)"></div>
+      </div>
+
+      <div style="background:var(--warning-light); border:1px solid #fde68a; border-radius:var(--radius-sm); padding:12px 14px; margin-bottom:14px">
+        <div style="font-size:12.5px; color:#92400e; display:flex; gap:8px; align-items:flex-start">
+          <span style="font-size:16px">⚠️</span>
+          <span>Se eliminará el registro del historial, pero <b>NO</b> se ajustará el stock actual. Si necesitas corregir el stock, primero haz un <b>ajuste manual</b>.</span>
+        </div>
+      </div>
+
+      <div class="field" style="margin-top:0">
+        <label>Para confirmar, escribe <b style="color:var(--danger)">CONFIRMAR</b> (en mayúsculas):</label>
+        <input type="text" id="inpConfirmarBorrar" placeholder="Escribe CONFIRMAR" autocomplete="off" oninput="verificarConfirmacion()">
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="cerrarModal('modalEliminarMov')">Cancelar</button>
+      <button class="btn btn-danger" id="btnConfirmarBorrar" disabled style="opacity:0.5; cursor:not-allowed" onclick="confirmarEliminarMovimiento()">Eliminar definitivamente</button>
     </div>
   </div>
 </div>
@@ -1274,6 +1315,7 @@ let tipoMov = 'alta';
 let modoAlta = 'ex';
 let selProd = null, selProd2 = null, selProv = null, selCli = null;
 let _productoEliminar = null;
+let _movimientoEliminar = null;
 
 /* ============ HELPERS ============ */
 const $ = id => document.getElementById(id);
@@ -2422,7 +2464,7 @@ function abrirModalEliminar(prodId){
     <div style="background:var(--info-light); border:1px solid #bfdbfe; border-radius:var(--radius-sm); padding:12px 14px">
       <div style="font-size:12.5px; color:var(--info); font-weight:600; display:flex; gap:8px; align-items:flex-start">
         <span style="font-size:16px">ℹ️</span>
-        <span>Se conservarán los <b>${movsArt.length} movimiento(s)</b> en el historial para auditoría. Si vuelves a dar de alta este mismo producto después, tendrás su historial completo.</span>
+        <span>Se conservarán los <b>${movsArt.length} movimiento(s)</b> en el historial para auditoría.</span>
       </div>
     </div>
   `;
@@ -2452,6 +2494,75 @@ async function confirmarEliminar(){
     flash('Error al eliminar: ' + (e.message||''), true);
   } finally {
     _productoEliminar = null;
+  }
+}
+
+/* ============ ELIMINAR MOVIMIENTO ============ */
+function abrirModalEliminarMovimiento(){
+  const tituloEl = $('mdTitulo');
+  const match = tituloEl.innerHTML.match(/#(\d+)/);
+  if(!match){ flash('No se pudo identificar el movimiento', true); return; }
+
+  const movId = parseInt(match[1]);
+  const m = movs.find(x => x.id === movId);
+  if(!m){ flash('Movimiento no encontrado', true); return; }
+
+  _movimientoEliminar = m;
+  $('inpConfirmarBorrar').value = '';
+  $('btnConfirmarBorrar').disabled = true;
+  $('btnConfirmarBorrar').style.opacity = '0.5';
+  $('btnConfirmarBorrar').style.cursor = 'not-allowed';
+
+  $('meMovInfo').innerHTML = `
+    <div style="background:#faf6f1; border-radius:var(--radius-sm); padding:10px 12px; margin-top:10px; text-align:left">
+      <div style="font-size:11.5px; color:var(--text-muted); font-weight:600; text-transform:uppercase; letter-spacing:0.04em">Movimiento a eliminar</div>
+      <div style="font-size:13px; font-weight:700; color:var(--text-main); margin-top:4px">
+        ${m.tipo.toUpperCase()} · ${m.cantidad} uds · ${esc(m.producto_titulo || '(sin título)')}
+      </div>
+      <div style="font-size:11.5px; color:var(--text-muted); margin-top:2px">
+        ${fmt(m.created_at)} · ${esc(m.almacen_nombre || '—')}
+      </div>
+    </div>
+  `;
+
+  $('modalEliminarMov').style.display = 'flex';
+}
+
+function verificarConfirmacion(){
+  const val = $('inpConfirmarBorrar').value.trim();
+  const ok = val === 'CONFIRMAR';
+  $('btnConfirmarBorrar').disabled = !ok;
+  $('btnConfirmarBorrar').style.opacity = ok ? '1' : '0.5';
+  $('btnConfirmarBorrar').style.cursor = ok ? 'pointer' : 'not-allowed';
+}
+
+async function confirmarEliminarMovimiento(){
+  if(!_movimientoEliminar) return;
+  if($('inpConfirmarBorrar').value.trim() !== 'CONFIRMAR'){
+    flash('Debes escribir CONFIRMAR exactamente', true);
+    return;
+  }
+
+  const movId = _movimientoEliminar.id;
+
+  try {
+    const { error } = await sb.from('movimientos_inventario').delete().eq('id', movId);
+    if(error) throw error;
+
+    flash('✅ Movimiento eliminado del historial');
+    cerrarModal('modalEliminarMov');
+    cerrarModal('modalDetalle');
+    _movimientoEliminar = null;
+
+    await cargarTodo();
+
+    if(vista === 'ficha' && artActual){
+      const act = agrupar().find(x => x.producto_id === artActual.producto_id);
+      if(act){ artActual = act; renderFicha(); }
+    }
+  } catch(e){
+    console.error(e);
+    flash('Error al eliminar: ' + (e.message||''), true);
   }
 }
 </script>
