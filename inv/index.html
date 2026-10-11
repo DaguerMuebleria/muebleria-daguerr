@@ -2,730 +2,695 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Inventario | Mueblería Daguerr</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inventario - Mueblería Daguerr</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --sidebar-width:260px; --sidebar-mobile-width:85vw;
-  --primary:#201811; --primary-light:#2c2119;
-  --terracota:#c2290a; --terracota-hover:#a12208; --terracota-suave:#fdece7;
-  --success:#10b981; --success-light:#ecfdf5;
-  --danger:#ef4444; --danger-light:#fef2f2;
-  --warning:#f59e0b; --warning-light:#fffbeb;
-  --info:#3b82f6; --info-light:#eff6ff;
-  --bg-color:#f6f2ed; --card-bg:#fff;
-  --text-main:#241b16; --text-muted:#7c6b60;
-  --border:rgba(36,27,22,0.09);
-  --radius-sm:8px; --radius-md:12px; --radius-lg:18px;
-  --shadow-sm:0 1px 2px 0 rgba(36,27,22,0.06);
-  --shadow:0 10px 25px -6px rgba(36,27,22,0.12);
-  --shadow-lg:0 20px 40px -10px rgba(36,27,22,0.18);
-  --touch-target:44px;
+  /* Paleta sobria tipo aplicación de escritorio */
+  --bg: #e8e8e8;
+  --panel: #f5f5f5;
+  --panel-alt: #ebebeb;
+  --sidebar-bg: #3c3c3c;
+  --sidebar-item: #dcdcdc;
+  --sidebar-hover: #4a4a4a;
+  --sidebar-active: #5a5a5a;
+  --header-bg: #4a4a4a;
+
+  --text: #1a1a1a;
+  --text-muted: #666;
+  --text-inv: #e8e8e8;
+  --border: #b8b8b8;
+  --border-dark: #808080;
+
+  --accent: #2c5aa0;
+  --accent-hover: #244a85;
+
+  --success: #2e7d32;
+  --success-bg: #dcedc8;
+  --danger: #c62828;
+  --danger-bg: #ffcdd2;
+  --warning: #ef6c00;
+  --warning-bg: #ffe0b2;
+  --info: #1565c0;
+  --info-bg: #bbdefb;
+
+  --mono: 'Consolas','Monaco','Courier New',monospace;
+  --sans: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 *{box-sizing:border-box}
+html,body{height:100%}
 body{
-  font-family:'Inter',sans-serif; background:var(--bg-color); color:var(--text-main);
-  margin:0; display:flex; min-height:100vh; -webkit-font-smoothing:antialiased;
-  overflow-x:hidden; -webkit-tap-highlight-color:transparent;
+  font-family: var(--sans); font-size:13px;
+  background: var(--bg); color: var(--text);
+  margin:0; display:flex; min-height:100vh;
+  -webkit-font-smoothing: antialiased;
 }
+input,select,textarea,button{font-family:inherit; font-size:13px}
 
 /* ============ SIDEBAR ============ */
 .mobile-menu-btn{
-  display:none; position:fixed; top:12px; left:12px; z-index:101;
-  background:var(--primary); color:#fff; border:none; padding:12px 16px;
-  border-radius:var(--radius-sm); font-size:20px; cursor:pointer;
-  box-shadow:var(--shadow); min-width:var(--touch-target); min-height:var(--touch-target);
+  display:none; position:fixed; top:8px; left:8px; z-index:101;
+  background:var(--sidebar-bg); color:#fff; border:1px solid #222;
+  padding:8px 12px; font-size:16px; cursor:pointer;
 }
 aside{
-  width:var(--sidebar-width); background:linear-gradient(180deg,var(--primary),#17110c);
-  color:#fff; position:fixed; top:0; left:0; height:100vh;
+  width: 220px; background: var(--sidebar-bg); color: var(--text-inv);
+  position:fixed; top:0; left:0; height:100vh;
   display:flex; flex-direction:column; z-index:100;
-  transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);
-  overflow-y:auto; -webkit-overflow-scrolling:touch;
+  border-right: 1px solid #222;
+  transition: transform 0.2s ease;
+  overflow-y: auto;
 }
 .sidebar-brand{
-  padding:22px 18px 18px; font-size:18px; font-weight:800;
-  letter-spacing:-0.5px; border-bottom:1px solid rgba(255,255,255,0.08);
-  display:flex; align-items:center; gap:10px; flex-shrink:0;
+  padding: 12px 14px; font-size: 14px; font-weight: 700;
+  border-bottom: 1px solid #222; background: #2e2e2e;
+  flex-shrink: 0; letter-spacing:0.5px;
 }
-.sidebar-brand span{color:var(--terracota-suave); font-weight:400; opacity:0.8; font-size:14px}
-.sidebar-menu{padding:14px 10px; flex-grow:1; overflow-y:auto}
+.sidebar-brand span{color:#999; font-weight:400; margin-left:6px}
+.sidebar-menu{ padding: 8px 0; flex-grow:1; overflow-y:auto }
 .menu-label{
-  font-size:10px; text-transform:uppercase; letter-spacing:0.1em;
-  color:#8b7a6c; padding:14px 12px 6px; font-weight:700;
+  font-size: 10px; text-transform: uppercase; letter-spacing:0.08em;
+  color: #999; padding: 10px 14px 4px; font-weight: 700;
 }
-.menu-label:first-child{padding-top:2px}
+.menu-label:first-child{padding-top:6px}
 .sidebar-btn{
-  width:100%; background:transparent; border:none; color:#d8cabe;
-  padding:11px 12px; text-align:left; border-radius:var(--radius-sm);
-  font-size:13.5px; font-weight:500; cursor:pointer; transition:all 0.2s ease;
-  margin-bottom:2px; display:flex; align-items:center; gap:11px;
-  min-height:var(--touch-target);
+  width:100%; background:transparent; border:none; color: var(--sidebar-item);
+  padding: 8px 14px; text-align: left; cursor: pointer; font-size: 13px;
+  display:flex; align-items:center; gap:10px;
+  border-left: 3px solid transparent;
 }
-.sidebar-btn .ico{
-  width:26px; height:26px; border-radius:7px;
-  background:rgba(255,255,255,0.07); display:flex; align-items:center;
-  justify-content:center; font-size:13px; flex-shrink:0;
-}
-.sidebar-btn:hover{background:rgba(255,255,255,0.06); color:#fff}
+.sidebar-btn:hover{ background: var(--sidebar-hover); color:#fff }
 .sidebar-btn.active{
-  background:linear-gradient(135deg,var(--terracota),#96200a);
-  color:#fff; font-weight:600; box-shadow:0 6px 16px rgba(194,41,10,0.35);
+  background: var(--sidebar-active); color:#fff;
+  border-left-color: var(--accent); font-weight: 600;
 }
-.sidebar-btn.active .ico{background:rgba(255,255,255,0.18)}
-.sidebar-footer{padding:14px 16px; border-top:1px solid rgba(255,255,255,0.08); flex-shrink:0}
+.sidebar-btn .ico{ width:16px; text-align:center; font-size:13px }
+.sidebar-footer{padding:10px; border-top:1px solid #222; flex-shrink:0}
 .btn-logout{
-  width:100%; background:rgba(239,68,68,0.1); color:#f87171;
-  border:1px solid rgba(239,68,68,0.2); padding:12px;
-  border-radius:var(--radius-sm); font-weight:600; font-size:13px;
-  cursor:pointer; transition:all 0.2s ease; min-height:var(--touch-target);
+  width:100%; background:#2e2e2e; color:#ff8a80;
+  border:1px solid #222; padding:8px; cursor:pointer; font-weight:600;
 }
-.btn-logout:hover{background:var(--danger); color:#fff; border-color:var(--danger)}
+.btn-logout:hover{background:#4a2626; color:#fff}
 .sidebar-overlay{
-  display:none; position:fixed; top:0; left:0; width:100vw; height:100vh;
-  background:rgba(0,0,0,0.5); z-index:99; backdrop-filter:blur(2px);
+  display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:99;
 }
 
 /* ============ MAIN ============ */
 main{
-  margin-left:var(--sidebar-width); flex-grow:1;
-  padding:22px 26px 40px; width:calc(100% - var(--sidebar-width));
-  min-height:100vh;
+  margin-left: 220px; flex-grow:1;
+  padding: 16px 20px 40px; width: calc(100% - 220px);
+  min-height: 100vh;
 }
+
+/* Breadcrumbs */
 .breadcrumbs{
-  font-size:12px; color:var(--text-muted); margin-bottom:12px;
-  display:flex; align-items:center; gap:6px; flex-wrap:wrap;
+  font-size: 12px; color: var(--text-muted); margin-bottom: 10px;
+  padding-bottom: 8px; border-bottom: 1px dotted var(--border);
 }
-.breadcrumbs a{color:var(--text-muted); text-decoration:none; cursor:pointer}
-.breadcrumbs a:hover{color:var(--terracota)}
-.breadcrumbs .sep{opacity:0.5}
-.breadcrumbs .current{color:var(--text-main); font-weight:600}
+.breadcrumbs a{ color: var(--text-muted); cursor:pointer; text-decoration:none }
+.breadcrumbs a:hover{ color: var(--accent); text-decoration: underline }
+.breadcrumbs .sep{ margin: 0 6px; color:#aaa }
+.breadcrumbs .current{ color: var(--text); font-weight: 600 }
+
+/* Page header */
 .page-header{
-  display:flex; justify-content:space-between; align-items:flex-start;
-  margin-bottom:22px; flex-wrap:wrap; gap:14px;
+  display:flex; justify-content: space-between; align-items: center;
+  margin-bottom: 16px; padding-bottom: 12px;
+  border-bottom: 2px solid var(--border-dark); flex-wrap: wrap; gap:10px;
 }
 .page-header h1{
-  font-size:23px; font-weight:800; margin:0; letter-spacing:-0.5px;
-  display:flex; align-items:center; gap:10px;
+  font-size: 18px; font-weight: 700; margin: 0;
+  display:flex; align-items:center; gap:8px;
 }
-.page-header h1 .page-ico{
-  width:38px; height:38px; border-radius:10px;
-  background:var(--terracota-suave); display:flex;
-  align-items:center; justify-content:center; font-size:18px;
+.page-header p{
+  margin: 3px 0 0 0; color: var(--text-muted); font-size: 12px;
 }
-.page-header p{margin:6px 0 0 48px; color:var(--text-muted); font-size:13px}
-.header-actions{display:flex; gap:8px; flex-wrap:wrap}
+.header-actions{ display:flex; gap:6px; flex-wrap:wrap }
 
-/* Botones */
+/* Botones — estilo botón de escritorio */
 .btn{
-  border:none; cursor:pointer; font-family:inherit; font-weight:700;
-  border-radius:var(--radius-sm); transition:all 0.2s ease;
-  display:inline-flex; align-items:center; gap:7px;
-  min-height:var(--touch-target); padding:11px 18px; font-size:13.5px;
-  white-space:nowrap;
+  background: var(--panel-alt); color: var(--text);
+  border: 1px solid var(--border-dark); padding: 6px 12px;
+  cursor: pointer; font-weight: 500; display: inline-flex;
+  align-items: center; gap: 6px; white-space: nowrap;
+  font-size: 12.5px;
 }
-.btn:active{transform:scale(0.96)}
-.btn-primary{
-  background:linear-gradient(135deg,var(--terracota),#a12208); color:#fff;
-  box-shadow:0 6px 16px rgba(194,41,10,0.28);
-}
-.btn-primary:hover{transform:translateY(-1px); box-shadow:0 8px 20px rgba(194,41,10,0.35)}
-.btn-success{background:var(--success); color:#fff}
-.btn-success:hover{background:#059669}
-.btn-danger{background:var(--danger); color:#fff}
-.btn-danger:hover{background:#b91c1c}
-.btn-info{background:var(--info); color:#fff}
-.btn-info:hover{background:#1d4ed8}
-.btn-ghost{background:#fff; color:var(--text-main); border:1px solid var(--border)}
-.btn-ghost:hover{background:#faf6f1; border-color:#d8cabe}
-.btn-sm{padding:8px 12px; min-height:36px; font-size:12px}
+.btn:hover{ background:#dcdcdc }
+.btn:active{ background:#c8c8c8 }
+.btn-primary{ background: var(--accent); color:#fff; border-color:#1e3d70 }
+.btn-primary:hover{ background: var(--accent-hover) }
+.btn-success{ background: var(--success); color:#fff; border-color:#1b5e20 }
+.btn-success:hover{ background:#1b5e20 }
+.btn-danger{ background: var(--danger); color:#fff; border-color:#8e1a1a }
+.btn-danger:hover{ background:#8e1a1a }
+.btn-info{ background: var(--info); color:#fff; border-color:#0d47a1 }
+.btn-info:hover{ background:#0d47a1 }
+.btn-sm{ padding: 4px 9px; font-size: 11.5px }
+.btn-xs{ padding: 2px 7px; font-size: 11px }
 
 /* ============ DASHBOARD ============ */
 .stats-grid{
   display:grid; grid-template-columns:repeat(4, 1fr);
-  gap:14px; margin-bottom:24px;
+  gap:10px; margin-bottom:18px;
 }
 .stat-tile{
-  background:#fff; border:1px solid var(--border);
-  border-radius:var(--radius-md); padding:18px 16px;
-  box-shadow:var(--shadow-sm); position:relative; overflow:hidden;
-  transition:transform 0.2s ease, box-shadow 0.2s ease;
+  background: var(--panel); border: 1px solid var(--border);
+  padding: 12px 14px;
 }
-.stat-tile:hover{transform:translateY(-2px); box-shadow:var(--shadow)}
-.stat-tile .ico-bg{
-  width:42px; height:42px; border-radius:11px;
-  display:flex; align-items:center; justify-content:center;
-  font-size:18px; margin-bottom:12px;
-}
-.stat-tile.t1 .ico-bg{background:var(--terracota-suave)}
-.stat-tile.t2 .ico-bg{background:var(--success-light)}
-.stat-tile.t3 .ico-bg{background:var(--warning-light)}
-.stat-tile.t4 .ico-bg{background:var(--info-light)}
 .stat-tile .label{
-  font-size:11px; color:var(--text-muted); font-weight:600;
-  text-transform:uppercase; letter-spacing:0.05em;
+  font-size: 11px; color: var(--text-muted);
+  text-transform: uppercase; letter-spacing:0.05em; font-weight:600;
 }
 .stat-tile .value{
-  font-size:26px; font-weight:800; margin-top:4px;
-  color:var(--text-main); letter-spacing:-0.5px;
+  font-size: 22px; font-weight: 700; margin-top: 4px;
+  font-family: var(--mono); color: var(--text);
 }
-.stat-tile .sub{font-size:11.5px; color:var(--text-muted); margin-top:2px}
+.stat-tile .sub{ font-size:11px; color: var(--text-muted); margin-top:2px }
+
 .dashboard-cols{
-  display:grid; grid-template-columns:2fr 1fr; gap:16px;
+  display:grid; grid-template-columns: 2fr 1fr; gap:12px;
 }
-.dash-panel{
-  background:#fff; border:1px solid var(--border);
-  border-radius:var(--radius-md); overflow:hidden;
-  box-shadow:var(--shadow-sm);
+.panel{
+  background: var(--panel); border: 1px solid var(--border);
 }
-.dash-panel-head{
-  padding:14px 18px; border-bottom:1px solid var(--border);
+.panel-head{
+  padding: 8px 12px; background: var(--panel-alt);
+  border-bottom: 1px solid var(--border);
   display:flex; justify-content:space-between; align-items:center;
 }
-.dash-panel-head h3{margin:0; font-size:14px; font-weight:700}
-.dash-panel-head .link{
-  font-size:12px; color:var(--terracota); font-weight:600;
-  cursor:pointer; text-decoration:none;
-}
-.dash-panel-head .link:hover{text-decoration:underline}
-.dash-panel-body{padding:6px 0}
-.quick-actions{
-  display:grid; grid-template-columns:1fr 1fr; gap:10px;
-  padding:16px;
-}
+.panel-head h3{ margin:0; font-size:13px; font-weight:700 }
+.panel-head .link{ font-size:11.5px; color: var(--accent); cursor:pointer }
+.panel-head .link:hover{ text-decoration:underline }
+.panel-body{ padding: 6px 0 }
+
+/* Quick actions */
+.quick-actions{ padding:10px; display:grid; gap:6px }
 .quick-btn{
-  border:1px solid var(--border); background:#faf6f1;
-  border-radius:var(--radius-md); padding:16px 12px;
-  cursor:pointer; transition:all 0.2s ease;
-  display:flex; flex-direction:column; gap:6px;
-  font-family:inherit; text-align:left;
+  display: flex; align-items:center; gap:10px;
+  background: var(--panel-alt); border: 1px solid var(--border);
+  padding: 10px 12px; cursor: pointer; text-align: left;
+  font-family: inherit;
 }
-.quick-btn:hover{transform:translateY(-2px); box-shadow:var(--shadow-sm); border-color:#d8cabe}
+.quick-btn:hover{ background:#dcdcdc }
 .quick-btn .qb-ico{
-  width:36px; height:36px; border-radius:10px;
-  display:flex; align-items:center; justify-content:center; font-size:17px;
+  width: 28px; height: 28px; display: flex;
+  align-items: center; justify-content: center;
+  background: var(--panel); border: 1px solid var(--border); font-size:13px;
 }
-.quick-btn.q1 .qb-ico{background:var(--success-light)}
-.quick-btn.q2 .qb-ico{background:var(--danger-light)}
-.quick-btn.q3 .qb-ico{background:var(--info-light)}
-.quick-btn.q4 .qb-ico{background:var(--terracota-suave)}
-.quick-btn .qb-tit{font-size:13px; font-weight:700; color:var(--text-main)}
-.quick-btn .qb-sub{font-size:11px; color:var(--text-muted)}
+.quick-btn .qb-info{display:flex; flex-direction:column; gap:1px}
+.quick-btn .qb-tit{ font-size: 12.5px; font-weight: 600; color: var(--text) }
+.quick-btn .qb-sub{ font-size: 11px; color: var(--text-muted) }
+
+/* ============ TOOLBAR / FILTROS ============ */
+.toolbar{
+  display:flex; gap:8px; margin-bottom: 12px;
+  padding: 8px; background: var(--panel-alt); border: 1px solid var(--border);
+  flex-wrap: wrap; align-items: center;
+}
+.toolbar input[type="text"],
+.toolbar select{
+  padding: 6px 9px; border: 1px solid var(--border-dark);
+  background: #fff; outline: none; flex: 1; min-width: 160px;
+}
+.toolbar input[type="text"]:focus,
+.toolbar select:focus{ border-color: var(--accent) }
+.toolbar .counter{
+  font-family: var(--mono); font-size:11.5px; color: var(--text-muted);
+  background: #fff; padding: 6px 10px; border: 1px solid var(--border);
+}
 
 /* ============ GRID DE ARTÍCULOS ============ */
-.toolbar{
-  display:flex; justify-content:space-between; align-items:center;
-  margin-bottom:16px; gap:10px; flex-wrap:wrap;
-}
-.search-input{
-  position:relative; flex:1; min-width:200px;
-}
-.search-input input{
-  width:100%; padding:11px 14px 11px 40px;
-  border:1px solid var(--border); border-radius:var(--radius-sm);
-  font-family:inherit; font-size:13.5px; outline:none;
-  background:#fff; transition:all 0.2s ease; min-height:var(--touch-target);
-  -webkit-appearance:none;
-}
-.search-input input:focus{border-color:var(--terracota); box-shadow:0 0 0 3px rgba(194,41,10,0.12)}
-.search-input::before{
-  content:"🔍"; position:absolute; left:13px; top:50%;
-  transform:translateY(-50%); font-size:14px; pointer-events:none;
-}
-.filter-select{
-  padding:11px 12px; border-radius:var(--radius-sm);
-  border:1px solid var(--border); font-family:inherit; font-size:13px;
-  min-height:var(--touch-target); background:#fff; cursor:pointer;
-}
-.counter-badge{
-  font-size:12px; font-weight:600; color:var(--text-muted);
-  background:#fff; padding:8px 14px; border-radius:20px;
-  border:1px solid var(--border); white-space:nowrap;
-}
 .cards-grid{
-  display:grid; grid-template-columns:repeat(auto-fill, minmax(240px, 1fr));
-  gap:14px;
+  display:grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 10px;
 }
 .art-card{
-  background:#fff; border:1px solid var(--border);
-  border-radius:var(--radius-md); overflow:hidden;
-  box-shadow:var(--shadow-sm); transition:all 0.25s ease;
-  cursor:pointer; display:flex; flex-direction:column;
+  background: var(--panel); border: 1px solid var(--border);
+  display: flex; flex-direction: column; cursor: pointer;
 }
-.art-card:hover{
-  border-color:#e2d5c8; box-shadow:var(--shadow); transform:translateY(-3px);
-}
-.art-card:active{transform:scale(0.98)}
+.art-card:hover{ background: #efefef; border-color: var(--border-dark) }
 .art-img-box{
-  position:relative; height:150px; background:#f1ebe3;
-  display:flex; align-items:center; justify-content:center;
-  font-size:44px; color:#c4b5a5;
+  height: 120px; background: #d8d8d8; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32px; color: #888; position: relative; overflow: hidden;
 }
-.art-img{width:100%; height:100%; object-fit:cover; display:block}
+.art-img{ width:100%; height:100%; object-fit: cover }
 .art-badge-cat{
-  position:absolute; top:9px; left:9px;
-  background:rgba(32,24,17,0.75); color:#fff;
-  font-size:10px; font-weight:700; padding:4px 9px;
-  border-radius:20px; backdrop-filter:blur(3px);
-  text-transform:uppercase; letter-spacing:0.03em;
+  position: absolute; top: 6px; left: 6px;
+  background: rgba(0,0,0,0.7); color:#fff;
+  font-size: 10px; padding: 2px 7px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.03em;
 }
 .art-badge-stock{
-  position:absolute; top:9px; right:9px;
-  font-size:11.5px; font-weight:800; padding:5px 11px;
-  border-radius:20px; backdrop-filter:blur(3px);
-  background:rgba(16,185,129,0.95); color:#fff;
-  box-shadow:0 2px 8px rgba(0,0,0,0.15);
+  position: absolute; top: 6px; right: 6px;
+  background: var(--success); color:#fff;
+  font-size: 11px; font-weight: 700; padding: 2px 8px;
+  font-family: var(--mono);
 }
-.art-badge-stock.mid{background:rgba(245,158,11,0.95)}
-.art-badge-stock.low{background:rgba(239,68,68,0.95)}
-.art-body{padding:13px 14px; flex-grow:1; display:flex; flex-direction:column; gap:5px}
-.art-title{margin:0; font-size:14px; font-weight:700; line-height:1.3; color:var(--text-main)}
-.art-meta{font-size:11px; color:var(--text-muted); font-weight:500}
+.art-badge-stock.mid{ background: var(--warning) }
+.art-badge-stock.low{ background: var(--danger) }
+.art-body{ padding: 10px 12px; flex-grow:1; display:flex; flex-direction:column; gap:4px }
+.art-title{ margin:0; font-size: 13px; font-weight: 700; line-height: 1.3; color: var(--text) }
+.art-meta{ font-size: 11px; color: var(--text-muted) }
 .art-stats{
-  display:flex; gap:12px; margin-top:auto;
-  padding-top:10px; border-top:1px dashed var(--border);
+  display:flex; gap:8px; margin-top: auto;
+  padding-top: 8px; border-top: 1px dotted var(--border);
 }
-.art-stat{flex:1; text-align:center}
-.art-stat .num{font-size:14px; font-weight:800; display:block}
-.art-stat .num.pos{color:var(--success)}
-.art-stat .num.neg{color:var(--danger)}
+.art-stat{ flex: 1; text-align: center }
+.art-stat .num{
+  display:block; font-family: var(--mono); font-size:13px; font-weight:700;
+}
+.art-stat .num.pos{ color: var(--success) }
+.art-stat .num.neg{ color: var(--danger) }
 .art-stat .lbl{
-  font-size:9.5px; color:var(--text-muted); font-weight:600;
-  text-transform:uppercase; letter-spacing:0.04em;
+  display: block; font-size: 10px; color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: 0.04em; margin-top:2px;
 }
-.art-card .art-del{
-  position:absolute; bottom:9px; right:9px;
-  width:32px; height:32px; border-radius:50%;
-  background:rgba(255,255,255,0.92); border:none;
-  cursor:pointer; font-size:14px; display:flex;
-  align-items:center; justify-content:center;
-  box-shadow:0 2px 8px rgba(0,0,0,0.15);
-  opacity:0; transition:all 0.2s;
-  z-index:5;
+.art-del{
+  position: absolute; bottom: 6px; right: 6px;
+  background: rgba(255,255,255,0.9); border: 1px solid var(--border-dark);
+  width: 26px; height: 26px; cursor: pointer; font-size: 13px;
+  display: flex; align-items: center; justify-content: center;
 }
-.art-card:hover .art-del{opacity:1}
-.art-card .art-del:hover{background:var(--danger); transform:scale(1.1)}
+.art-del:hover{ background: var(--danger); color: #fff; border-color:#8e1a1a }
 
-/* ============ FICHA DE ARTÍCULO ============ */
+/* ============ FICHA ============ */
 .ficha-layout{
-  display:grid; grid-template-columns:320px 1fr; gap:16px;
+  display:grid; grid-template-columns: 300px 1fr; gap: 12px;
 }
 .ficha-sidebar-card{
-  background:#fff; border:1px solid var(--border);
-  border-radius:var(--radius-md); overflow:hidden;
-  box-shadow:var(--shadow-sm); position:sticky; top:20px;
+  background: var(--panel); border: 1px solid var(--border);
 }
 .ficha-img-hero{
-  height:180px; background:#f1ebe3;
-  display:flex; align-items:center; justify-content:center;
-  font-size:64px; color:#c4b5a5; position:relative;
+  height: 150px; background: #d8d8d8; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 50px; color: #888;
 }
-.ficha-img-hero img{width:100%; height:100%; object-fit:cover}
-.ficha-info-block{padding:16px 18px}
+.ficha-img-hero img{ width:100%; height:100%; object-fit:cover }
+.ficha-info-block{ padding: 12px 14px }
 .ficha-info-block h2{
-  margin:0 0 6px 0; font-size:17px; font-weight:800; line-height:1.3;
+  margin: 0 0 6px 0; font-size: 15px; font-weight: 700;
+  line-height: 1.3;
 }
-.ficha-tags{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px}
+.ficha-tags{ display:flex; gap:4px; flex-wrap: wrap; margin-bottom: 12px }
 .ficha-tag{
-  font-size:10.5px; font-weight:700; padding:4px 9px;
-  border-radius:20px; text-transform:uppercase; letter-spacing:0.03em;
+  font-size: 10px; padding: 2px 7px; font-weight: 600;
+  text-transform: uppercase; letter-spacing:0.03em;
+  border: 1px solid var(--border-dark);
 }
-.ficha-tag.cat{background:var(--terracota-suave); color:var(--terracota)}
-.ficha-tag.supabase{background:var(--info-light); color:var(--info)}
-.ficha-tag.manual{background:var(--warning-light); color:var(--warning)}
+.ficha-tag.cat{ background: var(--panel-alt); color: var(--text) }
+.ficha-tag.supabase{ background: var(--info-bg); color: var(--info); border-color: var(--info) }
+.ficha-tag.manual{ background: var(--warning-bg); color: var(--warning); border-color: var(--warning) }
+
 .ficha-stock-total{
-  background:linear-gradient(135deg, #faf6f1, #f0ebe6);
-  border-radius:var(--radius-md); padding:14px 16px;
-  text-align:center; margin-bottom:14px;
+  background: #ddd; border: 1px solid var(--border-dark);
+  padding: 12px; text-align: center; margin-bottom: 12px;
 }
 .ficha-stock-total .lbl{
-  font-size:10.5px; color:var(--text-muted); font-weight:700;
-  text-transform:uppercase; letter-spacing:0.06em;
+  font-size: 10px; color: var(--text-muted);
+  text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;
 }
 .ficha-stock-total .num{
-  font-size:36px; font-weight:800; color:var(--text-main);
-  line-height:1.1; margin-top:2px;
+  font-family: var(--mono); font-size: 30px; font-weight: 700;
+  line-height: 1.1; margin-top: 4px; color: var(--text);
 }
-.ficha-stock-total .un{font-size:14px; color:var(--text-muted); font-weight:600}
+.ficha-stock-total .un{ font-size: 13px; color: var(--text-muted); margin-left:4px }
 .ficha-stock-total .alerta{
-  margin-top:8px; font-size:11px; font-weight:700;
-  color:var(--danger); background:#fff;
-  padding:5px 10px; border-radius:20px; display:inline-block;
+  margin-top: 6px; font-size: 11px; font-weight: 700;
+  background: var(--danger-bg); color: var(--danger);
+  padding: 3px 8px; display: inline-block; border: 1px solid var(--danger);
 }
-.ficha-action-stack{display:flex; flex-direction:column; gap:8px}
-.ficha-action-stack .btn{width:100%; justify-content:center}
-.ficha-main{display:flex; flex-direction:column; gap:16px}
+.ficha-action-stack{ display: flex; flex-direction: column; gap: 5px }
+.ficha-action-stack .btn{ justify-content: flex-start; width: 100% }
+
+.ficha-main{ display: flex; flex-direction: column; gap: 12px }
 .ficha-summary{
-  background:#fff; border:1px solid var(--border);
-  border-radius:var(--radius-md); padding:16px;
-  display:grid; grid-template-columns:repeat(4, 1fr); gap:10px;
-  box-shadow:var(--shadow-sm);
+  background: var(--panel); border: 1px solid var(--border);
+  padding: 12px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
 }
-.summary-item{text-align:center; padding:6px}
-.summary-item .val{font-size:22px; font-weight:800; line-height:1.1}
-.summary-item .val.pos{color:var(--success)}
-.summary-item .val.neg{color:var(--danger)}
+.summary-item{
+  text-align: center; padding: 6px;
+  border-right: 1px dotted var(--border);
+}
+.summary-item:last-child{ border-right: none }
+.summary-item .val{
+  font-family: var(--mono); font-size: 20px; font-weight: 700;
+}
+.summary-item .val.pos{ color: var(--success) }
+.summary-item .val.neg{ color: var(--danger) }
 .summary-item .lbl{
-  font-size:10.5px; color:var(--text-muted); font-weight:700;
-  text-transform:uppercase; letter-spacing:0.04em; margin-top:3px;
+  font-size: 10px; color: var(--text-muted);
+  text-transform: uppercase; font-weight: 600;
+  letter-spacing:0.04em; margin-top: 4px;
 }
+
 .ficha-tabs-card{
-  background:#fff; border:1px solid var(--border);
-  border-radius:var(--radius-md); overflow:hidden;
-  box-shadow:var(--shadow-sm);
+  background: var(--panel); border: 1px solid var(--border);
 }
 .ficha-tabs-nav{
-  display:flex; background:#faf6f1; border-bottom:1px solid var(--border);
-  overflow-x:auto;
+  display: flex; background: var(--panel-alt);
+  border-bottom: 1px solid var(--border); overflow-x: auto;
 }
 .ficha-tab-btn{
-  border:none; background:transparent; padding:14px 18px;
-  font-family:inherit; font-size:13px; font-weight:600;
-  color:var(--text-muted); cursor:pointer; transition:all 0.2s;
-  border-bottom:2px solid transparent; white-space:nowrap;
-  display:flex; align-items:center; gap:6px;
+  background: transparent; border: none; padding: 9px 14px;
+  font-family: inherit; font-size: 12.5px; font-weight: 500;
+  color: var(--text-muted); cursor: pointer;
+  border-bottom: 2px solid transparent; white-space: nowrap;
+  display: flex; align-items: center; gap: 6px;
 }
-.ficha-tab-btn:hover{color:var(--text-main); background:#f5efe7}
+.ficha-tab-btn:hover{ background:#dcdcdc; color: var(--text) }
 .ficha-tab-btn.active{
-  color:var(--terracota); border-bottom-color:var(--terracota);
-  background:#fff;
+  background: var(--panel); color: var(--text);
+  border-bottom-color: var(--accent); font-weight: 600;
 }
 .ficha-tab-btn .count{
-  font-size:10px; font-weight:700; padding:2px 6px;
-  border-radius:10px; background:var(--terracota-suave); color:var(--terracota);
+  font-family: var(--mono); font-size: 10px; padding: 1px 6px;
+  background: #d0d0d0; color: var(--text-muted);
+  border: 1px solid var(--border-dark);
 }
-.ficha-tab-content{padding:6px}
+.ficha-tab-content{ padding: 4px }
 
 /* ============ TABLAS ============ */
 .table-card{
-  background:#fff; border:1px solid var(--border);
-  border-radius:var(--radius-md); overflow:hidden;
-  box-shadow:var(--shadow-sm);
+  background: var(--panel); border: 1px solid var(--border);
+  overflow: hidden;
 }
-.table-wrap{overflow-x:auto; -webkit-overflow-scrolling:touch}
-table{width:100%; border-collapse:collapse; font-size:13px; min-width:600px}
-thead{background:#faf6f1}
+.table-wrap{ overflow-x: auto }
+table{
+  width:100%; border-collapse: collapse; font-size: 12.5px;
+  min-width: 560px;
+}
+thead{ background: var(--panel-alt) }
 th{
-  text-align:left; padding:12px 14px; font-size:10.5px;
-  text-transform:uppercase; letter-spacing:0.06em;
-  color:var(--text-muted); font-weight:700;
-  border-bottom:1px solid var(--border); white-space:nowrap;
+  text-align: left; padding: 8px 10px; font-size: 11px;
+  text-transform: uppercase; letter-spacing: 0.04em;
+  color: var(--text-muted); font-weight: 700;
+  border-bottom: 1px solid var(--border-dark);
+  white-space: nowrap;
 }
-td{padding:12px 14px; border-bottom:1px solid var(--border); vertical-align:middle}
-tr:last-child td{border-bottom:none}
-tbody tr{transition:background 0.15s}
-tbody tr:hover{background:#fdfbf8}
-tbody tr.clickable{cursor:pointer}
-tbody tr.clickable:hover{background:var(--terracota-suave) !important}
+td{
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+tbody tr:hover{ background: #efefef }
+tbody tr.clickable{ cursor: pointer }
+tbody tr.clickable:hover{ background: #e0e8f0 }
+td.num, .mono{ font-family: var(--mono) }
 
 /* Badges */
 .badge{
-  display:inline-flex; align-items:center; padding:4px 9px;
-  border-radius:20px; font-size:9.5px; font-weight:700;
-  text-transform:uppercase; letter-spacing:0.04em;
-  white-space:nowrap;
+  display: inline-block; padding: 2px 7px; font-size: 10px;
+  font-weight: 700; text-transform: uppercase; letter-spacing:0.03em;
+  border: 1px solid;
 }
-.badge.alta{background:var(--success-light); color:var(--success)}
-.badge.baja{background:var(--danger-light); color:var(--danger)}
-.badge.transferencia{background:var(--info-light); color:var(--info)}
-.badge.ajuste{background:var(--warning-light); color:var(--warning)}
-.badge.ok{background:var(--success-light); color:var(--success)}
-.badge.bajo{background:var(--danger-light); color:var(--danger)}
-.badge.neutral{background:#f0ebe6; color:var(--text-muted)}
-.text-pos{color:var(--success); font-weight:800}
-.text-neg{color:var(--danger); font-weight:800}
-.text-muted{color:var(--text-muted)}
-.text-bold{font-weight:700}
-.empty-state{
-  text-align:center; color:var(--text-muted); padding:50px 20px; font-size:13px;
-}
-.empty-state .ico{font-size:44px; margin-bottom:12px; display:block; opacity:0.5}
-.empty-state .tit{font-size:15px; font-weight:700; color:var(--text-main); margin-bottom:6px}
+.badge.alta{ background: var(--success-bg); color: var(--success); border-color: var(--success) }
+.badge.baja{ background: var(--danger-bg); color: var(--danger); border-color: var(--danger) }
+.badge.transferencia{ background: var(--info-bg); color: var(--info); border-color: var(--info) }
+.badge.ajuste{ background: var(--warning-bg); color: var(--warning); border-color: var(--warning) }
+.badge.ok{ background: var(--success-bg); color: var(--success); border-color: var(--success) }
+.badge.bajo{ background: var(--danger-bg); color: var(--danger); border-color: var(--danger) }
+.badge.neutral{ background: var(--panel-alt); color: var(--text-muted); border-color: var(--border-dark) }
 
-/* Toolbar paneles */
+.text-pos{ color: var(--success); font-weight: 700; font-family: var(--mono) }
+.text-neg{ color: var(--danger); font-weight: 700; font-family: var(--mono) }
+.text-muted{ color: var(--text-muted) }
+.text-bold{ font-weight: 700 }
+
+.empty-state{
+  text-align: center; color: var(--text-muted); padding: 40px 20px;
+}
+.empty-state .ico{ font-size: 32px; display:block; margin-bottom: 8px; opacity:0.4 }
+.empty-state .tit{ font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px }
+
+/* Toolbar dentro de paneles */
 .panel-toolbar{
-  padding:12px 16px; background:#faf6f1;
-  border-bottom:1px solid var(--border);
-  display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+  padding: 8px; background: var(--panel-alt);
+  border-bottom: 1px solid var(--border);
+  display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
 }
-.panel-toolbar .search-input{flex:1; min-width:160px}
-.panel-toolbar .search-input input{
-  padding:9px 12px 9px 36px; font-size:13px; min-height:38px;
+.panel-toolbar input,
+.panel-toolbar select{
+  padding: 6px 9px; border: 1px solid var(--border-dark);
+  background: #fff; outline: none; flex: 1; min-width: 160px;
 }
-.panel-toolbar .filter-select{
-  padding:9px 10px; font-size:12.5px; min-height:38px;
-}
+.panel-toolbar input:focus,
+.panel-toolbar select:focus{ border-color: var(--accent) }
 
 /* ============ MODALES ============ */
 .modal-overlay{
-  display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-  background:rgba(32,24,17,0.6); backdrop-filter:blur(5px);
-  justify-content:center; align-items:flex-start; z-index:1000;
-  padding:16px; overflow-y:auto;
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.5); z-index: 1000;
+  justify-content: center; align-items: flex-start;
+  padding: 20px 16px; overflow-y: auto;
 }
 .modal-card{
-  background:#fff; width:100%; max-width:580px;
-  border-radius:var(--radius-lg); box-shadow:var(--shadow-lg);
-  overflow:hidden; max-height:calc(100vh - 32px); display:flex; flex-direction:column;
-  margin:auto; animation:modalFadeUp 0.3s cubic-bezier(0.16,1,0.3,1);
-}
-@keyframes modalFadeUp{
-  from{opacity:0; transform:translateY(15px) scale(0.98)}
-  to{opacity:1; transform:translateY(0) scale(1)}
+  background: var(--panel); width: 100%; max-width: 560px;
+  border: 2px solid var(--border-dark);
+  display: flex; flex-direction: column;
+  max-height: calc(100vh - 40px); margin: auto;
 }
 .modal-head{
-  padding:16px 18px; background:#faf6f1;
-  border-bottom:1px solid var(--border);
-  display:flex; justify-content:space-between; align-items:center; flex-shrink:0;
+  padding: 8px 12px; background: var(--header-bg); color: #fff;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-shrink: 0;
 }
-.modal-head h3{margin:0; font-size:16px; font-weight:800; color:var(--primary); display:flex; align-items:center; gap:8px}
+.modal-head h3{ margin: 0; font-size: 13.5px; font-weight: 700 }
 .modal-x{
-  background:transparent; border:none; font-size:22px; cursor:pointer;
-  color:var(--text-muted); padding:8px; min-width:var(--touch-target);
-  min-height:var(--touch-target); line-height:1;
+  background: transparent; border: none; color: #fff;
+  font-size: 18px; cursor: pointer; padding: 0 6px; line-height: 1;
 }
-.modal-x:hover{color:var(--text-main)}
-.modal-body{padding:18px; overflow-y:auto; flex-grow:1}
+.modal-x:hover{ color: #ff8a80 }
+.modal-body{ padding: 14px; overflow-y: auto; flex-grow: 1 }
 .modal-foot{
-  padding:14px 18px; background:#faf6f1; border-top:1px solid var(--border);
-  display:flex; justify-content:flex-end; gap:10px; flex-shrink:0; flex-wrap:wrap;
+  padding: 10px 12px; background: var(--panel-alt);
+  border-top: 1px solid var(--border);
+  display: flex; justify-content: flex-end; gap: 8px; flex-shrink:0;
+  flex-wrap: wrap;
 }
-.modal-foot .btn{flex:1; justify-content:center; min-width:120px}
+.modal-foot .btn{ flex: 0 0 auto; min-width: 100px; justify-content: center }
 
 /* Formularios */
-.field{margin-top:14px}
-.field:first-child{margin-top:0}
+.field{ margin-top: 10px }
+.field:first-child{ margin-top: 0 }
 .field label{
-  display:block; font-weight:600; font-size:12.5px;
-  color:var(--primary-light); margin-bottom:5px;
+  display: block; font-weight: 600; font-size: 11.5px;
+  color: var(--text); margin-bottom: 4px;
 }
 .field input, .field select, .field textarea{
-  width:100%; padding:10px 12px;
-  border:1px solid var(--border); border-radius:var(--radius-sm);
-  font-family:inherit; font-size:14px; outline:none;
-  background:#fff; transition:all 0.2s ease; -webkit-appearance:none;
+  width: 100%; padding: 6px 9px;
+  border: 1px solid var(--border-dark); background: #fff;
+  outline: none;
 }
 .field input:focus, .field select:focus, .field textarea:focus{
-  border-color:var(--terracota); box-shadow:0 0 0 3px rgba(194,41,10,0.12);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(44,90,160,0.2);
 }
-.field textarea{resize:vertical; height:70px}
-.field .hint{font-size:11.5px; color:var(--text-muted); margin-top:5px; font-weight:400}
-.field-row{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+.field textarea{ resize: vertical; height: 60px }
+.field .hint{ font-size: 11px; color: var(--text-muted); margin-top: 4px }
+.field-row{ display: grid; grid-template-columns: 1fr 1fr; gap: 10px }
+
 .section-label{
-  font-size:10.5px; text-transform:uppercase; letter-spacing:0.08em;
-  font-weight:700; color:var(--terracota);
-  margin:20px 0 4px; padding-top:14px;
-  border-top:1px dashed var(--border);
-  display:flex; align-items:center; gap:6px;
+  font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.07em;
+  font-weight: 700; color: var(--text-muted);
+  margin: 14px 0 4px; padding-top: 10px;
+  border-top: 1px dotted var(--border);
 }
-.section-label:first-child{margin-top:0; padding-top:0; border-top:none}
+.section-label:first-child{ margin-top: 0; padding-top: 0; border-top: none }
+
+/* Mode switch */
 .mode-switch{
-  display:flex; background:#f0ebe6; border-radius:var(--radius-sm);
-  padding:4px; gap:4px;
+  display: flex; background: var(--panel-alt);
+  border: 1px solid var(--border-dark); padding: 2px; gap: 2px;
 }
 .mode-switch button{
-  flex:1; border:none; background:transparent; padding:10px;
-  font-family:inherit; font-size:12.5px; font-weight:600;
-  color:var(--text-muted); border-radius:6px; cursor:pointer;
-  transition:all 0.2s ease;
+  flex: 1; background: transparent; border: none; padding: 6px;
+  cursor: pointer; font-weight: 500; font-size: 12px;
+  color: var(--text-muted);
 }
 .mode-switch button.active{
-  background:#fff; color:var(--terracota);
-  box-shadow:0 1px 3px rgba(0,0,0,0.08);
+  background: #fff; color: var(--accent); font-weight: 600;
 }
-.search-drop{position:relative}
-.search-drop input{
-  width:100%; padding:10px 12px 10px 38px;
-  border:1px solid var(--border); border-radius:var(--radius-sm);
-  font-family:inherit; font-size:14px; outline:none; background:#fff;
-}
-.search-drop input:focus{border-color:var(--terracota); box-shadow:0 0 0 3px rgba(194,41,10,0.12)}
-.search-drop::before{
-  content:"🔍"; position:absolute; left:13px; top:50%;
-  transform:translateY(-50%); font-size:13px; pointer-events:none;
-}
-.drop-list{
-  position:absolute; top:calc(100% + 4px); left:0; right:0;
-  background:#fff; border:1px solid var(--border);
-  border-radius:var(--radius-sm); box-shadow:0 10px 25px -6px rgba(0,0,0,0.15);
-  max-height:220px; overflow-y:auto; z-index:50;
-  display:none;
-}
-.drop-list.show{display:block}
-.drop-item{
-  padding:11px 13px; cursor:pointer; font-size:13px;
-  border-bottom:1px solid var(--border); transition:background 0.15s;
-}
-.drop-item:last-child{border-bottom:none}
-.drop-item:hover{background:var(--terracota-suave)}
-.drop-item .tit{font-weight:600; color:var(--text-main)}
-.drop-item .sub{font-size:11px; color:var(--text-muted); margin-top:2px}
-.drop-item.new{background:var(--success-light)}
-.drop-item.new .tit{color:var(--success)}
-.drop-empty{padding:16px; text-align:center; color:var(--text-muted); font-size:12.5px}
-.chip-selected{
-  background:var(--success-light); border:1px solid #a7f3d0;
-  border-radius:var(--radius-sm); padding:10px 12px; margin-top:8px;
-  display:flex; justify-content:space-between; align-items:center; gap:10px;
-}
-.chip-selected.prov{background:var(--info-light); border-color:#bfdbfe}
-.chip-selected.cli{background:var(--warning-light); border-color:#fde68a}
-.chip-selected .info b{display:block; color:var(--text-main); font-size:13px}
-.chip-selected .info span{font-size:11px; color:var(--text-muted)}
-.chip-x{
-  background:transparent; border:none; color:var(--danger);
-  font-size:12px; font-weight:700; cursor:pointer; padding:6px 10px;
-  border-radius:6px;
-}
-.chip-x:hover{background:rgba(239,68,68,0.1)}
 
-/* ============ DETALLE DE MOVIMIENTO ============ */
+/* Search dropdown */
+.search-drop{ position: relative }
+.search-drop input{
+  width: 100%; padding: 6px 9px;
+  border: 1px solid var(--border-dark); background: #fff; outline:none;
+}
+.search-drop input:focus{ border-color: var(--accent) }
+.drop-list{
+  position: absolute; top: calc(100% + 2px); left: 0; right: 0;
+  background: #fff; border: 1px solid var(--border-dark);
+  max-height: 200px; overflow-y: auto; z-index: 50;
+  display: none; box-shadow: 3px 3px 0 rgba(0,0,0,0.15);
+}
+.drop-list.show{ display: block }
+.drop-item{
+  padding: 7px 10px; cursor: pointer;
+  border-bottom: 1px solid var(--border); font-size: 12.5px;
+}
+.drop-item:last-child{ border-bottom: none }
+.drop-item:hover{ background: #e0e8f0 }
+.drop-item .tit{ font-weight: 600; color: var(--text) }
+.drop-item .sub{ font-size: 11px; color: var(--text-muted); margin-top: 1px }
+.drop-item.new{ background: var(--success-bg) }
+.drop-item.new .tit{ color: var(--success) }
+.drop-empty{ padding: 12px; text-align: center; color: var(--text-muted); font-size: 12px }
+
+/* Chips seleccionados */
+.chip-selected{
+  margin-top: 6px; padding: 7px 10px;
+  background: var(--success-bg); border: 1px solid var(--success);
+  display: flex; justify-content: space-between; align-items: center; gap: 8px;
+}
+.chip-selected.prov{ background: var(--info-bg); border-color: var(--info) }
+.chip-selected.cli{ background: var(--warning-bg); border-color: var(--warning) }
+.chip-selected .info b{ display:block; font-size: 12.5px; color: var(--text) }
+.chip-selected .info span{ font-size: 11px; color: var(--text-muted) }
+.chip-x{
+  background: transparent; border: 1px solid var(--border-dark);
+  color: var(--danger); cursor: pointer; padding: 2px 7px;
+  font-weight: 700; font-size: 11px;
+}
+.chip-x:hover{ background: var(--danger); color: #fff; border-color:#8e1a1a }
+
+/* ============ DETALLE MOVIMIENTO ============ */
 .detalle-grid{
-  display:grid; grid-template-columns:1fr 1fr;
-  gap:12px; margin-bottom:14px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+  margin-bottom: 12px;
 }
 .detalle-item{
-  background:#faf6f1; border-radius:var(--radius-sm);
-  padding:10px 12px;
+  background: var(--panel-alt); border: 1px solid var(--border);
+  padding: 8px 10px;
 }
 .detalle-item .lbl{
-  font-size:10px; text-transform:uppercase;
-  letter-spacing:0.06em; font-weight:700;
-  color:var(--text-muted); margin-bottom:4px;
+  font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em;
+  font-weight: 700; color: var(--text-muted); margin-bottom: 3px;
 }
 .detalle-item .val{
-  font-size:14px; font-weight:700; color:var(--text-main);
-  word-break:break-word;
+  font-size: 13px; font-weight: 700; word-break: break-word;
 }
-.detalle-item.full{grid-column:1/-1}
+.detalle-item.full{ grid-column: 1 / -1 }
 .detalle-hero{
-  background:linear-gradient(135deg, var(--terracota-suave), #fce8e1);
-  border-radius:var(--radius-md);
-  padding:16px; text-align:center; margin-bottom:14px;
+  background: var(--panel-alt); border: 1px solid var(--border-dark);
+  padding: 12px; text-align: center; margin-bottom: 12px;
 }
 .detalle-hero .tipo{
-  display:inline-block; padding:5px 14px; border-radius:20px;
-  font-size:11px; font-weight:800; text-transform:uppercase;
-  letter-spacing:0.06em; margin-bottom:8px;
+  display: inline-block; padding: 3px 10px; font-size: 11px;
+  font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.05em; margin-bottom: 6px; border: 1px solid;
 }
-.detalle-hero .tipo.alta{background:var(--success); color:#fff}
-.detalle-hero .tipo.baja{background:var(--danger); color:#fff}
-.detalle-hero .tipo.transferencia{background:var(--info); color:#fff}
-.detalle-hero .tipo.ajuste{background:var(--warning); color:#fff}
+.detalle-hero .tipo.alta{ background: var(--success); color:#fff; border-color:#1b5e20 }
+.detalle-hero .tipo.baja{ background: var(--danger); color:#fff; border-color:#8e1a1a }
+.detalle-hero .tipo.transferencia{ background: var(--info); color:#fff; border-color:#0d47a1 }
+.detalle-hero .tipo.ajuste{ background: var(--warning); color:#fff; border-color:#b84a00 }
 .detalle-hero .cant{
-  font-size:32px; font-weight:800; line-height:1.1; color:var(--text-main);
+  font-family: var(--mono); font-size: 26px; font-weight: 700;
+  line-height: 1.1; color: var(--text);
 }
 .detalle-hero .prod{
-  font-size:14px; font-weight:600; margin-top:6px; color:var(--text-main);
+  font-size: 13.5px; font-weight: 700; margin-top: 5px;
 }
 .detalle-hero .fecha{
-  font-size:12px; color:var(--text-muted); margin-top:6px;
-  font-weight:500;
+  font-size: 11.5px; color: var(--text-muted); margin-top: 5px;
 }
 .detalle-notas{
-  background:#fff; border:1px dashed var(--border);
-  border-radius:var(--radius-sm); padding:10px 12px;
-  font-size:13px; color:var(--text-main); line-height:1.5;
-  margin-top:12px;
+  background: var(--panel-alt); border: 1px dashed var(--border-dark);
+  padding: 9px 11px; font-size: 12.5px;
+  line-height: 1.5; margin-top: 10px;
 }
-@media (max-width:520px){
-  .detalle-grid{grid-template-columns:1fr}
-}
+@media (max-width:520px){ .detalle-grid{ grid-template-columns: 1fr } }
 
-.modal-foot button[disabled]{pointer-events:none}
+.modal-foot button[disabled]{ opacity: 0.5; cursor: not-allowed }
 #inpConfirmarBorrar{
-  font-weight:700; letter-spacing:0.05em;
-  text-transform:uppercase; text-align:center;
+  text-transform: uppercase; text-align: center; letter-spacing: 0.05em;
+  font-weight: 700; font-family: var(--mono);
 }
-#inpConfirmarBorrar:focus{border-color:var(--danger); box-shadow:0 0 0 3px rgba(239,68,68,0.12)}
+#inpConfirmarBorrar:focus{ border-color: var(--danger); box-shadow: 0 0 0 2px rgba(198,40,40,0.2) }
 
 /* ============ LOGIN ============ */
 #loginScreen{
-  position:fixed; top:0; left:0; width:100vw; height:100vh;
-  background:
-    radial-gradient(circle at 25% 15%, rgba(194,41,10,0.35), transparent 55%),
-    linear-gradient(160deg,#241b16,#17110c);
-  display:flex; justify-content:center; align-items:center;
-  z-index:9999; padding:16px;
+  position: fixed; inset: 0; background: #2e2e2e;
+  display: flex; justify-content: center; align-items: center;
+  z-index: 9999; padding: 16px;
 }
 .login-card{
-  background:#fff; padding:32px 28px; border-radius:var(--radius-lg);
-  width:100%; max-width:360px;
-  box-shadow:var(--shadow-lg); text-align:center;
+  background: var(--panel); border: 2px solid var(--border-dark);
+  padding: 24px; width: 100%; max-width: 340px;
 }
-.login-card h2{margin:0 0 4px 0; color:var(--primary); font-size:20px; font-weight:800}
-.login-card p{font-size:13px; color:var(--text-muted); margin-bottom:22px}
+.login-card h2{
+  margin: 0 0 4px 0; font-size: 16px; font-weight: 700;
+  color: var(--text); text-align: center;
+}
+.login-card p{
+  font-size: 12px; color: var(--text-muted);
+  margin: 0 0 16px 0; text-align: center;
+  padding-bottom: 12px; border-bottom: 1px dotted var(--border);
+}
 .login-card input{
-  width:100%; padding:12px; margin-top:10px;
-  border:1px solid var(--border); border-radius:var(--radius-sm);
-  font-size:15px; font-family:inherit; -webkit-appearance:none;
+  width: 100%; padding: 8px 10px; margin-top: 8px;
+  border: 1px solid var(--border-dark); background: #fff; outline: none;
 }
-.login-card input:focus{outline:none; border-color:var(--terracota); box-shadow:0 0 0 3px rgba(194,41,10,0.12)}
+.login-card input:focus{ border-color: var(--accent); box-shadow: 0 0 0 2px rgba(44,90,160,0.2) }
 .btn-login{
-  background:linear-gradient(135deg,var(--terracota),#a12208); color:#fff;
-  border:none; padding:13px; width:100%; border-radius:var(--radius-sm);
-  font-weight:700; cursor:pointer; margin-top:18px; font-family:inherit;
-  box-shadow:0 8px 18px rgba(194,41,10,0.28);
-  min-height:var(--touch-target); font-size:15px;
+  width: 100%; background: var(--accent); color: #fff;
+  border: 1px solid #1e3d70; padding: 9px; margin-top: 14px;
+  cursor: pointer; font-weight: 600;
 }
-.btn-login:active{transform:scale(0.97)}
-.login-error{color:var(--danger); font-size:13px; margin-top:12px; display:none; font-weight:500}
+.btn-login:hover{ background: var(--accent-hover) }
+.login-error{
+  color: var(--danger); font-size: 12px;
+  margin-top: 10px; display: none; text-align: center;
+  padding: 6px; background: var(--danger-bg); border: 1px solid var(--danger);
+}
 
 /* ============ FLASH ============ */
 .flash{
-  position:fixed; top:20px; right:20px; z-index:2000;
-  background:var(--success); color:#fff; padding:13px 20px;
-  border-radius:var(--radius-sm); font-weight:600; font-size:13px;
-  box-shadow:var(--shadow-lg);
-  opacity:0; transform:translateY(-12px); transition:all 0.3s;
-  pointer-events:none; max-width:min(90vw, 400px);
+  position: fixed; top: 12px; right: 12px; z-index: 2000;
+  background: var(--success); color: #fff;
+  padding: 8px 14px; font-size: 12.5px; font-weight: 600;
+  border: 1px solid #1b5e20;
+  opacity: 0; transform: translateY(-6px);
+  transition: all 0.2s; pointer-events: none;
+  max-width: min(90vw, 380px);
 }
-.flash.show{opacity:1; transform:translateY(0)}
-.flash.error{background:var(--danger)}
+.flash.show{ opacity: 1; transform: translateY(0) }
+.flash.error{ background: var(--danger); border-color: #8e1a1a }
 
 /* ============ RESPONSIVE ============ */
-@media (max-width:1100px){
-  .dashboard-cols{grid-template-columns:1fr}
-  .ficha-layout{grid-template-columns:1fr}
-  .ficha-sidebar-card{position:static}
+@media (max-width: 1100px){
+  .dashboard-cols{ grid-template-columns: 1fr }
+  .ficha-layout{ grid-template-columns: 1fr }
 }
-@media (max-width:1024px){
-  .stats-grid{grid-template-columns:repeat(2,1fr)}
-  main{padding:20px 18px 30px}
+@media (max-width: 900px){
+  .stats-grid{ grid-template-columns: repeat(2, 1fr) }
 }
-@media (max-width:768px){
-  .mobile-menu-btn{display:block}
-  aside{transform:translateX(-100%); width:var(--sidebar-mobile-width); max-width:300px}
-  aside.open{transform:translateX(0)}
-  .sidebar-overlay.open{display:block}
-  main{margin-left:0; width:100%; padding:16px 14px 30px; padding-top:68px}
-  .page-header h1{font-size:19px}
-  .page-header p{margin-left:0}
-  .stats-grid{grid-template-columns:1fr 1fr; gap:10px}
-  .stat-tile{padding:14px 12px}
-  .stat-tile .value{font-size:22px}
-  .cards-grid{grid-template-columns:1fr 1fr; gap:10px}
-  .art-img-box{height:110px; font-size:34px}
-  .art-title{font-size:12.5px}
-  .art-card .art-del{opacity:1}
-  .ficha-summary{grid-template-columns:1fr 1fr; gap:6px}
-  .summary-item .val{font-size:18px}
-  .toolbar{flex-direction:column; align-items:stretch}
-  .search-input{width:100%}
-  .header-actions{width:100%}
-  .header-actions .btn{flex:1; justify-content:center}
-  .modal-foot{flex-direction:column-reverse}
-  .modal-foot .btn{width:100%}
-  .field-row{grid-template-columns:1fr}
-  .quick-actions{grid-template-columns:1fr}
-  .breadcrumbs{font-size:11px}
+@media (max-width: 768px){
+  .mobile-menu-btn{ display: block }
+  aside{ transform: translateX(-100%); width: 220px }
+  aside.open{ transform: translateX(0) }
+  .sidebar-overlay.open{ display: block }
+  main{
+    margin-left: 0; width: 100%;
+    padding: 12px 12px 30px; padding-top: 52px;
+  }
+  .page-header{ flex-direction: column; align-items: flex-start }
+  .header-actions{ width: 100% }
+  .header-actions .btn{ flex: 1; justify-content: center }
+  .cards-grid{ grid-template-columns: repeat(2, 1fr) }
+  .ficha-summary{ grid-template-columns: repeat(2, 1fr) }
+  .summary-item:nth-child(2){ border-right: none }
+  .summary-item:nth-child(1), .summary-item:nth-child(2){ border-bottom: 1px dotted var(--border) }
+  .field-row{ grid-template-columns: 1fr }
+  .modal-foot{ flex-direction: column-reverse }
+  .modal-foot .btn{ width: 100% }
+  .toolbar input, .toolbar select{ min-width: 100% }
 }
-@media (max-width:420px){
-  .cards-grid{grid-template-columns:1fr}
-  .ficha-summary{grid-template-columns:1fr 1fr}
-  .ficha-tab-btn{padding:12px 14px; font-size:12px}
+@media (max-width: 480px){
+  .cards-grid{ grid-template-columns: 1fr }
+  .stats-grid{ grid-template-columns: 1fr 1fr }
 }
 </style>
 </head>
@@ -746,25 +711,25 @@ tbody tr.clickable:hover{background:var(--terracota-suave) !important}
 </div>
 
 <aside id="appSidebar">
-  <div class="sidebar-brand">Daguerr <span>Inventario</span></div>
+  <div class="sidebar-brand">Mueblería Daguerr <span>/ Inventario</span></div>
   <div class="sidebar-menu">
     <div class="menu-label">General</div>
-    <button class="sidebar-btn active" data-v="dashboard" onclick="goTo('dashboard', this)"><span class="ico">📊</span> Dashboard</button>
-    <button class="sidebar-btn" data-v="inventario" onclick="goTo('inventario', this)"><span class="ico">📦</span> Inventario</button>
-    <button class="sidebar-btn" data-v="movimientos" onclick="goTo('movimientos', this)"><span class="ico">📥</span> Movimientos</button>
+    <button class="sidebar-btn active" data-v="dashboard" onclick="goTo('dashboard', this)"><span class="ico">▣</span> Dashboard</button>
+    <button class="sidebar-btn" data-v="inventario" onclick="goTo('inventario', this)"><span class="ico">▤</span> Inventario</button>
+    <button class="sidebar-btn" data-v="movimientos" onclick="goTo('movimientos', this)"><span class="ico">≡</span> Movimientos</button>
 
     <div class="menu-label">Catálogos</div>
-    <button class="sidebar-btn" data-v="proveedores" onclick="goTo('proveedores', this)"><span class="ico">🚚</span> Proveedores</button>
-    <button class="sidebar-btn" data-v="clientes" onclick="goTo('clientes', this)"><span class="ico">👥</span> Clientes</button>
-    <button class="sidebar-btn" data-v="almacenes" onclick="goTo('almacenes', this)"><span class="ico">🏬</span> Almacenes</button>
+    <button class="sidebar-btn" data-v="proveedores" onclick="goTo('proveedores', this)"><span class="ico">▷</span> Proveedores</button>
+    <button class="sidebar-btn" data-v="clientes" onclick="goTo('clientes', this)"><span class="ico">☺</span> Clientes</button>
+    <button class="sidebar-btn" data-v="almacenes" onclick="goTo('almacenes', this)"><span class="ico">⌂</span> Almacenes</button>
 
-    <div class="menu-label">Acciones rápidas</div>
-    <button class="sidebar-btn" onclick="abrirModal('alta')"><span class="ico">⬆️</span> Dar de alta</button>
-    <button class="sidebar-btn" onclick="abrirModal('baja')"><span class="ico">⬇️</span> Dar de baja</button>
-    <button class="sidebar-btn" onclick="abrirModal('transferencia')"><span class="ico">🔄</span> Transferir</button>
+    <div class="menu-label">Acciones</div>
+    <button class="sidebar-btn" onclick="abrirModal('alta')"><span class="ico">↑</span> Dar de alta</button>
+    <button class="sidebar-btn" onclick="abrirModal('baja')"><span class="ico">↓</span> Dar de baja</button>
+    <button class="sidebar-btn" onclick="abrirModal('transferencia')"><span class="ico">⇄</span> Transferir</button>
   </div>
   <div class="sidebar-footer">
-    <button class="btn-logout" onclick="cerrarSesion()">Cerrar Sesión</button>
+    <button class="btn-logout" onclick="cerrarSesion()">Cerrar sesión</button>
   </div>
 </aside>
 
@@ -772,7 +737,7 @@ tbody tr.clickable:hover{background:var(--terracota-suave) !important}
   <div class="breadcrumbs" id="breadcrumbs"></div>
   <div class="page-header">
     <div>
-      <h1><span class="page-ico" id="pageIcon">📊</span><span id="pageTitle">Dashboard</span></h1>
+      <h1><span id="pageTitle">Dashboard</span></h1>
       <p id="pageSubtitle">Resumen general del inventario.</p>
     </div>
     <div class="header-actions" id="headerActions"></div>
@@ -781,39 +746,35 @@ tbody tr.clickable:hover{background:var(--terracota-suave) !important}
   <!-- VISTA: DASHBOARD -->
   <section id="vDashboard">
     <div class="stats-grid">
-      <div class="stat-tile t1">
-        <div class="ico-bg">📦</div>
+      <div class="stat-tile">
         <div class="label">SKUs con stock</div>
         <div class="value" id="sSkus">0</div>
         <div class="sub">Artículos activos</div>
       </div>
-      <div class="stat-tile t2">
-        <div class="ico-bg">🔢</div>
+      <div class="stat-tile">
         <div class="label">Unidades totales</div>
         <div class="value" id="sUnidades">0</div>
         <div class="sub">En todos los almacenes</div>
       </div>
-      <div class="stat-tile t3">
-        <div class="ico-bg">🏬</div>
-        <div class="label">Almacenes</div>
+      <div class="stat-tile">
+        <div class="label">Almacenes activos</div>
         <div class="value" id="sAlmacenes">0</div>
-        <div class="sub">Activos</div>
+        <div class="sub">Registrados</div>
       </div>
-      <div class="stat-tile t4">
-        <div class="ico-bg">📥</div>
-        <div class="label">Movs. hoy</div>
+      <div class="stat-tile">
+        <div class="label">Movimientos hoy</div>
         <div class="value" id="sMovsHoy">0</div>
         <div class="sub">Registrados hoy</div>
       </div>
     </div>
 
     <div class="dashboard-cols">
-      <div class="dash-panel">
-        <div class="dash-panel-head">
-          <h3>📥 Últimos movimientos</h3>
-          <a class="link" onclick="goTo('movimientos')">Ver todos →</a>
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Últimos movimientos</h3>
+          <span class="link" onclick="goTo('movimientos')">Ver todos →</span>
         </div>
-        <div class="dash-panel-body">
+        <div class="panel-body">
           <div class="table-wrap">
             <table>
               <thead>
@@ -831,30 +792,38 @@ tbody tr.clickable:hover{background:var(--terracota-suave) !important}
         </div>
       </div>
 
-      <div class="dash-panel">
-        <div class="dash-panel-head">
-          <h3>⚡ Acciones rápidas</h3>
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Acciones rápidas</h3>
         </div>
         <div class="quick-actions">
-          <button class="quick-btn q1" onclick="abrirModal('alta')">
-            <span class="qb-ico">⬆️</span>
-            <span class="qb-tit">Dar de alta</span>
-            <span class="qb-sub">Registrar entrada</span>
+          <button class="quick-btn" onclick="abrirModal('alta')">
+            <div class="qb-ico">↑</div>
+            <div class="qb-info">
+              <div class="qb-tit">Dar de alta</div>
+              <div class="qb-sub">Registrar entrada</div>
+            </div>
           </button>
-          <button class="quick-btn q2" onclick="abrirModal('baja')">
-            <span class="qb-ico">⬇️</span>
-            <span class="qb-tit">Dar de baja</span>
-            <span class="qb-sub">Registrar salida</span>
+          <button class="quick-btn" onclick="abrirModal('baja')">
+            <div class="qb-ico">↓</div>
+            <div class="qb-info">
+              <div class="qb-tit">Dar de baja</div>
+              <div class="qb-sub">Registrar salida</div>
+            </div>
           </button>
-          <button class="quick-btn q3" onclick="abrirModal('transferencia')">
-            <span class="qb-ico">🔄</span>
-            <span class="qb-tit">Transferir</span>
-            <span class="qb-sub">Mover entre almacenes</span>
+          <button class="quick-btn" onclick="abrirModal('transferencia')">
+            <div class="qb-ico">⇄</div>
+            <div class="qb-info">
+              <div class="qb-tit">Transferir</div>
+              <div class="qb-sub">Mover entre almacenes</div>
+            </div>
           </button>
-          <button class="quick-btn q4" onclick="goTo('inventario')">
-            <span class="qb-ico">📦</span>
-            <span class="qb-tit">Ver inventario</span>
-            <span class="qb-sub">Todos los artículos</span>
+          <button class="quick-btn" onclick="goTo('inventario')">
+            <div class="qb-ico">▤</div>
+            <div class="qb-info">
+              <div class="qb-tit">Ver inventario</div>
+              <div class="qb-sub">Todos los artículos</div>
+            </div>
           </button>
         </div>
       </div>
@@ -864,13 +833,11 @@ tbody tr.clickable:hover{background:var(--terracota-suave) !important}
   <!-- VISTA: INVENTARIO -->
   <section id="vInventario" style="display:none">
     <div class="toolbar">
-      <div class="search-input">
-        <input type="text" id="buscarArt" placeholder="Buscar artículo por nombre o categoría..." oninput="renderInventario()" autocomplete="off">
-      </div>
-      <select class="filter-select" id="filtroAlmacenArt" onchange="renderInventario()">
-        <option value="">Todos los almacenes</option>
+      <input type="text" id="buscarArt" placeholder="Buscar artículo..." oninput="renderInventario()" autocomplete="off">
+      <select id="filtroAlmacenArt" onchange="renderInventario()">
+        <option value="">-- Todos los almacenes --</option>
       </select>
-      <span class="counter-badge" id="contArt">0 artículos</span>
+      <span class="counter" id="contArt">0 artículos</span>
     </div>
     <div class="cards-grid" id="gridArt"></div>
   </section>
@@ -887,16 +854,14 @@ tbody tr.clickable:hover{background:var(--terracota-suave) !important}
   <section id="vMovimientos" style="display:none">
     <div class="table-card">
       <div class="panel-toolbar">
-        <div class="search-input">
-          <input type="text" id="buscarMov" placeholder="Buscar por artículo, proveedor, factura, cliente..." oninput="renderMovimientos()" autocomplete="off">
-        </div>
-        <select class="filter-select" id="filtroTipoMov" onchange="renderMovimientos()">
-          <option value="">Todos los tipos</option>
+        <input type="text" id="buscarMov" placeholder="Buscar movimiento..." oninput="renderMovimientos()" autocomplete="off">
+        <select id="filtroTipoMov" onchange="renderMovimientos()">
+          <option value="">-- Todos los tipos --</option>
           <option value="alta">Altas</option>
           <option value="baja">Bajas</option>
           <option value="transferencia">Transferencias</option>
         </select>
-        <span class="counter-badge" id="contMov">0</span>
+        <span class="counter" id="contMov">0</span>
       </div>
       <div class="table-wrap">
         <table>
@@ -923,10 +888,8 @@ tbody tr.clickable:hover{background:var(--terracota-suave) !important}
   <section id="vProveedores" style="display:none">
     <div class="table-card">
       <div class="panel-toolbar">
-        <div class="search-input">
-          <input type="text" id="buscarProv" placeholder="Buscar proveedor..." oninput="renderProveedores()" autocomplete="off">
-        </div>
-        <span class="counter-badge" id="contProv">0</span>
+        <input type="text" id="buscarProv" placeholder="Buscar proveedor..." oninput="renderProveedores()" autocomplete="off">
+        <span class="counter" id="contProv">0</span>
       </div>
       <div class="table-wrap">
         <table>
@@ -949,10 +912,8 @@ tbody tr.clickable:hover{background:var(--terracota-suave) !important}
   <section id="vClientes" style="display:none">
     <div class="table-card">
       <div class="panel-toolbar">
-        <div class="search-input">
-          <input type="text" id="buscarCli" placeholder="Buscar cliente..." oninput="renderClientes()" autocomplete="off">
-        </div>
-        <span class="counter-badge" id="contCli">0</span>
+        <input type="text" id="buscarCli" placeholder="Buscar cliente..." oninput="renderClientes()" autocomplete="off">
+        <span class="counter" id="contCli">0</span>
       </div>
       <div class="table-wrap">
         <table>
@@ -974,10 +935,8 @@ tbody tr.clickable:hover{background:var(--terracota-suave) !important}
   <section id="vAlmacenes" style="display:none">
     <div class="table-card">
       <div class="panel-toolbar">
-        <div class="search-input">
-          <input type="text" id="buscarAlm" placeholder="Buscar almacén..." oninput="renderAlmacenes()" autocomplete="off">
-        </div>
-        <span class="counter-badge" id="contAlm">0</span>
+        <input type="text" id="buscarAlm" placeholder="Buscar almacén..." oninput="renderAlmacenes()" autocomplete="off">
+        <span class="counter" id="contAlm">0</span>
       </div>
       <div class="table-wrap">
         <table>
@@ -1004,14 +963,14 @@ tbody tr.clickable:hover{background:var(--terracota-suave) !important}
       <button class="modal-x" onclick="cerrarModal('modalMov')">×</button>
     </div>
     <div class="modal-body">
-      <div class="section-label" id="mmSeccionProd">📦 Artículo</div>
-      <div id="mmTabsModo" class="mode-switch" style="margin-bottom:12px">
-        <button type="button" id="tabEx" class="active" onclick="setModo('ex')">📚 En catálogo</button>
-        <button type="button" id="tabNu" onclick="setModo('nu')">✨ Nuevo manual</button>
+      <div class="section-label">Artículo</div>
+      <div id="mmTabsModo" class="mode-switch" style="margin-bottom:10px">
+        <button type="button" id="tabEx" class="active" onclick="setModo('ex')">En catálogo</button>
+        <button type="button" id="tabNu" onclick="setModo('nu')">Nuevo manual</button>
       </div>
 
       <div id="bloqueEx" class="field">
-        <label>Buscar artículo del catálogo</label>
+        <label>Buscar artículo del catálogo:</label>
         <div class="search-drop">
           <input type="text" id="inpBuscarProd" placeholder="Escribe el nombre..." autocomplete="off" oninput="filtraProd()" onfocus="filtraProd()">
           <div class="drop-list" id="dropProd"></div>
@@ -1021,12 +980,12 @@ tbody tr.clickable:hover{background:var(--terracota-suave) !important}
 
       <div id="bloqueNu" style="display:none">
         <div class="field">
-          <label>Título del artículo nuevo</label>
+          <label>Título del artículo nuevo:</label>
           <input type="text" id="inpTituloNuevo" placeholder="Ej. Sala Esquinera Roma">
         </div>
         <div class="field-row">
           <div class="field">
-            <label>Categoría</label>
+            <label>Categoría:</label>
             <select id="inpCatNuevo">
               <option value="Cocinas">Cocinas</option>
               <option value="Linea Blanca">Línea Blanca</option>
@@ -1044,18 +1003,18 @@ tbody tr.clickable:hover{background:var(--terracota-suave) !important}
             </select>
           </div>
           <div class="field">
-            <label>Subcategoría</label>
+            <label>Subcategoría:</label>
             <input type="text" id="inpSubNuevo" placeholder="Opcional">
           </div>
         </div>
-        <div class="hint" style="font-size:11.5px;color:var(--text-muted);margin-top:6px">
-          ℹ️ Este artículo NO se publica en el catálogo. Solo vive en inventario.
+        <div class="hint" style="font-size:11px;color:var(--text-muted);margin-top:6px">
+          Este artículo NO se publica en el catálogo. Solo vive en inventario.
         </div>
       </div>
 
       <div id="bloqueOtros" style="display:none">
         <div class="field">
-          <label>Buscar artículo con stock</label>
+          <label>Buscar artículo con stock:</label>
           <div class="search-drop">
             <input type="text" id="inpBuscarProd2" placeholder="Escribe el nombre..." autocomplete="off" oninput="filtraProd2()" onfocus="filtraProd2()">
             <div class="drop-list" id="dropProd2"></div>
@@ -1064,24 +1023,24 @@ tbody tr.clickable:hover{background:var(--terracota-suave) !important}
         </div>
       </div>
 
-      <div class="section-label">🏬 Almacén</div>
+      <div class="section-label">Almacén</div>
       <div class="field">
-        <label id="mmLabelAlmacen">Almacén</label>
+        <label id="mmLabelAlmacen">Almacén:</label>
         <select id="inpAlmacen"></select>
       </div>
       <div class="field" id="bloqueAlmDest" style="display:none">
-        <label>Almacén destino</label>
+        <label>Almacén destino:</label>
         <select id="inpAlmacenDest"></select>
       </div>
 
-      <div class="section-label">🔢 Detalles del movimiento</div>
+      <div class="section-label">Detalles del movimiento</div>
       <div class="field-row">
         <div class="field">
-          <label>Cantidad</label>
+          <label>Cantidad:</label>
           <input type="number" id="inpCantidad" min="1" value="1">
         </div>
         <div class="field">
-          <label>Motivo</label>
+          <label>Motivo:</label>
           <select id="inpMotivo">
             <option value="compra">Compra a proveedor</option>
             <option value="venta">Venta</option>
@@ -1095,7 +1054,7 @@ tbody tr.clickable:hover{background:var(--terracota-suave) !important}
 
       <div id="bloqueProveedor" style="display:none">
         <div class="field">
-          <label>Proveedor (opcional)</label>
+          <label>Proveedor (opcional):</label>
           <div class="search-drop">
             <input type="text" id="inpBuscarProv" placeholder="Busca o escribe uno nuevo..." autocomplete="off" oninput="filtraProv()" onfocus="filtraProv()">
             <div class="drop-list" id="dropProv"></div>
@@ -1103,14 +1062,14 @@ tbody tr.clickable:hover{background:var(--terracota-suave) !important}
           <div id="chipProv"></div>
         </div>
         <div class="field">
-          <label>Nº de Factura (opcional)</label>
+          <label>Nº de Factura (opcional):</label>
           <input type="text" id="inpFactura" placeholder="Ej. FAC-2024-00123">
         </div>
       </div>
 
       <div id="bloqueCliente" style="display:none">
         <div class="field">
-          <label>Cliente (opcional)</label>
+          <label>Cliente (opcional):</label>
           <div class="search-drop">
             <input type="text" id="inpBuscarCli" placeholder="Busca o escribe uno nuevo..." autocomplete="off" oninput="filtraCli()" onfocus="filtraCli()">
             <div class="drop-list" id="dropCli"></div>
@@ -1120,13 +1079,13 @@ tbody tr.clickable:hover{background:var(--terracota-suave) !important}
       </div>
 
       <div class="field">
-        <label>Notas (opcional)</label>
+        <label>Notas (opcional):</label>
         <textarea id="inpNotas" placeholder="Observaciones..."></textarea>
       </div>
     </div>
     <div class="modal-foot">
-      <button class="btn btn-ghost" onclick="cerrarModal('modalMov')">Cancelar</button>
-      <button class="btn btn-success" onclick="guardarMovimiento()">Guardar movimiento</button>
+      <button class="btn" onclick="cerrarModal('modalMov')">Cancelar</button>
+      <button class="btn btn-success" onclick="guardarMovimiento()">Guardar</button>
     </div>
   </div>
 </div>
@@ -1141,11 +1100,11 @@ tbody tr.clickable:hover{background:var(--terracota-suave) !important}
     <div class="modal-body">
       <input type="hidden" id="almId">
       <div class="field">
-        <label>Nombre</label>
+        <label>Nombre:</label>
         <input type="text" id="almNombre" placeholder="Ej. Bodega Central">
       </div>
       <div class="field">
-        <label>Categoría (opcional)</label>
+        <label>Categoría (opcional):</label>
         <select id="almCategoria">
           <option value="">Mixto / Todas</option>
           <option value="Cocinas">Cocinas</option>
@@ -1164,12 +1123,12 @@ tbody tr.clickable:hover{background:var(--terracota-suave) !important}
         </select>
       </div>
       <div class="field">
-        <label>Descripción (opcional)</label>
+        <label>Descripción (opcional):</label>
         <textarea id="almDesc" placeholder="Ubicación, encargado..."></textarea>
       </div>
     </div>
     <div class="modal-foot">
-      <button class="btn btn-ghost" onclick="cerrarModal('modalAlm')">Cancelar</button>
+      <button class="btn" onclick="cerrarModal('modalAlm')">Cancelar</button>
       <button class="btn btn-success" onclick="guardarAlmacen()">Guardar</button>
     </div>
   </div>
@@ -1185,24 +1144,24 @@ tbody tr.clickable:hover{background:var(--terracota-suave) !important}
     <div class="modal-body">
       <input type="hidden" id="provId">
       <div class="field">
-        <label>Nombre</label>
+        <label>Nombre:</label>
         <input type="text" id="provNombre" placeholder="Ej. IMPULSORA">
       </div>
       <div class="field">
-        <label>Contacto</label>
+        <label>Contacto:</label>
         <input type="text" id="provContacto" placeholder="Nombre del vendedor">
       </div>
       <div class="field">
-        <label>Teléfono</label>
+        <label>Teléfono:</label>
         <input type="text" id="provTelefono" placeholder="Ej. 555-123-4567">
       </div>
       <div class="field">
-        <label>Notas</label>
+        <label>Notas:</label>
         <textarea id="provNotas" placeholder="Días de entrega, condiciones..."></textarea>
       </div>
     </div>
     <div class="modal-foot">
-      <button class="btn btn-ghost" onclick="cerrarModal('modalProv')">Cancelar</button>
+      <button class="btn" onclick="cerrarModal('modalProv')">Cancelar</button>
       <button class="btn btn-success" onclick="guardarProv()">Guardar</button>
     </div>
   </div>
@@ -1218,20 +1177,20 @@ tbody tr.clickable:hover{background:var(--terracota-suave) !important}
     <div class="modal-body">
       <input type="hidden" id="cliId">
       <div class="field">
-        <label>Nombre</label>
+        <label>Nombre:</label>
         <input type="text" id="cliNombre" placeholder="Ej. Juan Pérez">
       </div>
       <div class="field">
-        <label>Teléfono</label>
+        <label>Teléfono:</label>
         <input type="text" id="cliTelefono" placeholder="Ej. 555-123-4567">
       </div>
       <div class="field">
-        <label>Notas</label>
+        <label>Notas:</label>
         <textarea id="cliNotas" placeholder="Dirección, referencias..."></textarea>
       </div>
     </div>
     <div class="modal-foot">
-      <button class="btn btn-ghost" onclick="cerrarModal('modalCli')">Cancelar</button>
+      <button class="btn" onclick="cerrarModal('modalCli')">Cancelar</button>
       <button class="btn btn-success" onclick="guardarCli()">Guardar</button>
     </div>
   </div>
@@ -1246,8 +1205,8 @@ tbody tr.clickable:hover{background:var(--terracota-suave) !important}
     </div>
     <div class="modal-body" id="mdBody"></div>
     <div class="modal-foot" style="justify-content:space-between">
-      <button class="btn btn-ghost" id="mdBtnEliminar" style="color:var(--danger); border-color:#fecaca; flex:0 0 auto; min-width:auto" onclick="abrirModalEliminarMovimiento()">🗑️ Eliminar</button>
-      <button class="btn btn-ghost" onclick="cerrarModal('modalDetalle')">Cerrar</button>
+      <button class="btn btn-danger" id="mdBtnEliminar" style="flex:0 0 auto; min-width:auto" onclick="abrirModalEliminarMovimiento()">Eliminar</button>
+      <button class="btn" onclick="cerrarModal('modalDetalle')">Cerrar</button>
     </div>
   </div>
 </div>
@@ -1256,45 +1215,41 @@ tbody tr.clickable:hover{background:var(--terracota-suave) !important}
 <div class="modal-overlay" id="modalEliminarMov" style="z-index:1100">
   <div class="modal-card" style="max-width:440px">
     <div class="modal-head">
-      <h3>⚠️ Eliminar movimiento</h3>
+      <h3>Eliminar movimiento</h3>
       <button class="modal-x" onclick="cerrarModal('modalEliminarMov')">×</button>
     </div>
     <div class="modal-body">
-      <div style="text-align:center; margin-bottom:16px">
-        <div style="font-size:48px; margin-bottom:8px">🗑️</div>
-        <div style="font-size:15px; font-weight:800; color:var(--text-main); margin-bottom:6px">Esta acción es permanente</div>
-        <div id="meMovInfo" style="font-size:12.5px; color:var(--text-muted)"></div>
+      <div style="text-align:center; margin-bottom:14px">
+        <div style="font-size:15px; font-weight:800; margin-bottom:6px">Esta acción es permanente</div>
+        <div id="meMovInfo" style="font-size:12px; color:var(--text-muted)"></div>
       </div>
 
-      <div style="background:var(--warning-light); border:1px solid #fde68a; border-radius:var(--radius-sm); padding:12px 14px; margin-bottom:14px">
-        <div style="font-size:12.5px; color:#92400e; display:flex; gap:8px; align-items:flex-start">
-          <span style="font-size:16px">⚠️</span>
-          <span>Se eliminará el registro del historial, pero <b>NO</b> se ajustará el stock actual. Si necesitas corregir el stock, primero haz un <b>ajuste manual</b>.</span>
-        </div>
+      <div style="background:var(--warning-bg); border:1px solid var(--warning); padding:10px 12px; margin-bottom:12px; font-size:12px">
+        <b>Atención:</b> Se eliminará el registro del historial, pero <b>NO</b> se ajustará el stock actual. Si necesitas corregir el stock, primero haz un <b>ajuste manual</b>.
       </div>
 
       <div class="field" style="margin-top:0">
-        <label>Para confirmar, escribe <b style="color:var(--danger)">CONFIRMAR</b> (en mayúsculas):</label>
-        <input type="text" id="inpConfirmarBorrar" placeholder="Escribe CONFIRMAR" autocomplete="off" oninput="verificarConfirmacion()">
+        <label>Escribe <b style="color:var(--danger); font-family:var(--mono)">CONFIRMAR</b> para continuar:</label>
+        <input type="text" id="inpConfirmarBorrar" placeholder="CONFIRMAR" autocomplete="off" oninput="verificarConfirmacion()">
       </div>
     </div>
     <div class="modal-foot">
-      <button class="btn btn-ghost" onclick="cerrarModal('modalEliminarMov')">Cancelar</button>
-      <button class="btn btn-danger" id="btnConfirmarBorrar" disabled style="opacity:0.5; cursor:not-allowed" onclick="confirmarEliminarMovimiento()">Eliminar definitivamente</button>
+      <button class="btn" onclick="cerrarModal('modalEliminarMov')">Cancelar</button>
+      <button class="btn btn-danger" id="btnConfirmarBorrar" disabled onclick="confirmarEliminarMovimiento()">Eliminar definitivamente</button>
     </div>
   </div>
 </div>
 
 <!-- MODAL CONFIRMAR ELIMINAR ARTÍCULO -->
 <div class="modal-overlay" id="modalEliminar">
-  <div class="modal-card" style="max-width:460px">
+  <div class="modal-card" style="max-width:440px">
     <div class="modal-head">
-      <h3>⚠️ Eliminar artículo</h3>
+      <h3>Eliminar artículo</h3>
       <button class="modal-x" onclick="cerrarModal('modalEliminar')">×</button>
     </div>
     <div class="modal-body" id="meBody"></div>
     <div class="modal-foot">
-      <button class="btn btn-ghost" onclick="cerrarModal('modalEliminar')">Cancelar</button>
+      <button class="btn" onclick="cerrarModal('modalEliminar')">Cancelar</button>
       <button class="btn btn-danger" onclick="confirmarEliminar()">Sí, eliminar</button>
     </div>
   </div>
@@ -1329,9 +1284,9 @@ function fmt(iso){
   const ayer = new Date(hoy); ayer.setDate(ayer.getDate() - 1);
   const esAyer = d.toDateString() === ayer.toDateString();
   const hora = d.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
-  if(esHoy) return `Hoy · ${hora}`;
-  if(esAyer) return `Ayer · ${hora}`;
-  return d.toLocaleDateString('es-MX',{day:'2-digit',month:'2-digit',year:'2-digit'}) + ' · ' + hora;
+  if(esHoy) return `Hoy ${hora}`;
+  if(esAyer) return `Ayer ${hora}`;
+  return d.toLocaleDateString('es-MX',{day:'2-digit',month:'2-digit',year:'2-digit'}) + ' ' + hora;
 }
 
 function flash(msg, err=false){
@@ -1406,13 +1361,13 @@ function renderAll(){
 
 /* ============ NAVEGACIÓN ============ */
 const vistaMeta = {
-  dashboard:    { ico:'📊', tit:'Dashboard',    sub:'Resumen general del inventario.' },
-  inventario:   { ico:'📦', tit:'Inventario',   sub:'Todos los artículos con stock registrado.' },
-  ficha:        { ico:'📄', tit:'Ficha de artículo', sub:'Detalle del artículo.' },
-  movimientos:  { ico:'📥', tit:'Movimientos',  sub:'Historial completo de altas, bajas y transferencias.' },
-  proveedores:  { ico:'🚚', tit:'Proveedores',  sub:'Catálogo de proveedores.' },
-  clientes:     { ico:'👥', tit:'Clientes',     sub:'Catálogo de clientes.' },
-  almacenes:    { ico:'🏬', tit:'Almacenes',    sub:'Ubicaciones de almacenamiento.' }
+  dashboard:    { tit:'Dashboard',    sub:'Resumen general del inventario.' },
+  inventario:   { tit:'Inventario',   sub:'Todos los artículos con stock registrado.' },
+  ficha:        { tit:'Ficha de artículo', sub:'Detalle del artículo.' },
+  movimientos:  { tit:'Movimientos',  sub:'Historial completo de altas, bajas y transferencias.' },
+  proveedores:  { tit:'Proveedores',  sub:'Catálogo de proveedores.' },
+  clientes:     { tit:'Clientes',     sub:'Catálogo de clientes.' },
+  almacenes:    { tit:'Almacenes',    sub:'Ubicaciones de almacenamiento.' }
 };
 
 function goTo(v, btn){
@@ -1436,36 +1391,35 @@ function renderHeaderActions(){
   const c = $('headerActions');
   c.innerHTML = '';
   const meta = vistaMeta[vista] || vistaMeta.dashboard;
-  $('pageIcon').textContent = meta.ico;
   $('pageTitle').textContent = meta.tit;
   $('pageSubtitle').textContent = meta.sub;
 
   if(vista === 'dashboard' || vista === 'inventario' || vista === 'movimientos'){
     c.innerHTML = `
-      <button class="btn btn-success btn-sm" onclick="abrirModal('alta')">⬆️ Alta</button>
-      <button class="btn btn-danger btn-sm" onclick="abrirModal('baja')">⬇️ Baja</button>
-      <button class="btn btn-info btn-sm" onclick="abrirModal('transferencia')">🔄 Transferir</button>
+      <button class="btn btn-success btn-sm" onclick="abrirModal('alta')">↑ Alta</button>
+      <button class="btn btn-danger btn-sm" onclick="abrirModal('baja')">↓ Baja</button>
+      <button class="btn btn-info btn-sm" onclick="abrirModal('transferencia')">⇄ Transferir</button>
     `;
   } else if(vista === 'proveedores'){
-    c.innerHTML = `<button class="btn btn-primary btn-sm" onclick="abrirModalNuevoProv()">➕ Nuevo proveedor</button>`;
+    c.innerHTML = `<button class="btn btn-primary btn-sm" onclick="abrirModalNuevoProv()">+ Nuevo proveedor</button>`;
   } else if(vista === 'clientes'){
-    c.innerHTML = `<button class="btn btn-primary btn-sm" onclick="abrirModalNuevoCli()">➕ Nuevo cliente</button>`;
+    c.innerHTML = `<button class="btn btn-primary btn-sm" onclick="abrirModalNuevoCli()">+ Nuevo cliente</button>`;
   } else if(vista === 'almacenes'){
-    c.innerHTML = `<button class="btn btn-primary btn-sm" onclick="abrirModalNuevoAlm()">➕ Nuevo almacén</button>`;
+    c.innerHTML = `<button class="btn btn-primary btn-sm" onclick="abrirModalNuevoAlm()">+ Nuevo almacén</button>`;
   }
 }
 
 function renderBreadcrumbs(){
   const c = $('breadcrumbs');
   const meta = vistaMeta[vista] || vistaMeta.dashboard;
-  let parts = [`<a onclick="goTo('dashboard')">🏠 Inicio</a>`];
+  let parts = [`<a onclick="goTo('dashboard')">Inicio</a>`];
   if(vista === 'ficha'){
-    parts.push(`<span class="sep">›</span><a onclick="goTo('inventario')">Inventario</a>`);
-    parts.push(`<span class="sep">›</span><span class="current">${esc(artActual?.titulo || 'Ficha')}</span>`);
+    parts.push(`<span class="sep">/</span><a onclick="goTo('inventario')">Inventario</a>`);
+    parts.push(`<span class="sep">/</span><span class="current">${esc(artActual?.titulo || 'Ficha')}</span>`);
   } else if(vista !== 'dashboard'){
-    parts.push(`<span class="sep">›</span><span class="current">${meta.tit}</span>`);
+    parts.push(`<span class="sep">/</span><span class="current">${meta.tit}</span>`);
   } else {
-    parts.push(`<span class="sep">›</span><span class="current">Dashboard</span>`);
+    parts.push(`<span class="sep">/</span><span class="current">Dashboard</span>`);
   }
   c.innerHTML = parts.join('');
 }
@@ -1484,7 +1438,7 @@ function renderStats(){
 function llenarFiltros(){
   const sel = $('filtroAlmacenArt');
   const cur = sel.value;
-  sel.innerHTML = '<option value="">Todos los almacenes</option>' +
+  sel.innerHTML = '<option value="">-- Todos los almacenes --</option>' +
     almacenes.filter(a=>a.activo).map(a => `<option value="${a.id}">${esc(a.nombre)}</option>`).join('');
   if(cur) sel.value = cur;
 }
@@ -1542,8 +1496,8 @@ function renderInventario(){
   const grid = $('gridArt');
 
   if(lista.length === 0){
-    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1; background:#fff; border:1px dashed var(--border); border-radius:var(--radius-md)">
-      <span class="ico">📭</span>
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1; background:var(--panel); border:1px solid var(--border)">
+      <span class="ico">□</span>
       <div class="tit">Sin artículos</div>
       <div>Empieza registrando una alta de inventario.</div>
     </div>`;
@@ -1557,14 +1511,14 @@ function renderInventario(){
     return `
       <div class="art-card" onclick="abrirFicha(${a.producto_id})">
         <div class="art-img-box">
-          ${img ? `<img src="${esc(img)}" class="art-img" loading="lazy" onerror="this.style.display='none'">` : '📦'}
+          ${img ? `<img src="${esc(img)}" class="art-img" loading="lazy" onerror="this.style.display='none'">` : '□'}
           <span class="art-badge-cat">${esc(a.categoria || 'Sin categoría')}</span>
           <span class="art-badge-stock ${cls}">${a.stockTotal} uds</span>
-          <button class="art-del" title="Eliminar artículo" onclick="event.stopPropagation(); abrirModalEliminar(${a.producto_id})">🗑️</button>
+          <button class="art-del" title="Eliminar artículo" onclick="event.stopPropagation(); abrirModalEliminar(${a.producto_id})">×</button>
         </div>
         <div class="art-body">
           <h3 class="art-title">${esc(a.titulo)}</h3>
-          <span class="art-meta">${a.enCatalogo ? '📚 Catálogo #'+a.producto_id : '✨ Manual'}</span>
+          <span class="art-meta">${a.enCatalogo ? 'Catálogo #'+a.producto_id : 'Manual'}</span>
           <div class="art-stats">
             <div class="art-stat">
               <span class="num pos">+${a.totalAltas}</span>
@@ -1585,7 +1539,7 @@ function renderInventario(){
   }).join('');
 }
 
-/* ============ FICHA DE ARTÍCULO ============ */
+/* ============ FICHA ============ */
 function abrirFicha(id){
   const a = agrupar().find(x => x.producto_id === id);
   if(!a) return;
@@ -1598,7 +1552,7 @@ function abrirFicha(id){
   renderFicha();
   renderHeaderActions();
   renderBreadcrumbs();
-  window.scrollTo({top:0, behavior:'smooth'});
+  window.scrollTo({top:0});
 }
 
 function renderFicha(){
@@ -1632,26 +1586,26 @@ function renderFicha(){
 
   $('fichaSidebar').innerHTML = `
     <div class="ficha-img-hero">
-      ${img ? `<img src="${esc(img)}" onerror="this.style.display='none'">` : '📦'}
+      ${img ? `<img src="${esc(img)}" onerror="this.style.display='none'">` : '□'}
     </div>
     <div class="ficha-info-block">
       <h2>${esc(a.titulo)}</h2>
       <div class="ficha-tags">
         <span class="ficha-tag cat">${esc(a.categoria || 'Sin categoría')}</span>
-        ${a.enCatalogo ? `<span class="ficha-tag supabase">📚 ID #${a.producto_id}</span>` : `<span class="ficha-tag manual">✨ Manual</span>`}
+        ${a.enCatalogo ? `<span class="ficha-tag supabase">Catálogo #${a.producto_id}</span>` : `<span class="ficha-tag manual">Manual</span>`}
       </div>
 
       <div class="ficha-stock-total">
         <div class="lbl">Stock total</div>
-        <div class="num">${a.stockTotal}<span class="un"> uds</span></div>
-        ${bajo ? `<div class="alerta">⚠️ Stock bajo mínimo (${a.stockMinTotal})</div>` : ''}
+        <div class="num">${a.stockTotal}<span class="un">uds</span></div>
+        ${bajo ? `<div class="alerta">Stock bajo mínimo (${a.stockMinTotal})</div>` : ''}
       </div>
 
       <div class="ficha-action-stack">
-        <button class="btn btn-success" onclick="abrirModalConProducto('alta', ${a.producto_id})">⬆️ Dar de alta</button>
-        <button class="btn btn-danger" onclick="abrirModalConProducto('baja', ${a.producto_id})">⬇️ Dar de baja</button>
-        <button class="btn btn-info" onclick="abrirModalConProducto('transferencia', ${a.producto_id})">🔄 Transferir</button>
-        <button class="btn btn-ghost" onclick="abrirModalEliminar(${a.producto_id})" style="color:var(--danger); border-color:#fecaca">🗑️ Eliminar artículo</button>
+        <button class="btn btn-success" onclick="abrirModalConProducto('alta', ${a.producto_id})">↑ Dar de alta</button>
+        <button class="btn btn-danger" onclick="abrirModalConProducto('baja', ${a.producto_id})">↓ Dar de baja</button>
+        <button class="btn btn-info" onclick="abrirModalConProducto('transferencia', ${a.producto_id})">⇄ Transferir</button>
+        <button class="btn" onclick="abrirModalEliminar(${a.producto_id})" style="color:var(--danger); border-color:var(--danger)">× Eliminar artículo</button>
       </div>
     </div>
   `;
@@ -1666,10 +1620,10 @@ function renderFicha(){
 
     <div class="ficha-tabs-card">
       <div class="ficha-tabs-nav">
-        <button class="ficha-tab-btn active" onclick="tabFicha('stock', this)">📦 Stock por almacén</button>
-        <button class="ficha-tab-btn" onclick="tabFicha('ventas', this)">💰 Ventas <span class="count">${ventas.length}</span></button>
-        <button class="ficha-tab-btn" onclick="tabFicha('altas', this)">⬆️ Altas <span class="count">${altas.length}</span></button>
-        <button class="ficha-tab-btn" onclick="tabFicha('hist', this)">📜 Historial <span class="count">${movsArt.length}</span></button>
+        <button class="ficha-tab-btn active" onclick="tabFicha('stock', this)">Stock por almacén</button>
+        <button class="ficha-tab-btn" onclick="tabFicha('ventas', this)">Ventas <span class="count">${ventas.length}</span></button>
+        <button class="ficha-tab-btn" onclick="tabFicha('altas', this)">Altas <span class="count">${altas.length}</span></button>
+        <button class="ficha-tab-btn" onclick="tabFicha('hist', this)">Historial <span class="count">${movsArt.length}</span></button>
       </div>
       <div class="ficha-tab-content" id="fichaTabContent"></div>
     </div>
@@ -1698,10 +1652,10 @@ function tabFicha(tab, btn){
                 const b = al.stock <= al.minimo;
                 return `<tr>
                   <td class="text-bold">${esc(al.almacen_nombre)}</td>
-                  <td><span class="text-bold" style="font-size:15px;${b?'color:var(--danger)':''}">${al.stock}</span></td>
-                  <td>${al.minimo}</td>
+                  <td><span class="text-bold mono" style="font-size:14px;${b?'color:var(--danger)':''}">${al.stock}</span></td>
+                  <td class="mono">${al.minimo}</td>
                   <td>${b?'<span class="badge bajo">Bajo</span>':'<span class="badge ok">OK</span>'}</td>
-                  <td style="text-align:right"><button class="btn btn-ghost btn-sm" onclick="editarMin(${al.stockId}, ${al.minimo})">✏️ Mín.</button></td>
+                  <td style="text-align:right"><button class="btn btn-sm" onclick="editarMin(${al.stockId}, ${al.minimo})">Editar mín.</button></td>
                 </tr>`;
               }).join('')}
           </tbody>
@@ -1714,12 +1668,12 @@ function tabFicha(tab, btn){
         <table>
           <thead><tr><th>Cliente</th><th>Cantidad vendida</th><th>Nº ventas</th></tr></thead>
           <tbody>
-            ${arr.length === 0 ? '<tr><td colspan="3"><div class="empty-state"><span class="ico">💰</span><div class="tit">Sin ventas</div><div>Aún no hay bajas con cliente registrado.</div></div></td></tr>' :
+            ${arr.length === 0 ? '<tr><td colspan="3"><div class="empty-state"><span class="ico">□</span><div class="tit">Sin ventas</div><div>Aún no hay bajas con cliente registrado.</div></div></td></tr>' :
               arr.sort((x,y)=>y.cantidad-x.cantidad).map(v => `
                 <tr>
-                  <td class="text-bold">👤 ${esc(v.nombre)}</td>
-                  <td><span class="text-neg" style="font-size:15px">-${v.cantidad}</span></td>
-                  <td>${v.count}</td>
+                  <td class="text-bold">${esc(v.nombre)}</td>
+                  <td><span class="text-neg" style="font-size:14px">-${v.cantidad}</span></td>
+                  <td class="mono">${v.count}</td>
                 </tr>
               `).join('')}
           </tbody>
@@ -1732,13 +1686,13 @@ function tabFicha(tab, btn){
         <table>
           <thead><tr><th>Proveedor</th><th>Cantidad</th><th>Facturas</th><th>Nº altas</th></tr></thead>
           <tbody>
-            ${arr.length === 0 ? '<tr><td colspan="4"><div class="empty-state"><span class="ico">⬆️</span><div class="tit">Sin altas</div><div>Aún no hay compras registradas.</div></div></td></tr>' :
+            ${arr.length === 0 ? '<tr><td colspan="4"><div class="empty-state"><span class="ico">□</span><div class="tit">Sin altas</div><div>Aún no hay compras registradas.</div></div></td></tr>' :
               arr.sort((x,y)=>y.cantidad-x.cantidad).map(p => `
                 <tr>
-                  <td class="text-bold">🚚 ${esc(p.nombre)}</td>
-                  <td><span class="text-pos" style="font-size:15px">+${p.cantidad}</span></td>
+                  <td class="text-bold">${esc(p.nombre)}</td>
+                  <td><span class="text-pos" style="font-size:14px">+${p.cantidad}</span></td>
                   <td>${p.facturas.length ? p.facturas.map(f=>esc(f)).join(', ') : '<span class="text-muted">—</span>'}</td>
-                  <td>${p.count}</td>
+                  <td class="mono">${p.count}</td>
                 </tr>
               `).join('')}
           </tbody>
@@ -1757,7 +1711,7 @@ function tabFicha(tab, btn){
                   <td>${fmt(m.created_at)}</td>
                   <td><span class="badge ${m.tipo}">${m.tipo}</span></td>
                   <td>${almTxt}</td>
-                  <td class="text-bold">${m.cantidad}</td>
+                  <td class="text-bold mono">${m.cantidad}</td>
                   <td>${esc(m.proveedor||'—')}</td>
                   <td>${esc(m.numero_factura||'—')}</td>
                   <td>${esc(m.nombre_cliente||'—')}</td>
@@ -1785,7 +1739,7 @@ async function editarMin(stockId, actual){
   }
 }
 
-/* ============ MOVIMIENTOS (tabla) ============ */
+/* ============ MOVIMIENTOS ============ */
 function renderMovimientos(){
   const q = ($('buscarMov').value||'').toLowerCase().trim();
   const tipo = $('filtroTipoMov').value;
@@ -1801,7 +1755,7 @@ function renderMovimientos(){
   $('contMov').textContent = `${lista.length} movimiento${lista.length===1?'':'s'}`;
   const t = $('tMov');
   if(lista.length === 0){
-    t.innerHTML = `<tr><td colspan="9"><div class="empty-state"><span class="ico">📥</span><div class="tit">Sin movimientos</div></div></td></tr>`;
+    t.innerHTML = `<tr><td colspan="9"><div class="empty-state"><span class="ico">□</span><div class="tit">Sin movimientos</div></div></td></tr>`;
     return;
   }
   t.innerHTML = lista.slice(0,300).map(m => {
@@ -1811,7 +1765,7 @@ function renderMovimientos(){
       <td><span class="badge ${m.tipo}">${m.tipo}</span></td>
       <td class="text-bold">${esc(m.producto_titulo||'—')}</td>
       <td>${almTxt}</td>
-      <td class="text-bold">${m.cantidad}</td>
+      <td class="text-bold mono">${m.cantidad}</td>
       <td>${esc(m.proveedor||'—')}</td>
       <td>${esc(m.numero_factura||'—')}</td>
       <td>${esc(m.nombre_cliente||'—')}</td>
@@ -1824,7 +1778,7 @@ function renderUltimos(){
   const t = $('tUltimos');
   const ult = movs.slice(0, 8);
   if(ult.length === 0){
-    t.innerHTML = `<tr><td colspan="5"><div class="empty-state" style="padding:30px 20px"><span class="ico">📥</span><div class="tit">Sin movimientos</div></div></td></tr>`;
+    t.innerHTML = `<tr><td colspan="5"><div class="empty-state" style="padding:24px 16px"><span class="ico">□</span><div class="tit">Sin movimientos</div></div></td></tr>`;
     return;
   }
   t.innerHTML = ult.map(m => {
@@ -1835,29 +1789,29 @@ function renderUltimos(){
       <td>${fmt(m.created_at)}</td>
       <td><span class="badge ${m.tipo}">${m.tipo}</span></td>
       <td class="text-bold">${esc(m.producto_titulo||'—')}</td>
-      <td class="text-bold">${m.cantidad}</td>
+      <td class="text-bold mono">${m.cantidad}</td>
       <td>${esc(ref)}</td>
     </tr>`;
   }).join('');
 }
 
-/* ============ PROVEEDORES / CLIENTES / ALMACENES ============ */
+/* ============ CATÁLOGOS ============ */
 function renderProveedores(){
   const q = ($('buscarProv').value||'').toLowerCase().trim();
   let l = provs;
   if(q) l = l.filter(p => (p.nombre||'').toLowerCase().includes(q) || (p.contacto||'').toLowerCase().includes(q) || (p.telefono||'').toLowerCase().includes(q));
   $('contProv').textContent = `${l.length} proveedor${l.length===1?'':'es'}`;
   const t = $('tProv');
-  if(l.length === 0){ t.innerHTML = `<tr><td colspan="5"><div class="empty-state"><span class="ico">🚚</span><div class="tit">Sin proveedores</div><div>Se crean automáticamente al dar de alta.</div></div></td></tr>`; return; }
+  if(l.length === 0){ t.innerHTML = `<tr><td colspan="5"><div class="empty-state"><span class="ico">□</span><div class="tit">Sin proveedores</div><div>Se crean automáticamente al dar de alta.</div></div></td></tr>`; return; }
   t.innerHTML = l.map(p => `
     <tr>
-      <td class="text-bold">🚚 ${esc(p.nombre)}</td>
+      <td class="text-bold">${esc(p.nombre)}</td>
       <td>${esc(p.contacto||'—')}</td>
       <td>${esc(p.telefono||'—')}</td>
       <td>${esc(p.notas||'—')}</td>
       <td style="text-align:right">
-        <button class="btn btn-ghost btn-sm" onclick="editarProv(${p.id})">✏️</button>
-        <button class="btn btn-danger btn-sm" onclick="borrarProv(${p.id})">🗑️</button>
+        <button class="btn btn-sm" onclick="editarProv(${p.id})">Editar</button>
+        <button class="btn btn-danger btn-sm" onclick="borrarProv(${p.id})">Borrar</button>
       </td>
     </tr>
   `).join('');
@@ -1869,15 +1823,15 @@ function renderClientes(){
   if(q) l = l.filter(c => (c.nombre||'').toLowerCase().includes(q) || (c.telefono||'').toLowerCase().includes(q));
   $('contCli').textContent = `${l.length} cliente${l.length===1?'':'s'}`;
   const t = $('tCli');
-  if(l.length === 0){ t.innerHTML = `<tr><td colspan="4"><div class="empty-state"><span class="ico">👥</span><div class="tit">Sin clientes</div><div>Se crean automáticamente al dar de baja.</div></div></td></tr>`; return; }
+  if(l.length === 0){ t.innerHTML = `<tr><td colspan="4"><div class="empty-state"><span class="ico">□</span><div class="tit">Sin clientes</div><div>Se crean automáticamente al dar de baja.</div></div></td></tr>`; return; }
   t.innerHTML = l.map(c => `
     <tr>
-      <td class="text-bold">👤 ${esc(c.nombre)}</td>
+      <td class="text-bold">${esc(c.nombre)}</td>
       <td>${esc(c.telefono||'—')}</td>
       <td>${esc(c.notas||'—')}</td>
       <td style="text-align:right">
-        <button class="btn btn-ghost btn-sm" onclick="editarCli(${c.id})">✏️</button>
-        <button class="btn btn-danger btn-sm" onclick="borrarCli(${c.id})">🗑️</button>
+        <button class="btn btn-sm" onclick="editarCli(${c.id})">Editar</button>
+        <button class="btn btn-danger btn-sm" onclick="borrarCli(${c.id})">Borrar</button>
       </td>
     </tr>
   `).join('');
@@ -1889,14 +1843,14 @@ function renderAlmacenes(){
   if(q) l = l.filter(a => (a.nombre||'').toLowerCase().includes(q) || (a.categoria||'').toLowerCase().includes(q));
   $('contAlm').textContent = `${l.length} almacén${l.length===1?'':'es'}`;
   const t = $('tAlm');
-  if(l.length === 0){ t.innerHTML = `<tr><td colspan="4"><div class="empty-state"><span class="ico">🏬</span><div class="tit">Sin almacenes</div></div></td></tr>`; return; }
+  if(l.length === 0){ t.innerHTML = `<tr><td colspan="4"><div class="empty-state"><span class="ico">□</span><div class="tit">Sin almacenes</div></div></td></tr>`; return; }
   t.innerHTML = l.map(a => `
     <tr>
-      <td class="text-bold">🏬 ${esc(a.nombre)}</td>
+      <td class="text-bold">${esc(a.nombre)}</td>
       <td>${a.categoria ? `<span class="badge neutral">${esc(a.categoria)}</span>` : '<span class="text-muted">Mixto</span>'}</td>
       <td>${esc(a.descripcion||'—')}</td>
       <td style="text-align:right">
-        <button class="btn btn-ghost btn-sm" onclick="editarAlm(${a.id})">✏️</button>
+        <button class="btn btn-sm" onclick="editarAlm(${a.id})">Editar</button>
       </td>
     </tr>
   `).join('');
@@ -1974,7 +1928,7 @@ function setModo(m){
 }
 
 function llenarSelectsAlm(){
-  const opts = almacenes.filter(a=>a.activo).map(a => `<option value="${a.id}">${esc(a.nombre)}${a.categoria?' · '+esc(a.categoria):''}</option>`).join('');
+  const opts = almacenes.filter(a=>a.activo).map(a => `<option value="${a.id}">${esc(a.nombre)}${a.categoria?' ['+esc(a.categoria)+']':''}</option>`).join('');
   $('inpAlmacen').innerHTML = opts;
   $('inpAlmacenDest').innerHTML = opts;
 }
@@ -2004,7 +1958,7 @@ function renderChipProd(p){
   $('chipProd').innerHTML = `
     <div class="chip-selected">
       <div class="info"><b>${esc(p.titulo)}</b><span>${esc(p.categoria||'')}</span></div>
-      <button class="chip-x" onclick="selProd=null;renderChipProd(null)">✕</button>
+      <button class="chip-x" onclick="selProd=null;renderChipProd(null)">×</button>
     </div>`;
 }
 
@@ -2046,7 +2000,7 @@ function renderChipProd2(p){
   $('chipProd2').innerHTML = `
     <div class="chip-selected">
       <div class="info"><b>${esc(p.titulo)}</b><span>${esc(p.categoria||'')}</span></div>
-      <button class="chip-x" onclick="selProd2=null;renderChipProd2(null)">✕</button>
+      <button class="chip-x" onclick="selProd2=null;renderChipProd2(null)">×</button>
     </div>`;
 }
 
@@ -2058,12 +2012,12 @@ function filtraProv(){
   const d = $('dropProv');
   let html = l.slice(0,30).map(p => `
     <div class="drop-item" onclick="pickProv('${esc(p.nombre).replace(/'/g,"\\'")}')">
-      <div class="tit">🚚 ${esc(p.nombre)}</div>
+      <div class="tit">${esc(p.nombre)}</div>
       ${p.contacto ? `<div class="sub">${esc(p.contacto)}</div>` : ''}
     </div>`).join('');
   if(q && !provs.some(p => (p.nombre||'').toLowerCase() === ql)){
     html += `<div class="drop-item new" onclick="pickProvNuevo('${esc(q).replace(/'/g,"\\'")}')">
-      <div class="tit">➕ Agregar nuevo: "${esc(q)}"</div>
+      <div class="tit">+ Agregar nuevo: "${esc(q)}"</div>
       <div class="sub">Se guardará en proveedores</div>
     </div>`;
   }
@@ -2076,8 +2030,8 @@ function renderChipProv(){
   if(!selProv){ $('chipProv').innerHTML = ''; return; }
   $('chipProv').innerHTML = `
     <div class="chip-selected prov">
-      <div class="info"><b>🚚 ${esc(selProv.nombre)}</b><span>${selProv.esNuevo?'Se creará al guardar':'Registrado'}</span></div>
-      <button class="chip-x" onclick="selProv=null;renderChipProv()">✕</button>
+      <div class="info"><b>${esc(selProv.nombre)}</b><span>${selProv.esNuevo?'Se creará al guardar':'Registrado'}</span></div>
+      <button class="chip-x" onclick="selProv=null;renderChipProv()">×</button>
     </div>`;
 }
 
@@ -2089,12 +2043,12 @@ function filtraCli(){
   const d = $('dropCli');
   let html = l.slice(0,30).map(c => `
     <div class="drop-item" onclick="pickCli('${esc(c.nombre).replace(/'/g,"\\'")}')">
-      <div class="tit">👤 ${esc(c.nombre)}</div>
+      <div class="tit">${esc(c.nombre)}</div>
       ${c.telefono ? `<div class="sub">${esc(c.telefono)}</div>` : ''}
     </div>`).join('');
   if(q && !clis.some(c => (c.nombre||'').toLowerCase() === ql)){
     html += `<div class="drop-item new" onclick="pickCliNuevo('${esc(q).replace(/'/g,"\\'")}')">
-      <div class="tit">➕ Agregar nuevo: "${esc(q)}"</div>
+      <div class="tit">+ Agregar nuevo: "${esc(q)}"</div>
       <div class="sub">Se guardará en clientes</div>
     </div>`;
   }
@@ -2107,8 +2061,8 @@ function renderChipCli(){
   if(!selCli){ $('chipCli').innerHTML = ''; return; }
   $('chipCli').innerHTML = `
     <div class="chip-selected cli">
-      <div class="info"><b>👤 ${esc(selCli.nombre)}</b><span>${selCli.esNuevo?'Se creará al guardar':'Registrado'}</span></div>
-      <button class="chip-x" onclick="selCli=null;renderChipCli()">✕</button>
+      <div class="info"><b>${esc(selCli.nombre)}</b><span>${selCli.esNuevo?'Se creará al guardar':'Registrado'}</span></div>
+      <button class="chip-x" onclick="selCli=null;renderChipCli()">×</button>
     </div>`;
 }
 
@@ -2176,7 +2130,7 @@ async function guardarMovimiento(){
         tipo: 'alta', cantidad: cant, motivo, notas: notas||null, numero_factura: factura||null,
         proveedor: provNombre, stock_anterior: ant, stock_nuevo: nv
       }]);
-      flash(`✅ +${cant} uds a ${alm?.nombre}`);
+      flash(`Alta registrada: +${cant} uds en ${alm?.nombre}`);
     } else if(tipoMov === 'baja'){
       const { data: ex } = await sb.from('inventario_stock').select('*').eq('producto_id', pid).eq('almacen_id', almId).maybeSingle();
       if(!ex || ex.stock_actual < cant){ flash(`Stock insuficiente (${ex?.stock_actual||0})`, true); return; }
@@ -2187,7 +2141,7 @@ async function guardarMovimiento(){
         tipo: 'baja', cantidad: cant, motivo, notas: notas||null,
         nombre_cliente: cliNombre, stock_anterior: ant, stock_nuevo: nv
       }]);
-      flash(`✅ -${cant} uds de ${alm?.nombre}`);
+      flash(`Baja registrada: -${cant} uds de ${alm?.nombre}`);
     } else if(tipoMov === 'transferencia'){
       const { data: or } = await sb.from('inventario_stock').select('*').eq('producto_id', pid).eq('almacen_id', almId).maybeSingle();
       if(!or || or.stock_actual < cant){ flash(`Stock insuficiente (${or?.stock_actual||0})`, true); return; }
@@ -2208,7 +2162,7 @@ async function guardarMovimiento(){
         tipo: 'transferencia', cantidad: cant, motivo, notas: notas||null,
         stock_anterior: antOr, stock_nuevo: nvOr
       }]);
-      flash(`✅ Transferidas ${cant} uds`);
+      flash(`Transferencia: ${cant} uds de ${alm?.nombre} a ${almDest?.nombre}`);
     }
 
     cerrarModal('modalMov');
@@ -2333,8 +2287,8 @@ function verDetalleMovimiento(movId){
   const fechaStr = fechaObj.toLocaleDateString('es-MX',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
   const horaStr = fechaObj.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
 
-  const titulos = { alta:'📥 Alta de inventario', baja:'📤 Baja de inventario', transferencia:'🔄 Transferencia', ajuste:'⚙️ Ajuste' };
-  $('mdTitulo').innerHTML = `${titulos[m.tipo] || 'Detalle'} <span style="font-size:11px;color:var(--text-muted);font-weight:500">#${m.id}</span>`;
+  const titulos = { alta:'Alta de inventario', baja:'Baja de inventario', transferencia:'Transferencia', ajuste:'Ajuste' };
+  $('mdTitulo').innerHTML = `${titulos[m.tipo] || 'Detalle'} <span style="font-size:11px;color:#ccc;font-family:var(--mono)">#${m.id}</span>`;
 
   const cantSign = m.tipo === 'alta' ? '+' : (m.tipo === 'baja' ? '−' : '↔');
   const cantColor = m.tipo === 'alta' ? 'var(--success)' : (m.tipo === 'baja' ? 'var(--danger)' : 'var(--info)');
@@ -2344,7 +2298,7 @@ function verDetalleMovimiento(movId){
       <div class="tipo ${m.tipo}">${m.tipo}</div>
       <div class="cant" style="color:${cantColor}">${cantSign}${m.cantidad} uds</div>
       <div class="prod">${esc(m.producto_titulo || '(sin título)')}</div>
-      <div class="fecha">📅 ${fechaStr}<br>🕐 ${horaStr}</div>
+      <div class="fecha">${fechaStr}<br>${horaStr}</div>
     </div>
 
     <div class="detalle-grid">
@@ -2365,11 +2319,11 @@ function verDetalleMovimiento(movId){
     html += `
       <div class="detalle-item">
         <div class="lbl">Stock antes</div>
-        <div class="val">${m.stock_anterior ?? '—'} uds</div>
+        <div class="val mono">${m.stock_anterior ?? '—'} uds</div>
       </div>
       <div class="detalle-item">
         <div class="lbl">Stock después</div>
-        <div class="val" style="color:${cantColor}">${m.stock_nuevo ?? '—'} uds</div>
+        <div class="val mono" style="color:${cantColor}">${m.stock_nuevo ?? '—'} uds</div>
       </div>
     `;
   }
@@ -2383,16 +2337,16 @@ function verDetalleMovimiento(movId){
 
   if(m.tipo === 'alta' && m.proveedor){
     html += `
-      <div class="detalle-item full" style="background:var(--info-light); border:1px solid #bfdbfe">
-        <div class="lbl">🚚 Proveedor</div>
+      <div class="detalle-item full" style="background:var(--info-bg); border-color:var(--info)">
+        <div class="lbl">Proveedor</div>
         <div class="val">${esc(m.proveedor)}</div>
         ${provInfo ? `
-          <div style="margin-top:6px;font-size:12px;color:var(--text-muted)">
-            ${provInfo.contacto ? `👤 ${esc(provInfo.contacto)}<br>` : ''}
-            ${provInfo.telefono ? `📞 ${esc(provInfo.telefono)}<br>` : ''}
-            ${provInfo.notas ? `📝 ${esc(provInfo.notas)}` : ''}
+          <div style="margin-top:5px;font-size:11.5px;color:var(--text-muted)">
+            ${provInfo.contacto ? `Contacto: ${esc(provInfo.contacto)}<br>` : ''}
+            ${provInfo.telefono ? `Teléfono: ${esc(provInfo.telefono)}<br>` : ''}
+            ${provInfo.notas ? `Notas: ${esc(provInfo.notas)}` : ''}
           </div>
-        ` : '<div style="margin-top:6px;font-size:12px;color:var(--text-muted)">Sin datos adicionales</div>'}
+        ` : '<div style="margin-top:5px;font-size:11.5px;color:var(--text-muted)">Sin datos adicionales</div>'}
       </div>
     `;
   }
@@ -2400,23 +2354,23 @@ function verDetalleMovimiento(movId){
   if(m.tipo === 'alta' && m.numero_factura){
     html += `
       <div class="detalle-item full">
-        <div class="lbl">📄 Nº Factura</div>
-        <div class="val">${esc(m.numero_factura)}</div>
+        <div class="lbl">Nº Factura</div>
+        <div class="val mono">${esc(m.numero_factura)}</div>
       </div>
     `;
   }
 
   if(m.tipo === 'baja' && m.nombre_cliente){
     html += `
-      <div class="detalle-item full" style="background:var(--warning-light); border:1px solid #fde68a">
-        <div class="lbl">👤 Cliente</div>
+      <div class="detalle-item full" style="background:var(--warning-bg); border-color:var(--warning)">
+        <div class="lbl">Cliente</div>
         <div class="val">${esc(m.nombre_cliente)}</div>
         ${cliInfo ? `
-          <div style="margin-top:6px;font-size:12px;color:var(--text-muted)">
-            ${cliInfo.telefono ? `📞 ${esc(cliInfo.telefono)}<br>` : ''}
-            ${cliInfo.notas ? `📝 ${esc(cliInfo.notas)}` : ''}
+          <div style="margin-top:5px;font-size:11.5px;color:var(--text-muted)">
+            ${cliInfo.telefono ? `Teléfono: ${esc(cliInfo.telefono)}<br>` : ''}
+            ${cliInfo.notas ? `Notas: ${esc(cliInfo.notas)}` : ''}
           </div>
-        ` : '<div style="margin-top:6px;font-size:12px;color:var(--text-muted)">Sin datos adicionales</div>'}
+        ` : '<div style="margin-top:5px;font-size:11.5px;color:var(--text-muted)">Sin datos adicionales</div>'}
       </div>
     `;
   }
@@ -2426,7 +2380,7 @@ function verDetalleMovimiento(movId){
   if(m.notas){
     html += `
       <div class="detalle-notas">
-        <b style="font-size:11px;text-transform:uppercase;color:var(--text-muted)">📝 Notas</b><br>
+        <b style="font-size:10.5px;text-transform:uppercase;color:var(--text-muted);letter-spacing:0.05em">Notas</b><br>
         ${esc(m.notas).replace(/\n/g,'<br>')}
       </div>
     `;
@@ -2445,26 +2399,24 @@ function abrirModalEliminar(prodId){
   const movsArt = movs.filter(m => m.producto_id === prodId);
 
   $('meBody').innerHTML = `
-    <div style="text-align:center; margin-bottom:16px">
-      <div style="font-size:52px; margin-bottom:8px">🗑️</div>
-      <div style="font-size:16px; font-weight:800; color:var(--text-main); margin-bottom:4px">${esc(a.titulo)}</div>
-      <div style="font-size:12.5px; color:var(--text-muted)">
+    <div style="text-align:center; margin-bottom:14px">
+      <div style="font-size:15px; font-weight:800; margin-bottom:4px">${esc(a.titulo)}</div>
+      <div style="font-size:12px; color:var(--text-muted)">
         ${a.enCatalogo ? `ID de catálogo #${prodId}` : 'Artículo manual'} · ${esc(a.categoria||'Sin categoría')}
       </div>
     </div>
 
-    <div style="background:var(--danger-light); border:1px solid #fecaca; border-radius:var(--radius-sm); padding:14px; margin-bottom:14px">
-      <div style="font-size:13px; font-weight:700; color:var(--danger); margin-bottom:6px">⚠️ Esta acción eliminará:</div>
-      <ul style="margin:0; padding-left:20px; font-size:12.5px; line-height:1.7; color:var(--text-main)">
+    <div style="background:var(--danger-bg); border:1px solid var(--danger); padding:12px; margin-bottom:12px">
+      <div style="font-size:12.5px; font-weight:700; color:var(--danger); margin-bottom:5px">Esta acción eliminará:</div>
+      <ul style="margin:0; padding-left:18px; font-size:12px; line-height:1.6">
         <li><b>${a.almacenes.length}</b> registro(s) de stock (${a.stockTotal} uds en total)</li>
         <li>El artículo desaparecerá del inventario</li>
       </ul>
     </div>
 
-    <div style="background:var(--info-light); border:1px solid #bfdbfe; border-radius:var(--radius-sm); padding:12px 14px">
-      <div style="font-size:12.5px; color:var(--info); font-weight:600; display:flex; gap:8px; align-items:flex-start">
-        <span style="font-size:16px">ℹ️</span>
-        <span>Se conservarán los <b>${movsArt.length} movimiento(s)</b> en el historial para auditoría.</span>
+    <div style="background:var(--info-bg); border:1px solid var(--info); padding:10px 12px">
+      <div style="font-size:12px; color:var(--info)">
+        Se conservarán los <b>${movsArt.length} movimiento(s)</b> en el historial para auditoría.
       </div>
     </div>
   `;
@@ -2480,7 +2432,7 @@ async function confirmarEliminar(){
     const { error } = await sb.from('inventario_stock').delete().eq('producto_id', prodId);
     if(error) throw error;
 
-    flash(`✅ Artículo eliminado del inventario`);
+    flash('Artículo eliminado del inventario');
     cerrarModal('modalEliminar');
 
     if(vista === 'ficha' && artActual?.producto_id === prodId){
@@ -2510,13 +2462,11 @@ function abrirModalEliminarMovimiento(){
   _movimientoEliminar = m;
   $('inpConfirmarBorrar').value = '';
   $('btnConfirmarBorrar').disabled = true;
-  $('btnConfirmarBorrar').style.opacity = '0.5';
-  $('btnConfirmarBorrar').style.cursor = 'not-allowed';
 
   $('meMovInfo').innerHTML = `
-    <div style="background:#faf6f1; border-radius:var(--radius-sm); padding:10px 12px; margin-top:10px; text-align:left">
-      <div style="font-size:11.5px; color:var(--text-muted); font-weight:600; text-transform:uppercase; letter-spacing:0.04em">Movimiento a eliminar</div>
-      <div style="font-size:13px; font-weight:700; color:var(--text-main); margin-top:4px">
+    <div style="background:var(--panel-alt); padding:8px 10px; margin-top:8px; text-align:left; border:1px solid var(--border)">
+      <div style="font-size:10.5px; color:var(--text-muted); font-weight:600; text-transform:uppercase; letter-spacing:0.04em">Movimiento a eliminar</div>
+      <div style="font-size:12.5px; font-weight:700; margin-top:3px">
         ${m.tipo.toUpperCase()} · ${m.cantidad} uds · ${esc(m.producto_titulo || '(sin título)')}
       </div>
       <div style="font-size:11.5px; color:var(--text-muted); margin-top:2px">
@@ -2532,8 +2482,6 @@ function verificarConfirmacion(){
   const val = $('inpConfirmarBorrar').value.trim();
   const ok = val === 'CONFIRMAR';
   $('btnConfirmarBorrar').disabled = !ok;
-  $('btnConfirmarBorrar').style.opacity = ok ? '1' : '0.5';
-  $('btnConfirmarBorrar').style.cursor = ok ? 'pointer' : 'not-allowed';
 }
 
 async function confirmarEliminarMovimiento(){
@@ -2549,7 +2497,7 @@ async function confirmarEliminarMovimiento(){
     const { error } = await sb.from('movimientos_inventario').delete().eq('id', movId);
     if(error) throw error;
 
-    flash('✅ Movimiento eliminado del historial');
+    flash('Movimiento eliminado del historial');
     cerrarModal('modalEliminarMov');
     cerrarModal('modalDetalle');
     _movimientoEliminar = null;
